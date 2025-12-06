@@ -8,6 +8,7 @@ interface TaskItemProps {
   onUpdate: (id: string, updates: Partial<Task>) => void;
   onDelete: (id: string) => void;
   onAddSubtask?: (parentId: string) => void;
+  onEdit?: (task: Task) => void;
   subtasks?: Task[];
   level?: number;
   disableStatusChange?: boolean;
@@ -19,26 +20,14 @@ export const TaskItem = ({
   onUpdate,
   onDelete,
   onAddSubtask,
+  onEdit,
   subtasks = [],
   level = 0,
   disableStatusChange = false,
 }: TaskItemProps) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editTitle, setEditTitle] = useState(task.title);
-  const [editDescription, setEditDescription] = useState(
-    task.description || ''
-  );
   const [isExpanded, setIsExpanded] = useState(false);
   const [isCompleting, setIsCompleting] = useState(false);
   const [showCheckmark, setShowCheckmark] = useState(task.status === 'done');
-
-  const handleSave = () => {
-    onUpdate(task.id, {
-      title: editTitle,
-      description: editDescription || undefined,
-    });
-    setIsEditing(false);
-  };
 
   const priorityColors = {
     low: 'text-gray-500 dark:text-gray-400',
@@ -119,42 +108,7 @@ export const TaskItem = ({
             </svg>
           )}
         </div>
-        {isEditing ? (
-          <div className="flex-1 flex flex-col gap-2">
-            <input
-              type="text"
-              value={editTitle}
-              onChange={(e) => setEditTitle(e.target.value)}
-              className="px-2 py-1.5 border border-border-light dark:border-border-dark rounded-lg bg-card-light dark:bg-card-dark text-text-primary-light dark:text-text-primary-dark text-base focus:outline-none focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark"
-              autoFocus
-            />
-            <textarea
-              value={editDescription}
-              onChange={(e) => setEditDescription(e.target.value)}
-              className="px-2 py-1.5 border border-border-light dark:border-border-dark rounded-lg bg-card-light dark:bg-card-dark text-text-primary-light dark:text-text-primary-dark text-sm resize-y min-h-[60px] focus:outline-none focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark"
-              placeholder="Description (optional)"
-            />
-            <div className="flex gap-2">
-              <button
-                onClick={handleSave}
-                className="px-3 py-1.5 bg-accent-light dark:bg-accent-dark text-white rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
-              >
-                Save
-              </button>
-              <button
-                onClick={() => {
-                  setIsEditing(false);
-                  setEditTitle(task.title);
-                  setEditDescription(task.description || '');
-                }}
-                className="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-text-primary-light dark:text-text-primary-dark rounded-lg text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        ) : (
-          <>
+        <>
             <div
               className="flex-1 cursor-pointer"
               onClick={() => setIsExpanded(!isExpanded)}
@@ -200,7 +154,7 @@ export const TaskItem = ({
                 </button>
               )}
               <button
-                onClick={() => setIsEditing(true)}
+                onClick={() => onEdit && onEdit(task)}
                 className="p-2 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 title="Edit"
               >
@@ -214,8 +168,7 @@ export const TaskItem = ({
                 <IconTrash className="w-4 h-4" />
               </button>
             </div>
-          </>
-        )}
+        </>
       </div>
       {isExpanded && task.description && (
         <div className="mt-2 pt-2 border-t border-border-light dark:border-border-dark text-sm text-text-secondary-light dark:text-text-secondary-dark">
@@ -231,6 +184,7 @@ export const TaskItem = ({
               onStatusChange={onStatusChange}
               onUpdate={onUpdate}
               onDelete={onDelete}
+              onEdit={onEdit}
               level={level + 1}
               disableStatusChange={disableStatusChange}
             />

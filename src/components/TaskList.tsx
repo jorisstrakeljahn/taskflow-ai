@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Task } from '../types/task';
 import { TaskItem } from './TaskItem';
+import { CustomSelect } from './CustomSelect';
 import {
   getRootTasks,
   getSubtasks,
@@ -14,6 +15,7 @@ interface TaskListProps {
   onUpdate: (id: string, updates: Partial<Task>) => void;
   onDelete: (id: string) => void;
   onAddSubtask: (parentId: string, title: string) => void;
+  onEdit?: (task: Task) => void;
 }
 
 export const TaskList = ({
@@ -22,6 +24,7 @@ export const TaskList = ({
   onUpdate,
   onDelete,
   onAddSubtask,
+  onEdit,
 }: TaskListProps) => {
   const [filterGroup, setFilterGroup] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<string>('all');
@@ -66,46 +69,42 @@ export const TaskList = ({
       <div className="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-lg p-4 mb-4">
         <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
           <div className="flex flex-col sm:flex-row gap-3 flex-1">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col gap-2">
               <label
                 htmlFor="group-filter"
-                className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark whitespace-nowrap"
+                className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark"
               >
-                Group:
+                Group
               </label>
-              <select
+              <CustomSelect
                 id="group-filter"
                 value={filterGroup}
-                onChange={(e) => setFilterGroup(e.target.value)}
-                className="flex-1 px-3 py-2 border border-border-light dark:border-border-dark rounded-lg bg-card-light dark:bg-card-dark text-text-primary-light dark:text-text-primary-dark text-sm focus:outline-none focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark min-h-[44px]"
-              >
-                <option value="all">All</option>
-                {groups.map((group) => (
-                  <option key={group} value={group}>
-                    {group}
-                  </option>
-                ))}
-              </select>
+                onChange={(value) => setFilterGroup(value)}
+                options={[
+                  { value: 'all', label: 'All' },
+                  ...groups.map((group) => ({ value: group, label: group })),
+                ]}
+              />
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col gap-2">
               <label
                 htmlFor="status-filter"
-                className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark whitespace-nowrap"
+                className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark"
               >
-                Status:
+                Status
               </label>
-              <select
+              <CustomSelect
                 id="status-filter"
                 value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
-                className="flex-1 px-3 py-2 border border-border-light dark:border-border-dark rounded-lg bg-card-light dark:bg-card-dark text-text-primary-light dark:text-text-primary-dark text-sm focus:outline-none focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark min-h-[44px]"
-              >
-                <option value="all">All</option>
-                <option value="open">Open</option>
-                <option value="in_progress">In Progress</option>
-                <option value="done">Done</option>
-              </select>
+                onChange={(value) => setFilterStatus(value)}
+                options={[
+                  { value: 'all', label: 'All' },
+                  { value: 'open', label: 'Open' },
+                  { value: 'in_progress', label: 'In Progress' },
+                  { value: 'done', label: 'Done' },
+                ]}
+              />
             </div>
           </div>
         </div>
@@ -130,6 +129,7 @@ export const TaskList = ({
                 onUpdate={onUpdate}
                 onDelete={onDelete}
                 onAddSubtask={handleAddSubtask}
+                onEdit={onEdit}
                 subtasks={subtasks}
               />
             );

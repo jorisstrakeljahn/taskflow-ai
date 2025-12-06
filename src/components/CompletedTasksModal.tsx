@@ -12,6 +12,7 @@ interface CompletedTasksModalProps {
   onUpdate: (id: string, updates: Partial<Task>) => void;
   onDelete: (id: string) => void;
   onReactivate: (id: string) => void;
+  onEdit?: (task: Task) => void;
 }
 
 export const CompletedTasksModal = ({
@@ -22,6 +23,7 @@ export const CompletedTasksModal = ({
   onUpdate,
   onDelete,
   onReactivate,
+  onEdit,
 }: CompletedTasksModalProps) => {
   const [startY, setStartY] = useState<number | null>(null);
   const [currentY, setCurrentY] = useState<number | null>(null);
@@ -142,6 +144,7 @@ export const CompletedTasksModal = ({
                       onUpdate={onUpdate}
                       onDelete={onDelete}
                       onAddSubtask={handleAddSubtask}
+                      onEdit={onEdit}
                       subtasks={subtasks}
                       disableStatusChange={true}
                     />

@@ -1,52 +1,66 @@
 import { useState, useRef, useEffect } from 'react';
-import { TaskPriority } from '../types/task';
+import { Task, TaskPriority, TaskStatus } from '../types/task';
 import { IconClose } from './Icons';
 import { CustomSelect } from './CustomSelect';
 
-interface CreateTaskModalProps {
+interface EditTaskModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: {
+  task: Task | null;
+  existingGroups: string[];
+  onSubmit: (id: string, data: {
     title: string;
     description?: string;
+    status: TaskStatus;
     group: string;
     priority?: TaskPriority;
   }) => void;
 }
 
-const GROUPS = ['General', 'Work', 'Personal', 'Health', 'Finance'];
-
-export const CreateTaskModal = ({
+export const EditTaskModal = ({
   isOpen,
   onClose,
+  task,
+  existingGroups,
   onSubmit,
-}: CreateTaskModalProps) => {
+}: EditTaskModalProps) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [status, setStatus] = useState<TaskStatus>('open');
   const [group, setGroup] = useState('General');
+  const [customGroup, setCustomGroup] = useState('');
+  const [useCustomGroup, setUseCustomGroup] = useState(false);
   const [priority, setPriority] = useState<TaskPriority | ''>('');
   const [startY, setStartY] = useState<number | null>(null);
   const [currentY, setCurrentY] = useState<number | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (isOpen) {
-      setTitle('');
-      setDescription('');
-      setGroup('General');
-      setPriority('');
+    if (isOpen && task) {
+      setTitle(task.title);
+      setDescription(task.description || '');
+      setStatus(task.status);
+      setGroup(task.group);
+      setCustomGroup('');
+      setUseCustomGroup(false);
+      setPriority(task.priority || '');
       setCurrentY(null);
       setStartY(null);
     }
-  }, [isOpen]);
+  }, [isOpen, task]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (title.trim()) {
-      onSubmit({
+    if (title.trim() && task) {
+      const selectedGroup = useCustomGroup && customGroup.trim() 
+        ? customGroup.trim() 
+        : group;
+      
+      onSubmit(task.id, {
         title: title.trim(),
         description: description.trim() || undefined,
-        group,
+        status,
+        group: selectedGroup,
         priority: priority || undefined,
       });
       onClose();
@@ -81,13 +95,16 @@ export const CreateTaskModal = ({
     setTimeout(() => setCurrentY(null), 300);
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !task) return null;
 
   const translateY = currentY !== null ? currentY : 0;
   const isMobile = window.innerWidth <= 768;
   const transformStyle = isMobile
     ? `translateY(${translateY}px)`
     : `translate(-50%, calc(-50% + ${translateY}px))`;
+
+  // Combine existing groups with common default groups, removing duplicates
+  const allGroups = Array.from(new Set([...existingGroups, 'General', 'Work', 'Personal', 'Health', 'Finance'])).sort();
 
   return (
     <>
@@ -113,7 +130,7 @@ export const CreateTaskModal = ({
         <div className="w-10 h-1 bg-gray-300 dark:bg-gray-600 rounded-full mx-auto mt-3 mb-2 cursor-grab active:cursor-grabbing md:hidden" />
         <div className="flex items-center justify-between px-5 pb-4 border-b border-border-light dark:border-border-dark">
           <h2 className="text-xl font-semibold text-text-primary-light dark:text-text-primary-dark">
-            Create New Task
+            Edit Task
           </h2>
           <button
             onClick={onClose}
@@ -128,13 +145,13 @@ export const CreateTaskModal = ({
         >
           <div className="flex flex-col gap-2">
             <label
-              htmlFor="task-title"
+              htmlFor="edit-task-title"
               className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark"
             >
               Title *
             </label>
             <input
-              id="task-title"
+              id="edit-task-title"
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -147,13 +164,13 @@ export const CreateTaskModal = ({
 
           <div className="flex flex-col gap-2">
             <label
-              htmlFor="task-description"
+              htmlFor="edit-task-description"
               className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark"
             >
               Description
             </label>
             <textarea
-              id="task-description"
+              id="edit-task-description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Optional description..."
@@ -162,41 +179,89 @@ export const CreateTaskModal = ({
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex flex-col gap-2">
-              <label
-                htmlFor="task-group"
-                className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark"
-              >
-                Group
-              </label>
-              <CustomSelect
-                id="task-group"
-                value={group}
-                onChange={(value) => setGroup(value)}
-                options={GROUPS.map((g) => ({ value: g, label: g }))}
-              />
-            </div>
+          <div className="flex flex-col gap-2">
+            <label
+              htmlFor="edit-task-status"
+              className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark"
+            >
+              Status
+            </label>
+            <CustomSelect
+              id="edit-task-status"
+              value={status}
+              onChange={(value) => setStatus(value as TaskStatus)}
+              options={[
+                { value: 'open', label: 'Open' },
+                { value: 'in_progress', label: 'In Progress' },
+                { value: 'done', label: 'Done' },
+              ]}
+            />
+          </div>
 
+          <div className="flex flex-col gap-2">
+            <label
+              htmlFor="edit-task-group"
+              className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark"
+            >
+              Group
+            </label>
             <div className="flex flex-col gap-2">
-              <label
-                htmlFor="task-priority"
-                className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark"
-              >
-                Priority
-              </label>
               <CustomSelect
-                id="task-priority"
-                value={priority}
-                onChange={(value) => setPriority(value as TaskPriority | '')}
-                options={[
-                  { value: '', label: 'None' },
-                  { value: 'low', label: 'Low' },
-                  { value: 'medium', label: 'Medium' },
-                  { value: 'high', label: 'High' },
-                ]}
+                id="edit-task-group"
+                value={useCustomGroup ? '' : group}
+                onChange={(value) => {
+                  setGroup(value);
+                  setUseCustomGroup(false);
+                }}
+                disabled={useCustomGroup}
+                options={allGroups.map((g) => ({ value: g, label: g }))}
               />
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={useCustomGroup}
+                  onChange={(e) => {
+                    setUseCustomGroup(e.target.checked);
+                    if (e.target.checked) {
+                      setCustomGroup('');
+                    }
+                  }}
+                  className="w-4 h-4 rounded border-2 border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark text-accent-light dark:text-accent-dark focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark"
+                />
+                <span className="text-sm text-text-secondary-light dark:text-text-secondary-dark">
+                  Use custom group
+                </span>
+              </label>
+              {useCustomGroup && (
+                <input
+                  type="text"
+                  value={customGroup}
+                  onChange={(e) => setCustomGroup(e.target.value)}
+                  placeholder="Enter new group name"
+                  className="px-3 py-2.5 border border-border-light dark:border-border-dark rounded-lg bg-card-light dark:bg-card-dark text-text-primary-light dark:text-text-primary-dark text-base focus:outline-none focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark focus:border-transparent transition-all"
+                />
+              )}
             </div>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label
+              htmlFor="edit-task-priority"
+              className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark"
+            >
+              Priority
+            </label>
+            <CustomSelect
+              id="edit-task-priority"
+              value={priority}
+              onChange={(value) => setPriority(value as TaskPriority | '')}
+              options={[
+                { value: '', label: 'None' },
+                { value: 'low', label: 'Low' },
+                { value: 'medium', label: 'Medium' },
+                { value: 'high', label: 'High' },
+              ]}
+            />
           </div>
 
           <div className="flex gap-3 pt-2 mt-auto">
@@ -211,7 +276,7 @@ export const CreateTaskModal = ({
               type="submit"
               className="flex-1 px-4 py-3 bg-accent-light dark:bg-accent-dark text-white rounded-lg font-medium hover:opacity-90 transition-opacity"
             >
-              Create
+              Save Changes
             </button>
           </div>
         </form>
@@ -219,3 +284,4 @@ export const CreateTaskModal = ({
     </>
   );
 };
+

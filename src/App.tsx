@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useTasks } from './hooks/useTasks';
 import { useTheme } from './hooks/useTheme';
 import { TaskList } from './components/TaskList';
 import { CreateTaskModal } from './components/CreateTaskModal';
+import { EditTaskModal } from './components/EditTaskModal';
 import { ChatModal } from './components/ChatModal';
 import { SettingsModal } from './components/SettingsModal';
 import { CompletedTasksModal } from './components/CompletedTasksModal';
 import { SpeedDial } from './components/SpeedDial';
 import { IconReset, IconSettings } from './components/Icons';
-import { TaskPriority } from './types/task';
+import { TaskPriority, Task, TaskStatus } from './types/task';
 import { parseChatMessage } from './utils/aiParser';
 
 function App() {
@@ -23,12 +24,19 @@ function App() {
   } = useTasks();
   const { setThemePreference } = useTheme();
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  const [isEditTaskModalOpen, setIsEditTaskModalOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isCompletedTasksModalOpen, setIsCompletedTasksModalOpen] = useState(false);
 
   // Block body scroll when any modal is open (including settings detail modal)
-  const isAnyModalOpen = isTaskModalOpen || isChatModalOpen || isSettingsModalOpen || isCompletedTasksModalOpen;
+  const isAnyModalOpen = isTaskModalOpen || isEditTaskModalOpen || isChatModalOpen || isSettingsModalOpen || isCompletedTasksModalOpen;
+
+  // Get all existing groups from tasks
+  const existingGroups = useMemo(() => {
+    return Array.from(new Set(tasks.map((t) => t.group))).sort();
+  }, [tasks]);
 
   useEffect(() => {
     if (isAnyModalOpen) {
@@ -91,6 +99,35 @@ function App() {
     changeTaskStatus(id, 'open');
   };
 
+  const handleEditTask = (task: Task) => {
+    setEditingTask(task);
+    setIsEditTaskModalOpen(true);
+  };
+
+  const handleSaveTaskEdit = (id: string, data: {
+    title: string;
+    description?: string;
+    status: TaskStatus;
+    group: string;
+    priority?: TaskPriority;
+  }) => {
+    updateTask(id, {
+      title: data.title,
+      description: data.description,
+      status: data.status,
+      group: data.group,
+      priority: data.priority,
+    });
+    // If status changed to done, also update completedAt
+    if (data.status === 'done' && tasks.find((t) => t.id === id)?.status !== 'done') {
+      updateTask(id, { completedAt: new Date() });
+    }
+    // If status changed from done to something else, clear completedAt
+    if (data.status !== 'done' && tasks.find((t) => t.id === id)?.status === 'done') {
+      updateTask(id, { completedAt: undefined });
+    }
+  };
+
   const completedTasksCount = tasks.filter((t) => t.status === 'done').length;
 
   return (
@@ -134,6 +171,7 @@ function App() {
             onUpdate={updateTask}
             onDelete={deleteTask}
             onAddSubtask={handleAddSubtask}
+            onEdit={handleEditTask}
           />
         )}
       </main>
@@ -146,6 +184,16 @@ function App() {
         isOpen={isTaskModalOpen}
         onClose={() => setIsTaskModalOpen(false)}
         onSubmit={handleCreateTask}
+      />
+      <EditTaskModal
+        isOpen={isEditTaskModalOpen}
+        onClose={() => {
+          setIsEditTaskModalOpen(false);
+          setEditingTask(null);
+        }}
+        task={editingTask}
+        existingGroups={existingGroups}
+        onSubmit={handleSaveTaskEdit}
       />
       <ChatModal
         isOpen={isChatModalOpen}
@@ -177,6 +225,7 @@ function App() {
         onUpdate={updateTask}
         onDelete={deleteTask}
         onReactivate={handleReactivateTask}
+        onEdit={handleEditTask}
       />
     </div>
   );

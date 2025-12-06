@@ -94,9 +94,9 @@ export const CompletedTasksModal = ({
         ref={modalRef}
         className={`fixed ${
           isMobile
-            ? 'bottom-0 left-0 right-0 rounded-t-3xl'
-            : 'top-1/2 left-1/2 max-w-4xl w-full rounded-2xl'
-        } bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark shadow-2xl z-[1001] flex flex-col max-h-[90vh] md:max-h-[85vh] touch-pan-y`}
+            ? 'bottom-0 left-0 right-0 rounded-t-3xl h-[90vh]'
+            : 'top-1/2 left-1/2 max-w-4xl w-full rounded-2xl h-[90vh]'
+        } bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark shadow-2xl z-[1001] flex flex-col touch-pan-y`}
         style={{
           transform: transformStyle,
           transition: currentY === null ? 'transform 0.3s ease-out' : 'none',

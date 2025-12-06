@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTasks } from './hooks/useTasks';
 import { useTheme } from './hooks/useTheme';
 import { TaskList } from './components/TaskList';
@@ -30,6 +30,30 @@ function App() {
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isCompletedTasksModalOpen, setIsCompletedTasksModalOpen] = useState(false);
+
+  // Block body scroll when any modal is open
+  const isAnyModalOpen = isTaskModalOpen || isChatModalOpen || isSettingsModalOpen || isCompletedTasksModalOpen;
+
+  useEffect(() => {
+    if (isAnyModalOpen) {
+      // Save current scroll position
+      const scrollY = window.scrollY;
+      // Block body scroll
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      document.body.style.overflow = 'hidden';
+      
+      return () => {
+        // Restore body scroll
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        document.body.style.overflow = '';
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [isAnyModalOpen]);
 
   const handleAddSubtask = (parentId: string, title: string) => {
     addTask(title, 'General', parentId);

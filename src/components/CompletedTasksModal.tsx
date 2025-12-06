@@ -3,6 +3,7 @@ import { Task, TaskStatus } from '../types/task';
 import { TaskItem } from './TaskItem';
 import { getRootTasks, getSubtasks } from '../utils/taskUtils';
 import { ResponsiveModal } from './ResponsiveModal';
+import { Button } from './ui/Button';
 
 interface CompletedTasksModalProps {
   isOpen: boolean;
@@ -37,10 +38,7 @@ export const CompletedTasksModal = ({
     return getRootTasks(completedTasks);
   }, [completedTasks]);
 
-  const handleAddSubtask = (_parentId: string) => {
-    // Subtask would be created as new task, but not needed here
-    // since we only show completed tasks
-  };
+  // Note: Subtasks for completed tasks are read-only, so we don't need to handle adding them
 
   if (!isOpen) return null;
 
@@ -73,20 +71,19 @@ export const CompletedTasksModal = ({
                       onStatusChange={onStatusChange}
                       onUpdate={onUpdate}
                       onDelete={onDelete}
-                      onAddSubtask={handleAddSubtask}
                       onEdit={onEdit}
                       subtasks={subtasks}
                       disableStatusChange={true}
                     />
-                    <div className="mt-2 flex justify-end">
-                      <button
-                        onClick={() => onReactivate(task.id)}
-                        className="px-4 py-2 text-sm font-medium rounded-lg bg-accent-light dark:bg-accent-dark text-white hover:opacity-90 transition-opacity"
-                        title="Reactivate task"
-                      >
-                        Reactivate
-                      </button>
-                    </div>
+                        <div className="mt-2 flex justify-end">
+                          <Button
+                            variant="primary"
+                            onClick={() => onReactivate(task.id)}
+                            title="Reactivate task"
+                          >
+                            Reactivate
+                          </Button>
+                        </div>
                   </div>
                 );
               })}

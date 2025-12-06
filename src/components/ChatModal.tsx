@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { ResponsiveModal } from './ResponsiveModal';
+import { Button } from './ui/Button';
 
 interface ChatModalProps {
   isOpen: boolean;
@@ -68,13 +69,14 @@ export const ChatModal = ({
               className="px-3 py-3 border-2 border-border-light dark:border-border-dark rounded-lg bg-card-light dark:bg-card-dark text-text-primary-light dark:text-text-primary-dark text-base resize-y min-h-[120px] focus:outline-none focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark focus:border-transparent transition-all disabled:bg-gray-50 dark:disabled:bg-gray-900 disabled:cursor-not-allowed"
               disabled={isProcessing}
             />
-            <button
+            <Button
               type="submit"
-              className="w-full px-4 py-3.5 bg-accent-light dark:bg-accent-dark text-white rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:bg-gray-400 dark:disabled:bg-gray-600 disabled:cursor-not-allowed min-h-[48px]"
+              variant="primary"
+              fullWidth
               disabled={!message.trim() || isProcessing}
             >
               {isProcessing ? 'Processing...' : 'Create Tasks'}
-            </button>
+            </Button>
           </form>
       </div>
     </ResponsiveModal>

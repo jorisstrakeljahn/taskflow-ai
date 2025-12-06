@@ -2,6 +2,7 @@ import { useTheme } from '../hooks/useTheme';
 import { IconCheck } from './Icons';
 import { Dashboard } from './Dashboard';
 import { ResponsiveModal } from './ResponsiveModal';
+import { Button } from './ui/Button';
 
 export type SettingsCategory = 'account' | 'completed-tasks' | 'dashboard' | 'appearance';
 
@@ -70,14 +71,11 @@ export const SettingsDetailModal = ({
                 </span>
               </div>
             </div>
-            {onLogout && (
-              <button
-                className="w-full px-4 py-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-lg font-medium hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
-                onClick={onLogout}
-              >
-                Logout
-              </button>
-            )}
+                 {onLogout && (
+                   <Button variant="danger" fullWidth onClick={onLogout}>
+                     Logout
+                   </Button>
+                 )}
           </div>
         );
 
@@ -93,12 +91,14 @@ export const SettingsDetailModal = ({
               </p>
             </div>
             {onShowCompletedTasks && (
-              <button
+              <Button
+                variant="primary"
+                fullWidth
                 onClick={() => {
                   onShowCompletedTasks();
                   onClose();
                 }}
-                className="w-full px-4 py-3 bg-accent-light dark:bg-accent-dark text-white rounded-lg font-medium hover:opacity-90 transition-opacity flex items-center justify-between"
+                className="flex items-center justify-between"
               >
                 <span>Show Completed Tasks</span>
                 {completedTasksCount > 0 && (
@@ -106,7 +106,7 @@ export const SettingsDetailModal = ({
                     {completedTasksCount}
                   </span>
                 )}
-              </button>
+              </Button>
             )}
           </div>
         );

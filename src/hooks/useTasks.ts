@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Task, TaskStatus } from '../types/task';
 import { createTask, updateTaskStatus } from '../utils/taskUtils';
+import { parseTaskDatesArray } from '../utils/dateUtils';
 
 const STORAGE_KEY = 'taskflow-tasks';
 const DEFAULT_USER_ID = 'user-1'; // TODO: Replace with actual auth
@@ -9,12 +10,7 @@ const loadSampleTasks = async (): Promise<Task[]> => {
   try {
     const response = await fetch('/sample-tasks.json');
     const data = await response.json();
-    return data.map((task: any) => ({
-      ...task,
-      createdAt: new Date(task.createdAt),
-      updatedAt: new Date(task.updatedAt),
-      completedAt: task.completedAt ? new Date(task.completedAt) : undefined,
-    }));
+    return parseTaskDatesArray(data);
   } catch (error) {
     console.error('Error loading sample tasks:', error);
     return [];
@@ -32,13 +28,7 @@ export const useTasks = () => {
       if (stored) {
         try {
           const parsed = JSON.parse(stored);
-          // Convert date strings back to Date objects
-          const loadedTasks = parsed.map((task: any) => ({
-            ...task,
-            createdAt: new Date(task.createdAt),
-            updatedAt: new Date(task.updatedAt),
-            completedAt: task.completedAt ? new Date(task.completedAt) : undefined,
-          }));
+          const loadedTasks = parseTaskDatesArray(parsed);
           setTasks(loadedTasks);
         } catch (error) {
           console.error('Error parsing stored tasks:', error);

@@ -111,21 +111,22 @@ function App() {
     group: string;
     priority?: TaskPriority;
   }) => {
+    const currentTask = tasks.find((t) => t.id === id);
+    const statusChangedToDone = data.status === 'done' && currentTask?.status !== 'done';
+    const statusChangedFromDone = data.status !== 'done' && currentTask?.status === 'done';
+
     updateTask(id, {
       title: data.title,
       description: data.description,
       status: data.status,
       group: data.group,
       priority: data.priority,
+      completedAt: statusChangedToDone 
+        ? new Date() 
+        : statusChangedFromDone 
+          ? undefined 
+          : currentTask?.completedAt,
     });
-    // If status changed to done, also update completedAt
-    if (data.status === 'done' && tasks.find((t) => t.id === id)?.status !== 'done') {
-      updateTask(id, { completedAt: new Date() });
-    }
-    // If status changed from done to something else, clear completedAt
-    if (data.status !== 'done' && tasks.find((t) => t.id === id)?.status === 'done') {
-      updateTask(id, { completedAt: undefined });
-    }
   };
 
   const completedTasksCount = tasks.filter((t) => t.status === 'done').length;

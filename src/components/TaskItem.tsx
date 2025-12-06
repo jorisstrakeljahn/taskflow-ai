@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Task, TaskStatus } from '../types/task';
 import { IconEdit, IconTrash } from './Icons';
+import { PRIORITY_COLORS } from '../constants/uiConstants';
 
 interface TaskItemProps {
   task: Task;
@@ -28,12 +29,6 @@ export const TaskItem = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const [isCompleting, setIsCompleting] = useState(false);
   const [showCheckmark, setShowCheckmark] = useState(task.status === 'done');
-
-  const priorityColors = {
-    low: 'text-gray-500 dark:text-gray-400',
-    medium: 'text-amber-600 dark:text-amber-400',
-    high: 'text-red-600 dark:text-red-400',
-  };
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (disableStatusChange) {
@@ -133,7 +128,7 @@ export const TaskItem = ({
                 </span>
                 {task.priority && (
                   <span
-                    className={`px-2 py-0.5 text-xs rounded bg-gray-100 dark:bg-gray-800 font-semibold ${priorityColors[task.priority]}`}
+                    className={`px-2 py-0.5 text-xs rounded bg-gray-100 dark:bg-gray-800 font-semibold ${task.priority ? PRIORITY_COLORS[task.priority] : ''}`}
                   >
                     {task.priority}
                   </span>

@@ -8,6 +8,8 @@ import {
   getTasksByGroup,
   getTasksByStatus,
 } from '../utils/taskUtils';
+import { TASK_STATUSES } from '../constants/taskConstants';
+import { LABEL_CLASSES } from '../constants/uiConstants';
 
 interface TaskListProps {
   tasks: Task[];
@@ -72,7 +74,7 @@ export const TaskList = ({
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="group-filter"
-                className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark"
+                className={LABEL_CLASSES}
               >
                 Group
               </label>
@@ -90,7 +92,7 @@ export const TaskList = ({
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="status-filter"
-                className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark"
+                className={LABEL_CLASSES}
               >
                 Status
               </label>
@@ -100,9 +102,7 @@ export const TaskList = ({
                 onChange={(value) => setFilterStatus(value)}
                 options={[
                   { value: 'all', label: 'All' },
-                  { value: 'open', label: 'Open' },
-                  { value: 'in_progress', label: 'In Progress' },
-                  { value: 'done', label: 'Done' },
+                  ...TASK_STATUSES.map((s) => ({ value: s.value, label: s.label })),
                 ]}
               />
             </div>

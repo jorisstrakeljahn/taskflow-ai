@@ -6,6 +6,7 @@ import { Dashboard } from './components/Dashboard';
 import { CreateTaskModal } from './components/CreateTaskModal';
 import { ChatModal } from './components/ChatModal';
 import { SettingsModal } from './components/SettingsModal';
+import { CompletedTasksModal } from './components/CompletedTasksModal';
 import { SpeedDial } from './components/SpeedDial';
 import { IconReset, IconSettings } from './components/Icons';
 import { TaskPriority } from './types/task';
@@ -28,6 +29,7 @@ function App() {
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [isCompletedTasksModalOpen, setIsCompletedTasksModalOpen] = useState(false);
 
   const handleAddSubtask = (parentId: string, title: string) => {
     addTask(title, 'General', parentId);
@@ -65,6 +67,12 @@ function App() {
     }
   };
 
+  const handleReactivateTask = (id: string) => {
+    changeTaskStatus(id, 'open');
+  };
+
+  const completedTasksCount = tasks.filter((t) => t.status === 'done').length;
+
   return (
     <div className="min-h-screen flex flex-col bg-surface-light dark:bg-surface-dark transition-colors">
       <header className="sticky top-0 z-50 bg-card-light dark:bg-card-dark border-b border-border-light dark:border-border-dark shadow-sm">
@@ -77,7 +85,7 @@ function App() {
               <button
                 onClick={resetToSampleTasks}
                 className="px-3 py-1.5 text-sm font-medium rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center gap-1.5"
-                title="Auf Beispieldaten zurücksetzen"
+                title="Reset to sample data"
               >
                 <IconReset className="w-4 h-4" />
                 <span>Reset</span>
@@ -85,7 +93,7 @@ function App() {
               <button
                 onClick={() => setIsSettingsModalOpen(true)}
                 className="p-2 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                title="Einstellungen"
+                title="Settings"
               >
                 <IconSettings className="w-5 h-5" />
               </button>
@@ -119,7 +127,7 @@ function App() {
       <main className="flex-1 px-4 sm:px-6 py-6 max-w-7xl w-full mx-auto">
         {isLoading ? (
           <div className="text-center py-12 text-text-secondary-light dark:text-text-secondary-dark">
-            Lade Tasks...
+            Loading tasks...
           </div>
         ) : (
           <>
@@ -159,6 +167,17 @@ function App() {
           // TODO: Implement logout logic
           console.log('Logout clicked');
         }}
+        onShowCompletedTasks={() => setIsCompletedTasksModalOpen(true)}
+        completedTasksCount={completedTasksCount}
+      />
+      <CompletedTasksModal
+        isOpen={isCompletedTasksModalOpen}
+        onClose={() => setIsCompletedTasksModalOpen(false)}
+        tasks={tasks}
+        onStatusChange={changeTaskStatus}
+        onUpdate={updateTask}
+        onDelete={deleteTask}
+        onReactivate={handleReactivateTask}
       />
     </div>
   );

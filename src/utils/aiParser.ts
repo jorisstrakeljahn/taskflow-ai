@@ -5,18 +5,18 @@ interface ParsedTask {
 }
 
 /**
- * Simpler AI Parser - konvertiert Chat-Nachrichten in strukturierte Tasks
- * TODO: Später durch echten AI-Service ersetzen
+ * Simple AI Parser - converts chat messages into structured tasks
+ * TODO: Replace with real AI service later
  */
 export const parseChatMessage = (message: string): ParsedTask[] => {
   const tasks: ParsedTask[] = [];
 
-  // Gruppenerkennung
+  // Group detection
   const groupKeywords: Record<string, string[]> = {
-    Work: ['arbeit', 'projekt', 'meeting', 'präsentation', 'office', 'beruf'],
-    Personal: ['einkaufen', 'shopping', 'haushalt', 'putzen', 'wäsche'],
-    Health: ['arzt', 'doktor', 'gesundheit', 'sport', 'training', 'fitness'],
-    Finance: ['rechnung', 'bank', 'geld', 'finanzen', 'steuer'],
+    Work: ['work', 'project', 'meeting', 'presentation', 'office', 'job', 'career'],
+    Personal: ['shopping', 'grocery', 'household', 'cleaning', 'laundry'],
+    Health: ['doctor', 'appointment', 'health', 'sport', 'training', 'fitness', 'exercise'],
+    Finance: ['bill', 'bank', 'money', 'finance', 'tax'],
   };
 
   const detectGroup = (text: string): string => {
@@ -28,9 +28,9 @@ export const parseChatMessage = (message: string): ParsedTask[] => {
     return 'General';
   };
 
-  // Einfache Parsing-Logik: Suche nach Satzzeichen und Aufzählungen
+  // Simple parsing logic: search for punctuation and lists
   const separators = [
-    /,\s*(?:und|oder)\s*/gi,
+    /,\s*(?:and|or)\s*/gi,
     /\.\s+/g,
     /;\s+/g,
     /\n+/g,
@@ -47,18 +47,18 @@ export const parseChatMessage = (message: string): ParsedTask[] => {
     parts = newParts;
   }
 
-  // Bereinige und filtere leere Teile
+  // Clean and filter empty parts
   parts = parts
     .map((p) => p.trim())
     .filter((p) => p.length > 0 && p.length < 200);
 
-  // Erstelle Tasks aus den Teilen
+  // Create tasks from parts
   for (const part of parts) {
     if (part.length < 3) continue;
 
-    // Entferne häufige Füllwörter am Anfang
+    // Remove common filler words at the beginning
     const cleaned = part
-      .replace(/^(ich muss|ich sollte|ich will|ich möchte|dann|und|oder)\s+/i, '')
+      .replace(/^(i need|i should|i want|i would like|then|and|or)\s+/i, '')
       .trim();
 
     if (cleaned.length < 3) continue;
@@ -69,7 +69,7 @@ export const parseChatMessage = (message: string): ParsedTask[] => {
     });
   }
 
-  // Falls keine Tasks gefunden wurden, erstelle einen aus der gesamten Nachricht
+  // If no tasks found, create one from the entire message
   if (tasks.length === 0) {
     tasks.push({
       title: message.trim(),

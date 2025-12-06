@@ -1,49 +1,49 @@
 # TaskFlow AI
 
-Ein persönlicher Task-Manager mit AI-Unterstützung - ähnlich wie "Cursor, aber für Tasks".
+A personal task manager with AI support - similar to "Cursor, but for tasks".
 
 ## ✨ Features
 
-- **Fast Capture**: Schnelles Brain-Dump von Gedanken in den Chat
-- **AI-Parsing**: Automatische Umwandlung von unstrukturierten Gedanken in saubere Tasks
-- **Task Management**: Vollständige CRUD-Operationen für Tasks
-- **Subtasks**: Hierarchische Task-Struktur mit Subtasks
-- **Gruppen & Filter**: Tasks nach Gruppen filtern und organisieren
-- **Dashboard**: Übersicht über erledigte Tasks (heute/diese Woche)
-- **Dark Mode**: Unterstützung für helles, dunkles und System-Design
-- **Mobile-First**: Responsive Design für Mac und Smartphone
-- **Local Storage**: Persistente Speicherung im Browser (später Firebase)
+- **Fast Capture**: Quick brain-dump of thoughts into chat
+- **AI Parsing**: Automatic conversion of unstructured thoughts into clean tasks
+- **Task Management**: Full CRUD operations for tasks
+- **Subtasks**: Hierarchical task structure with subtasks
+- **Groups & Filters**: Filter and organize tasks by groups
+- **Dashboard**: Overview of completed tasks (today/this week)
+- **Dark Mode**: Support for light, dark, and system design
+- **Mobile-First**: Responsive design for Mac and smartphone
+- **Local Storage**: Persistent storage in browser (later Firebase)
 
 ## 🛠️ Tech Stack
 
-- **React 18** mit TypeScript
-- **Vite** als Build-Tool
-- **Tailwind CSS** für Styling (mobile-first, responsive)
-- **LocalStorage** für Persistenz (vorübergehend)
+- **React 18** with TypeScript
+- **Vite** as build tool
+- **Tailwind CSS** for styling (mobile-first, responsive)
+- **LocalStorage** for persistence (temporary)
 
-## 📁 Projektstruktur
+## 📁 Project Structure
 
 ```
 src/
-├── components/              # React-Komponenten
-│   ├── TaskList.tsx         # Hauptliste aller Tasks mit Filtern
-│   ├── TaskItem.tsx         # Einzelner Task mit Edit-Funktion
-│   ├── Dashboard.tsx        # Statistik-Dashboard
-│   ├── CreateTaskModal.tsx  # Modal zum Erstellen von Tasks
-│   ├── ChatModal.tsx        # Modal für AI Chat
-│   ├── SettingsModal.tsx    # Einstellungen (Dark Mode, Account)
-│   └── SpeedDial.tsx        # Floating Action Button Menu
+├── components/              # React components
+│   ├── TaskList.tsx         # Main list of all tasks with filters
+│   ├── TaskItem.tsx         # Individual task with edit function
+│   ├── Dashboard.tsx        # Statistics dashboard
+│   ├── CreateTaskModal.tsx  # Modal for creating tasks
+│   ├── ChatModal.tsx        # Modal for AI chat
+│   ├── SettingsModal.tsx    # Settings (Dark Mode, Account)
+│   └── SpeedDial.tsx        # Floating Action Button menu
 ├── hooks/
-│   ├── useTasks.ts          # Custom Hook für Task-Management
-│   └── useTheme.ts          # Custom Hook für Dark Mode
+│   ├── useTasks.ts          # Custom hook for task management
+│   └── useTheme.ts          # Custom hook for dark mode
 ├── types/
-│   └── task.ts              # TypeScript-Definitionen
+│   └── task.ts              # TypeScript definitions
 ├── utils/
-│   ├── taskUtils.ts         # Hilfsfunktionen für Tasks
-│   └── aiParser.ts          # AI-Parser (simuliert, später echte AI)
-├── App.tsx                  # Haupt-App-Komponente
-├── main.tsx                 # Entry Point
-└── index.css                # Tailwind CSS Imports
+│   ├── taskUtils.ts         # Helper functions for tasks
+│   └── aiParser.ts          # AI parser (simulated, later real AI)
+├── App.tsx                  # Main app component
+├── main.tsx                 # Entry point
+└── index.css                # Tailwind CSS imports
 ```
 
 ## 🚀 Installation
@@ -52,13 +52,13 @@ src/
 npm install
 ```
 
-## 💻 Entwicklung
+## 💻 Development
 
 ```bash
 npm run dev
 ```
 
-Die App läuft dann auf `http://localhost:5173`
+The app runs on `http://localhost:5173`
 
 ## 📦 Build
 
@@ -68,33 +68,33 @@ npm run build
 
 ## 📋 Task Model
 
-Jeder Task hat folgende Eigenschaften:
+Each task has the following properties:
 
-- `id`: Eindeutige ID
-- `title`: Kurzer, klarer Titel
-- `description`: Optionale längere Notizen
+- `id`: Unique ID
+- `title`: Short, clear title
+- `description`: Optional longer notes
 - `status`: `open` | `in_progress` | `done`
 - `priority`: `low` | `medium` | `high` (optional)
-- `group`: String wie "Work", "Personal", "Health" (für Filterung)
-- `parentId`: Optional; wenn gesetzt, ist dies ein Subtask
+- `group`: String like "Work", "Personal", "Health" (for filtering)
+- `parentId`: Optional; if set, this is a subtask
 - `createdAt`, `updatedAt`, `completedAt`: Timestamps
-- `userId`: Besitzer des Tasks (für Multi-User-Support)
+- `userId`: Task owner (for multi-user support)
 
 ## 🎨 Design
 
-- **Minimalistisches Design** mit matten Farben
-- **Dark Mode** mit System-Erkennung
-- **Mobile-First** Ansatz
-- **Smooth Animations** und Transitions
-- **Touch-optimiert** für Smartphones
+- **Minimalist design** with matte colors
+- **Dark Mode** with system detection
+- **Mobile-First** approach
+- **Smooth animations** and transitions
+- **Touch-optimized** for smartphones
 
-## 🔜 Nächste Schritte
+## 🔜 Next Steps
 
-- [ ] Echte AI-Integration (OpenAI API oder ähnlich)
-- [ ] Firebase-Integration für Sync
-- [ ] Authentifizierung
-- [ ] Erweiterte Features (Reminder, Planning, Collaboration)
-- [ ] PWA-Support für Mobile-App-Erfahrung
+- [ ] Real AI integration (OpenAI API or similar)
+- [ ] Firebase integration for sync
+- [ ] Authentication
+- [ ] Extended features (reminders, planning, collaboration)
+- [ ] PWA support for mobile app experience
 
 ## 📝 License
 

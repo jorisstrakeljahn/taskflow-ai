@@ -39,7 +39,7 @@ export const Dashboard = ({ tasks }: DashboardProps) => {
             {stats.open}
           </div>
           <div className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark">
-            Offen
+            Open
           </div>
         </div>
         <div className="bg-gray-50 dark:bg-gray-800/50 border border-border-light dark:border-border-dark rounded-lg p-5 text-center transition-all hover:shadow-sm">
@@ -47,7 +47,7 @@ export const Dashboard = ({ tasks }: DashboardProps) => {
             {stats.inProgress}
           </div>
           <div className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark">
-            In Bearbeitung
+            In Progress
           </div>
         </div>
         <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-5 text-center transition-all hover:shadow-sm">
@@ -55,7 +55,7 @@ export const Dashboard = ({ tasks }: DashboardProps) => {
             {stats.doneToday}
           </div>
           <div className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark">
-            Heute erledigt
+            Done Today
           </div>
         </div>
         <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-5 text-center transition-all hover:shadow-sm">
@@ -63,7 +63,7 @@ export const Dashboard = ({ tasks }: DashboardProps) => {
             {stats.doneThisWeek}
           </div>
           <div className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark">
-            Diese Woche
+            This Week
           </div>
         </div>
         <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-5 text-center transition-all hover:shadow-sm">
@@ -71,7 +71,7 @@ export const Dashboard = ({ tasks }: DashboardProps) => {
             {stats.total}
           </div>
           <div className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark">
-            Gesamt
+            Total
           </div>
         </div>
       </div>

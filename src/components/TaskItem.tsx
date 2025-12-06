@@ -10,6 +10,7 @@ interface TaskItemProps {
   onAddSubtask?: (parentId: string) => void;
   subtasks?: Task[];
   level?: number;
+  disableStatusChange?: boolean;
 }
 
 export const TaskItem = ({
@@ -20,6 +21,7 @@ export const TaskItem = ({
   onAddSubtask,
   subtasks = [],
   level = 0,
+  disableStatusChange = false,
 }: TaskItemProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(task.title);
@@ -45,18 +47,24 @@ export const TaskItem = ({
   };
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (disableStatusChange) {
+      // Prevent status change when disabled
+      e.preventDefault();
+      return;
+    }
+    
     const newStatus = e.target.checked ? 'done' : 'open';
     if (newStatus === 'done') {
-      // Zuerst den Haken anzeigen
+      // First show the checkmark
       setShowCheckmark(true);
-      // Kurz warten, damit der Haken sichtbar ist (300ms)
+      // Wait briefly so the checkmark is visible (300ms)
       setTimeout(() => {
-        // Dann die Verschwind-Animation starten
+        // Then start the fade-out animation
         setIsCompleting(true);
-        // Nach der Animation den Status aktualisieren
+        // Update status after animation
         setTimeout(() => {
           onStatusChange(task.id, newStatus);
-          // Animation zurücksetzen nach kurzer Pause
+          // Reset animation after short pause
           setTimeout(() => {
             setIsCompleting(false);
           }, 100);
@@ -88,7 +96,12 @@ export const TaskItem = ({
             type="checkbox"
             checked={task.status === 'done' || showCheckmark}
             onChange={handleCheckboxChange}
-            className="w-5 h-5 cursor-pointer rounded border-2 border-gray-400 dark:border-gray-500 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark focus:ring-offset-0 transition-all duration-200 appearance-none checked:bg-accent-light dark:checked:bg-accent-dark checked:border-accent-light dark:checked:border-accent-dark checked:scale-110"
+            disabled={disableStatusChange}
+            className={`w-5 h-5 rounded border-2 border-gray-400 dark:border-gray-500 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark focus:ring-offset-0 transition-all duration-200 appearance-none checked:bg-accent-light dark:checked:bg-accent-dark checked:border-accent-light dark:checked:border-accent-dark checked:scale-110 ${
+              disableStatusChange 
+                ? 'opacity-50 cursor-not-allowed' 
+                : 'cursor-pointer'
+            }`}
           />
           {(task.status === 'done' || showCheckmark) && (
             <svg
@@ -119,14 +132,14 @@ export const TaskItem = ({
               value={editDescription}
               onChange={(e) => setEditDescription(e.target.value)}
               className="px-2 py-1.5 border border-border-light dark:border-border-dark rounded-lg bg-card-light dark:bg-card-dark text-text-primary-light dark:text-text-primary-dark text-sm resize-y min-h-[60px] focus:outline-none focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark"
-              placeholder="Beschreibung (optional)"
+              placeholder="Description (optional)"
             />
             <div className="flex gap-2">
               <button
                 onClick={handleSave}
                 className="px-3 py-1.5 bg-accent-light dark:bg-accent-dark text-white rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
               >
-                Speichern
+                Save
               </button>
               <button
                 onClick={() => {
@@ -136,7 +149,7 @@ export const TaskItem = ({
                 }}
                 className="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-text-primary-light dark:text-text-primary-dark rounded-lg text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
               >
-                Abbrechen
+                Cancel
               </button>
             </div>
           </div>
@@ -181,7 +194,7 @@ export const TaskItem = ({
                 <button
                   onClick={() => onAddSubtask(task.id)}
                   className="p-2 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                  title="Subtask hinzufügen"
+                  title="Add subtask"
                 >
                   +
                 </button>
@@ -189,14 +202,14 @@ export const TaskItem = ({
               <button
                 onClick={() => setIsEditing(true)}
                 className="p-2 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                title="Bearbeiten"
+                title="Edit"
               >
                 <IconEdit className="w-4 h-4" />
               </button>
               <button
                 onClick={() => onDelete(task.id)}
                 className="p-2 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-                title="Löschen"
+                title="Delete"
               >
                 <IconTrash className="w-4 h-4" />
               </button>
@@ -219,6 +232,7 @@ export const TaskItem = ({
               onUpdate={onUpdate}
               onDelete={onDelete}
               level={level + 1}
+              disableStatusChange={disableStatusChange}
             />
           ))}
         </div>

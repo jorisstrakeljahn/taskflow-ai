@@ -25,7 +25,6 @@ export const TaskList = ({
 }: TaskListProps) => {
   const [filterGroup, setFilterGroup] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<string>('all');
-  const [showCompleted, setShowCompleted] = useState(false);
 
   const groups = useMemo(() => {
     const uniqueGroups = Array.from(new Set(tasks.map((t) => t.group)));
@@ -35,27 +34,28 @@ export const TaskList = ({
   const filteredTasks = useMemo(() => {
     let filtered = tasks;
 
+    // Always hide completed tasks (except when explicitly filtering for "done")
+    if (filterStatus !== 'done') {
+      filtered = filtered.filter((t) => t.status !== 'done');
+    }
+
     if (filterGroup !== 'all') {
       filtered = getTasksByGroup(filtered, filterGroup);
     }
 
-    if (filterStatus !== 'all') {
+    if (filterStatus !== 'all' && filterStatus !== 'done') {
       filtered = getTasksByStatus(filtered, filterStatus as Task['status']);
     }
 
-    if (!showCompleted) {
-      filtered = filtered.filter((t) => t.status !== 'done');
-    }
-
     return filtered;
-  }, [tasks, filterGroup, filterStatus, showCompleted]);
+  }, [tasks, filterGroup, filterStatus]);
 
   const rootTasks = useMemo(() => {
     return getRootTasks(filteredTasks);
   }, [filteredTasks]);
 
   const handleAddSubtask = (parentId: string) => {
-    const title = prompt('Subtask Titel:');
+    const title = prompt('Subtask title:');
     if (title) {
       onAddSubtask(parentId, title);
     }
@@ -71,7 +71,7 @@ export const TaskList = ({
                 htmlFor="group-filter"
                 className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark whitespace-nowrap"
               >
-                Gruppe:
+                Group:
               </label>
               <select
                 id="group-filter"
@@ -79,7 +79,7 @@ export const TaskList = ({
                 onChange={(e) => setFilterGroup(e.target.value)}
                 className="flex-1 px-3 py-2 border border-border-light dark:border-border-dark rounded-lg bg-card-light dark:bg-card-dark text-text-primary-light dark:text-text-primary-dark text-sm focus:outline-none focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark min-h-[44px]"
               >
-                <option value="all">Alle</option>
+                <option value="all">All</option>
                 {groups.map((group) => (
                   <option key={group} value={group}>
                     {group}
@@ -101,28 +101,12 @@ export const TaskList = ({
                 onChange={(e) => setFilterStatus(e.target.value)}
                 className="flex-1 px-3 py-2 border border-border-light dark:border-border-dark rounded-lg bg-card-light dark:bg-card-dark text-text-primary-light dark:text-text-primary-dark text-sm focus:outline-none focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark min-h-[44px]"
               >
-                <option value="all">Alle</option>
-                <option value="open">Offen</option>
-                <option value="in_progress">In Bearbeitung</option>
-                <option value="done">Erledigt</option>
+                <option value="all">All</option>
+                <option value="open">Open</option>
+                <option value="in_progress">In Progress</option>
+                <option value="done">Done</option>
               </select>
             </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              id="show-completed"
-              checked={showCompleted}
-              onChange={(e) => setShowCompleted(e.target.checked)}
-              className="w-4 h-4 rounded border-border-light dark:border-border-dark"
-            />
-            <label
-              htmlFor="show-completed"
-              className="text-sm text-text-secondary-light dark:text-text-secondary-dark cursor-pointer"
-            >
-              Erledigte anzeigen
-            </label>
           </div>
         </div>
       </div>
@@ -130,9 +114,9 @@ export const TaskList = ({
       <div className="flex-1 overflow-y-auto">
         {rootTasks.length === 0 ? (
           <div className="text-center py-12 text-text-secondary-light dark:text-text-secondary-dark">
-            <p className="mb-2">Keine Tasks gefunden.</p>
+            <p className="mb-2">No tasks found.</p>
             <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark">
-              Nutze den Chat, um neue Tasks zu erstellen!
+              Use the chat to create new tasks!
             </p>
           </div>
         ) : (

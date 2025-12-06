@@ -1,8 +1,8 @@
 [
   {
     "id": "task-1",
-    "title": "Präsentation für Q4-Review vorbereiten",
-    "description": "PowerPoint-Folien erstellen, Daten zusammenstellen, Demo vorbereiten",
+    "title": "Prepare presentation for Q4 review",
+    "description": "Create PowerPoint slides, compile data, prepare demo",
     "status": "in_progress",
     "priority": "high",
     "group": "Work",
@@ -12,8 +12,8 @@
   },
   {
     "id": "task-2",
-    "title": "Einkaufen gehen",
-    "description": "Milch, Brot, Eier, Obst und Gemüse",
+    "title": "Go grocery shopping",
+    "description": "Milk, bread, eggs, fruits and vegetables",
     "status": "open",
     "priority": "medium",
     "group": "Personal",
@@ -23,8 +23,8 @@
   },
   {
     "id": "task-3",
-    "title": "Arzttermin vereinbaren",
-    "description": "Jährliche Vorsorgeuntersuchung",
+    "title": "Schedule doctor appointment",
+    "description": "Annual check-up",
     "status": "open",
     "priority": "medium",
     "group": "Health",
@@ -34,8 +34,8 @@
   },
   {
     "id": "task-4",
-    "title": "React-Projekt refactoren",
-    "description": "Komponenten aufteilen, TypeScript-Typen verbessern, Tests schreiben",
+    "title": "Refactor React project",
+    "description": "Split components, improve TypeScript types, write tests",
     "status": "open",
     "priority": "high",
     "group": "Work",
@@ -46,8 +46,8 @@
   },
   {
     "id": "task-5",
-    "title": "Datenanalyse durchführen",
-    "description": "Q4-Metriken analysieren und Visualisierungen erstellen",
+    "title": "Perform data analysis",
+    "description": "Analyze Q4 metrics and create visualizations",
     "status": "open",
     "priority": "high",
     "group": "Work",
@@ -58,8 +58,8 @@
   },
   {
     "id": "task-6",
-    "title": "Wäsche waschen",
-    "description": "Bettwäsche und Handtücher",
+    "title": "Do laundry",
+    "description": "Bed sheets and towels",
     "status": "done",
     "priority": "low",
     "group": "Personal",
@@ -70,8 +70,8 @@
   },
   {
     "id": "task-7",
-    "title": "Steuerunterlagen sortieren",
-    "description": "Belege sammeln und kategorisieren",
+    "title": "Sort tax documents",
+    "description": "Collect and categorize receipts",
     "status": "open",
     "priority": "medium",
     "group": "Finance",
@@ -81,8 +81,8 @@
   },
   {
     "id": "task-8",
-    "title": "Joggen gehen",
-    "description": "5km Lauf im Park",
+    "title": "Go for a run",
+    "description": "5km run in the park",
     "status": "done",
     "priority": "low",
     "group": "Health",
@@ -93,8 +93,8 @@
   },
   {
     "id": "task-9",
-    "title": "Team-Meeting vorbereiten",
-    "description": "Agenda erstellen, Themen sammeln",
+    "title": "Prepare team meeting",
+    "description": "Create agenda, gather topics",
     "status": "open",
     "priority": "medium",
     "group": "Work",
@@ -104,8 +104,8 @@
   },
   {
     "id": "task-10",
-    "title": "Bücher zurückgeben",
-    "description": "Stadtbibliothek - 3 Bücher",
+    "title": "Return books",
+    "description": "City library - 3 books",
     "status": "open",
     "priority": "low",
     "group": "Personal",
@@ -115,8 +115,8 @@
   },
   {
     "id": "task-11",
-    "title": "Code-Review durchführen",
-    "description": "PR #234 reviewen und Feedback geben",
+    "title": "Perform code review",
+    "description": "Review PR #234 and provide feedback",
     "status": "in_progress",
     "priority": "high",
     "group": "Work",
@@ -126,8 +126,8 @@
   },
   {
     "id": "task-12",
-    "title": "Geburtstagsgeschenk kaufen",
-    "description": "Für Sarah - etwas Persönliches finden",
+    "title": "Buy birthday gift",
+    "description": "For Sarah - find something personal",
     "status": "open",
     "priority": "medium",
     "group": "Personal",
@@ -136,4 +136,3 @@
     "userId": "user-1"
   }
 ]
-

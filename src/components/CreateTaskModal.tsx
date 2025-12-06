@@ -112,7 +112,7 @@ export const CreateTaskModal = ({
         <div className="w-10 h-1 bg-gray-300 dark:bg-gray-600 rounded-full mx-auto mt-3 mb-2 cursor-grab active:cursor-grabbing md:hidden" />
         <div className="flex items-center justify-between px-5 pb-4 border-b border-border-light dark:border-border-dark">
           <h2 className="text-xl font-semibold text-text-primary-light dark:text-text-primary-dark">
-            Neue Task erstellen
+            Create New Task
           </h2>
           <button
             onClick={onClose}
@@ -130,14 +130,14 @@ export const CreateTaskModal = ({
               htmlFor="task-title"
               className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark"
             >
-              Titel *
+              Title *
             </label>
             <input
               id="task-title"
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="z.B. Präsentation vorbereiten"
+              placeholder="e.g. Prepare presentation"
               required
               autoFocus
               className="px-3 py-2.5 border border-border-light dark:border-border-dark rounded-lg bg-card-light dark:bg-card-dark text-text-primary-light dark:text-text-primary-dark text-base focus:outline-none focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark focus:border-transparent transition-all"
@@ -149,13 +149,13 @@ export const CreateTaskModal = ({
               htmlFor="task-description"
               className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark"
             >
-              Beschreibung
+              Description
             </label>
             <textarea
               id="task-description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Optionale Beschreibung..."
+              placeholder="Optional description..."
               rows={4}
               className="px-3 py-2.5 border border-border-light dark:border-border-dark rounded-lg bg-card-light dark:bg-card-dark text-text-primary-light dark:text-text-primary-dark text-base resize-y min-h-[100px] focus:outline-none focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark focus:border-transparent transition-all"
             />
@@ -167,7 +167,7 @@ export const CreateTaskModal = ({
                 htmlFor="task-group"
                 className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark"
               >
-                Gruppe
+                Group
               </label>
               <select
                 id="task-group"
@@ -188,7 +188,7 @@ export const CreateTaskModal = ({
                 htmlFor="task-priority"
                 className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark"
               >
-                Priorität
+                Priority
               </label>
               <select
                 id="task-priority"
@@ -198,10 +198,10 @@ export const CreateTaskModal = ({
                 }
                 className="px-3 py-2.5 border border-border-light dark:border-border-dark rounded-lg bg-card-light dark:bg-card-dark text-text-primary-light dark:text-text-primary-dark text-base focus:outline-none focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark focus:border-transparent transition-all"
               >
-                <option value="">Keine</option>
-                <option value="low">Niedrig</option>
-                <option value="medium">Mittel</option>
-                <option value="high">Hoch</option>
+                <option value="">None</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
               </select>
             </div>
           </div>
@@ -212,13 +212,13 @@ export const CreateTaskModal = ({
               onClick={onClose}
               className="flex-1 px-4 py-3 bg-gray-100 dark:bg-gray-800 text-text-primary-light dark:text-text-primary-dark rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
             >
-              Abbrechen
+              Cancel
             </button>
             <button
               type="submit"
               className="flex-1 px-4 py-3 bg-accent-light dark:bg-accent-dark text-white rounded-lg font-medium hover:opacity-90 transition-opacity"
             >
-              Erstellen
+              Create
             </button>
           </div>
         </form>

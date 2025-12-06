@@ -117,12 +117,11 @@ export const ChatModal = ({
         <div className="flex-1 overflow-y-auto px-5 py-5 flex flex-col gap-4">
           <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-4">
             <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark mb-2">
-              Teile deine Gedanken mit - ich erstelle daraus strukturierte
-              Tasks!
+              Share your thoughts - I'll create structured tasks from them!
             </p>
             <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark italic">
-              Beispiel: "Ich muss morgen die Präsentation fertigstellen, dann
-              noch einkaufen gehen und den Arzttermin vereinbaren"
+              Example: "I need to finish the presentation tomorrow, then go
+              grocery shopping and schedule the doctor appointment"
             </p>
           </div>
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
@@ -130,7 +129,7 @@ export const ChatModal = ({
               ref={textareaRef}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Schreibe deine Gedanken hier..."
+              placeholder="Write your thoughts here..."
               rows={6}
               className="px-3 py-3 border-2 border-border-light dark:border-border-dark rounded-lg bg-card-light dark:bg-card-dark text-text-primary-light dark:text-text-primary-dark text-base resize-y min-h-[120px] focus:outline-none focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark focus:border-transparent transition-all disabled:bg-gray-50 dark:disabled:bg-gray-900 disabled:cursor-not-allowed"
               disabled={isProcessing}
@@ -140,7 +139,7 @@ export const ChatModal = ({
               className="w-full px-4 py-3.5 bg-accent-light dark:bg-accent-dark text-white rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:bg-gray-400 dark:disabled:bg-gray-600 disabled:cursor-not-allowed min-h-[48px]"
               disabled={!message.trim() || isProcessing}
             >
-              {isProcessing ? 'Verarbeite...' : 'Tasks erstellen'}
+              {isProcessing ? 'Processing...' : 'Create Tasks'}
             </button>
           </form>
         </div>

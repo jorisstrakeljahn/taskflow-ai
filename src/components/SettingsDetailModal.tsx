@@ -14,7 +14,7 @@ interface SettingsDetailModalProps {
   completedTasksCount?: number;
   onThemeChange: (theme: 'light' | 'dark' | 'system') => void;
   tasks?: any[];
-  parentOffset?: number; // For desktop stacking
+  parentModalRef?: React.RefObject<HTMLDivElement>; // Reference to parent modal
 }
 
 export const SettingsDetailModal = ({
@@ -26,7 +26,7 @@ export const SettingsDetailModal = ({
   completedTasksCount = 0,
   onThemeChange,
   tasks = [],
-  parentOffset = 0,
+  parentModalRef,
 }: SettingsDetailModalProps) => {
   const { theme } = useTheme();
 
@@ -214,7 +214,9 @@ export const SettingsDetailModal = ({
       onClose={onClose}
       title={getTitle()}
       zIndex={1003}
-      offsetRight={parentOffset}
+      offsetRight={500}
+      level={2}
+      parentModalRef={parentModalRef}
     >
       {renderContent()}
     </ResponsiveModal>

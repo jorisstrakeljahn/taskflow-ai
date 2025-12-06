@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { IconChevronRight, IconUser, IconBarChart } from './Icons';
 import { SettingsDetailModal, SettingsCategory } from './SettingsDetailModal';
 import { CompletedTasksModal } from './CompletedTasksModal';
@@ -62,8 +62,7 @@ export const SettingsModal = ({
   ];
   const [selectedCategory, setSelectedCategory] = useState<SettingsCategory | null>(null);
   const [isCompletedTasksOpen, setIsCompletedTasksOpen] = useState(false);
-
-  const hasSubModalOpen = selectedCategory !== null || isCompletedTasksOpen;
+  const mainModalRef = useRef<HTMLDivElement>(null);
 
   const handleCategoryClick = (category: SettingsCategory) => {
     if (category === 'completed-tasks') {
@@ -88,11 +87,18 @@ export const SettingsModal = ({
   return (
     <>
       <ResponsiveModal
+        ref={mainModalRef}
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={() => {
+          // Only close if no submodal is open
+          if (!selectedCategory && !isCompletedTasksOpen) {
+            onClose();
+          }
+        }}
         title="Settings"
-        zIndex={hasSubModalOpen ? 1001 : 1001}
-        offsetRight={hasSubModalOpen ? 500 : 0}
+        zIndex={1001}
+        offsetRight={0}
+        level={1}
       >
         <div className="space-y-2">
           {settingsCategories.map((category) => {
@@ -137,7 +143,7 @@ export const SettingsModal = ({
         completedTasksCount={completedTasksCount}
         onThemeChange={onThemeChange}
         tasks={tasks}
-        parentOffset={500}
+        parentModalRef={mainModalRef}
       />
       <CompletedTasksModal
         isOpen={isCompletedTasksOpen}
@@ -147,7 +153,7 @@ export const SettingsModal = ({
         onUpdate={onUpdate}
         onDelete={onDelete}
         onReactivate={onReactivate}
-        parentOffset={500}
+        parentModalRef={mainModalRef}
       />
     </>
   );

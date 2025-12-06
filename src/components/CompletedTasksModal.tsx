@@ -13,7 +13,7 @@ interface CompletedTasksModalProps {
   onDelete: (id: string) => void;
   onReactivate: (id: string) => void;
   onEdit?: (task: Task) => void;
-  parentOffset?: number; // For desktop stacking
+  parentModalRef?: React.RefObject<HTMLDivElement>; // Reference to parent modal
 }
 
 export const CompletedTasksModal = ({
@@ -25,7 +25,7 @@ export const CompletedTasksModal = ({
   onDelete,
   onReactivate,
   onEdit,
-  parentOffset = 0,
+  parentModalRef,
 }: CompletedTasksModalProps) => {
 
   // Filter only completed tasks
@@ -51,7 +51,9 @@ export const CompletedTasksModal = ({
       title="Completed Tasks"
       subtitle={`${completedTasks.length} completed ${completedTasks.length === 1 ? 'task' : 'tasks'}`}
       zIndex={1003}
-      offsetRight={parentOffset}
+      offsetRight={500}
+      level={2}
+      parentModalRef={parentModalRef}
     >
           {rootTasks.length === 0 ? (
             <div className="text-center py-12 text-text-secondary-light dark:text-text-secondary-dark">

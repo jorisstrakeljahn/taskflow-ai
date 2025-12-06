@@ -87,16 +87,16 @@ export const CompletedTasksModal = ({
   return (
     <>
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[1000] animate-in fade-in"
+        className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[1002] animate-in fade-in"
         onClick={onClose}
       />
       <div
         ref={modalRef}
         className={`fixed ${
           isMobile
-            ? 'bottom-0 left-0 right-0 rounded-t-3xl h-[90vh]'
-            : 'top-1/2 left-1/2 max-w-4xl w-full rounded-2xl h-[90vh]'
-        } bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark shadow-2xl z-[1001] flex flex-col touch-pan-y`}
+            ? 'bottom-0 left-0 right-0 rounded-t-3xl h-[85vh]'
+            : 'top-1/2 left-1/2 max-w-4xl w-full rounded-2xl h-[85vh]'
+        } bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark shadow-2xl z-[1003] flex flex-col touch-pan-y`}
         style={{
           transform: transformStyle,
           transition: currentY === null ? 'transform 0.3s ease-out' : 'none',

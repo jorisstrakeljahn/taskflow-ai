@@ -31,7 +31,7 @@ function App() {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isCompletedTasksModalOpen, setIsCompletedTasksModalOpen] = useState(false);
 
-  // Block body scroll when any modal is open
+  // Block body scroll when any modal is open (including settings detail modal)
   const isAnyModalOpen = isTaskModalOpen || isChatModalOpen || isSettingsModalOpen || isCompletedTasksModalOpen;
 
   useEffect(() => {
@@ -193,9 +193,15 @@ function App() {
         }}
         onShowCompletedTasks={() => setIsCompletedTasksModalOpen(true)}
         completedTasksCount={completedTasksCount}
+        tasks={tasks}
+        onStatusChange={changeTaskStatus}
+        onUpdate={updateTask}
+        onDelete={deleteTask}
+        onReactivate={handleReactivateTask}
       />
+      {/* Keep this for direct access from other places if needed */}
       <CompletedTasksModal
-        isOpen={isCompletedTasksModalOpen}
+        isOpen={isCompletedTasksModalOpen && !isSettingsModalOpen}
         onClose={() => setIsCompletedTasksModalOpen(false)}
         tasks={tasks}
         onStatusChange={changeTaskStatus}

@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from 'react';
-import { useTheme } from '../hooks/useTheme';
-import { IconClose } from './Icons';
+import { IconClose, IconChevronRight, IconUser } from './Icons';
+import { SettingsDetailModal, SettingsCategory } from './SettingsDetailModal';
+import { CompletedTasksModal } from './CompletedTasksModal';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -9,6 +10,11 @@ interface SettingsModalProps {
   onLogout?: () => void;
   onShowCompletedTasks?: () => void;
   completedTasksCount?: number;
+  tasks?: any[];
+  onStatusChange?: (id: string, status: any) => void;
+  onUpdate?: (id: string, updates: any) => void;
+  onDelete?: (id: string) => void;
+  onReactivate?: (id: string) => void;
 }
 
 export const SettingsModal = ({
@@ -18,16 +24,47 @@ export const SettingsModal = ({
   onLogout,
   onShowCompletedTasks,
   completedTasksCount = 0,
+  tasks = [],
+  onStatusChange = () => {},
+  onUpdate = () => {},
+  onDelete = () => {},
+  onReactivate = () => {},
 }: SettingsModalProps) => {
-  const { theme } = useTheme();
+  const settingsCategories: Array<{
+    id: SettingsCategory;
+    title: string;
+    description: string;
+    icon?: React.ReactNode;
+  }> = [
+    {
+      id: 'account',
+      title: 'Account',
+      description: 'Email, User ID, Logout',
+      icon: <IconUser className="w-5 h-5" />,
+    },
+    {
+      id: 'completed-tasks',
+      title: 'Completed Tasks',
+      description: `${completedTasksCount} completed ${completedTasksCount === 1 ? 'task' : 'tasks'}`,
+    },
+    {
+      id: 'appearance',
+      title: 'Appearance',
+      description: 'Theme, Colors, Language',
+    },
+  ];
   const [startY, setStartY] = useState<number | null>(null);
   const [currentY, setCurrentY] = useState<number | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<SettingsCategory | null>(null);
+  const [isCompletedTasksOpen, setIsCompletedTasksOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isOpen) {
       setCurrentY(null);
       setStartY(null);
+      setSelectedCategory(null);
+      setIsCompletedTasksOpen(false);
     }
   }, [isOpen]);
 
@@ -59,6 +96,24 @@ export const SettingsModal = ({
     setTimeout(() => setCurrentY(null), 300);
   };
 
+  const handleCategoryClick = (category: SettingsCategory) => {
+    if (category === 'completed-tasks') {
+      // Open completed tasks modal as submodal
+      setIsCompletedTasksOpen(true);
+    } else {
+      // Open detail modal for other categories
+      setSelectedCategory(category);
+    }
+  };
+
+  const handleCompletedTasksClose = () => {
+    setIsCompletedTasksOpen(false);
+  };
+
+  const handleDetailClose = () => {
+    setSelectedCategory(null);
+  };
+
   if (!isOpen) return null;
 
   const translateY = currentY !== null ? currentY : 0;
@@ -79,7 +134,9 @@ export const SettingsModal = ({
           isMobile
             ? 'bottom-0 left-0 right-0 rounded-t-3xl h-[90vh]'
             : 'top-1/2 left-1/2 max-w-lg w-full rounded-2xl h-[90vh]'
-        } bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark shadow-2xl z-[1001] flex flex-col touch-pan-y`}
+        } bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark shadow-2xl z-[1001] flex flex-col touch-pan-y transition-all duration-300 ${
+          selectedCategory !== null || isCompletedTasksOpen ? 'scale-95 opacity-70 pointer-events-none' : ''
+        }`}
         style={{
           transform: transformStyle,
           transition: currentY === null ? 'transform 0.3s ease-out' : 'none',
@@ -101,124 +158,59 @@ export const SettingsModal = ({
           </button>
         </div>
         <div className="flex-1 overflow-y-auto px-5 py-5">
-          {/* Account Section */}
-          <section className="mb-8">
-            <h3 className="text-base font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
-              Account
-            </h3>
-            <div className="space-y-3 mb-4">
-              <div>
-                <span className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark block mb-1">
-                  Email
-                </span>
-                <span className="text-sm text-text-secondary-light dark:text-text-secondary-dark">
-                  user@example.com
-                </span>
-              </div>
-              <div>
-                <span className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark block mb-1">
-                  User ID
-                </span>
-                <span className="text-sm text-text-secondary-light dark:text-text-secondary-dark">
-                  user-1
-                </span>
-              </div>
-            </div>
-            {onLogout && (
-              <button
-                className="w-full px-4 py-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-lg font-medium hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
-                onClick={onLogout}
-              >
-                Logout
-              </button>
-            )}
-          </section>
+          <div className="space-y-2">
+            {settingsCategories.map((category) => {
+              const isCompletedTasks = category.id === 'completed-tasks';
+              const description = isCompletedTasks
+                ? `${completedTasksCount} completed ${completedTasksCount === 1 ? 'task' : 'tasks'}`
+                : category.description;
 
-          {/* Tasks Section */}
-          <section className="mb-8">
-            <h3 className="text-base font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
-              Tasks
-            </h3>
-            {onShowCompletedTasks && (
-              <button
-                onClick={() => {
-                  onShowCompletedTasks();
-                  onClose();
-                }}
-                className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 text-text-primary-light dark:text-text-primary-dark border border-border-light dark:border-border-dark rounded-lg font-medium hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center justify-between"
-              >
-                <span>Show Completed Tasks</span>
-                {completedTasksCount > 0 && (
-                  <span className="px-2 py-1 text-xs font-semibold rounded-full bg-accent-light dark:bg-accent-dark text-white">
-                    {completedTasksCount}
-                  </span>
-                )}
-              </button>
-            )}
-          </section>
-
-          {/* Appearance Section */}
-          <section>
-            <h3 className="text-base font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
-              Appearance
-            </h3>
-            <div>
-              <div className="mb-3">
-                <span className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark block mb-1">
-                  Design
-                </span>
-                <span className="text-xs text-text-secondary-light dark:text-text-secondary-dark">
-                  Choose between light, dark, or system design
-                </span>
-              </div>
-              <div className="grid grid-cols-3 gap-3">
+              return (
                 <button
-                  className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all ${
-                    theme === 'light'
-                      ? 'border-accent-light dark:border-accent-dark bg-blue-50 dark:bg-blue-900/20'
-                      : 'border-border-light dark:border-border-dark bg-gray-50 dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600'
-                  }`}
-                  onClick={() => onThemeChange('light')}
-                  aria-label="Light design"
+                  key={category.id}
+                  onClick={() => handleCategoryClick(category.id)}
+                  className="w-full px-4 py-4 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center justify-between group"
                 >
-                  <span className="text-2xl">☀️</span>
-                  <span className="text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark">
-                    Light
-                  </span>
+                  <div className="flex items-center gap-3 flex-1 text-left">
+                    {category.icon && (
+                      <div className="text-text-secondary-light dark:text-text-secondary-dark group-hover:text-text-primary-light dark:group-hover:text-text-primary-dark transition-colors">
+                        {category.icon}
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <div className="text-base font-medium text-text-primary-light dark:text-text-primary-dark">
+                        {category.title}
+                      </div>
+                      <div className="text-sm text-text-secondary-light dark:text-text-secondary-dark mt-0.5">
+                        {description}
+                      </div>
+                    </div>
+                  </div>
+                  <IconChevronRight className="w-5 h-5 text-text-secondary-light dark:text-text-secondary-dark group-hover:text-text-primary-light dark:group-hover:text-text-primary-dark transition-colors flex-shrink-0" />
                 </button>
-                <button
-                  className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all ${
-                    theme === 'dark'
-                      ? 'border-accent-light dark:border-accent-dark bg-blue-50 dark:bg-blue-900/20'
-                      : 'border-border-light dark:border-border-dark bg-gray-50 dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600'
-                  }`}
-                  onClick={() => onThemeChange('dark')}
-                  aria-label="Dark design"
-                >
-                  <span className="text-2xl">🌙</span>
-                  <span className="text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark">
-                    Dark
-                  </span>
-                </button>
-                <button
-                  className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all ${
-                    theme === 'system'
-                      ? 'border-accent-light dark:border-accent-dark bg-blue-50 dark:bg-blue-900/20'
-                      : 'border-border-light dark:border-border-dark bg-gray-50 dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600'
-                  }`}
-                  onClick={() => onThemeChange('system')}
-                  aria-label="System design"
-                >
-                  <span className="text-2xl">💻</span>
-                  <span className="text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark">
-                    System
-                  </span>
-                </button>
-              </div>
-            </div>
-          </section>
+              );
+            })}
+          </div>
         </div>
       </div>
+      <SettingsDetailModal
+        isOpen={selectedCategory !== null}
+        category={selectedCategory!}
+        onClose={handleDetailClose}
+        onLogout={onLogout}
+        onShowCompletedTasks={onShowCompletedTasks}
+        completedTasksCount={completedTasksCount}
+        onThemeChange={onThemeChange}
+      />
+      <CompletedTasksModal
+        isOpen={isCompletedTasksOpen}
+        onClose={handleCompletedTasksClose}
+        tasks={tasks}
+        onStatusChange={onStatusChange}
+        onUpdate={onUpdate}
+        onDelete={onDelete}
+        onReactivate={onReactivate}
+      />
     </>
   );
 };

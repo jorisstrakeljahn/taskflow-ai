@@ -1,0 +1,139 @@
+[
+  {
+    "id": "task-1",
+    "title": "Präsentation für Q4-Review vorbereiten",
+    "description": "PowerPoint-Folien erstellen, Daten zusammenstellen, Demo vorbereiten",
+    "status": "in_progress",
+    "priority": "high",
+    "group": "Work",
+    "createdAt": "2025-01-10T08:00:00.000Z",
+    "updatedAt": "2025-01-12T14:30:00.000Z",
+    "userId": "user-1"
+  },
+  {
+    "id": "task-2",
+    "title": "Einkaufen gehen",
+    "description": "Milch, Brot, Eier, Obst und Gemüse",
+    "status": "open",
+    "priority": "medium",
+    "group": "Personal",
+    "createdAt": "2025-01-12T09:15:00.000Z",
+    "updatedAt": "2025-01-12T09:15:00.000Z",
+    "userId": "user-1"
+  },
+  {
+    "id": "task-3",
+    "title": "Arzttermin vereinbaren",
+    "description": "Jährliche Vorsorgeuntersuchung",
+    "status": "open",
+    "priority": "medium",
+    "group": "Health",
+    "createdAt": "2025-01-11T10:00:00.000Z",
+    "updatedAt": "2025-01-11T10:00:00.000Z",
+    "userId": "user-1"
+  },
+  {
+    "id": "task-4",
+    "title": "React-Projekt refactoren",
+    "description": "Komponenten aufteilen, TypeScript-Typen verbessern, Tests schreiben",
+    "status": "open",
+    "priority": "high",
+    "group": "Work",
+    "parentId": "task-1",
+    "createdAt": "2025-01-12T11:00:00.000Z",
+    "updatedAt": "2025-01-12T11:00:00.000Z",
+    "userId": "user-1"
+  },
+  {
+    "id": "task-5",
+    "title": "Datenanalyse durchführen",
+    "description": "Q4-Metriken analysieren und Visualisierungen erstellen",
+    "status": "open",
+    "priority": "high",
+    "group": "Work",
+    "parentId": "task-1",
+    "createdAt": "2025-01-12T11:30:00.000Z",
+    "updatedAt": "2025-01-12T11:30:00.000Z",
+    "userId": "user-1"
+  },
+  {
+    "id": "task-6",
+    "title": "Wäsche waschen",
+    "description": "Bettwäsche und Handtücher",
+    "status": "done",
+    "priority": "low",
+    "group": "Personal",
+    "createdAt": "2025-01-10T07:00:00.000Z",
+    "updatedAt": "2025-01-10T15:30:00.000Z",
+    "completedAt": "2025-01-10T15:30:00.000Z",
+    "userId": "user-1"
+  },
+  {
+    "id": "task-7",
+    "title": "Steuerunterlagen sortieren",
+    "description": "Belege sammeln und kategorisieren",
+    "status": "open",
+    "priority": "medium",
+    "group": "Finance",
+    "createdAt": "2025-01-11T14:00:00.000Z",
+    "updatedAt": "2025-01-11T14:00:00.000Z",
+    "userId": "user-1"
+  },
+  {
+    "id": "task-8",
+    "title": "Joggen gehen",
+    "description": "5km Lauf im Park",
+    "status": "done",
+    "priority": "low",
+    "group": "Health",
+    "createdAt": "2025-01-12T06:00:00.000Z",
+    "updatedAt": "2025-01-12T07:30:00.000Z",
+    "completedAt": "2025-01-12T07:30:00.000Z",
+    "userId": "user-1"
+  },
+  {
+    "id": "task-9",
+    "title": "Team-Meeting vorbereiten",
+    "description": "Agenda erstellen, Themen sammeln",
+    "status": "open",
+    "priority": "medium",
+    "group": "Work",
+    "createdAt": "2025-01-12T12:00:00.000Z",
+    "updatedAt": "2025-01-12T12:00:00.000Z",
+    "userId": "user-1"
+  },
+  {
+    "id": "task-10",
+    "title": "Bücher zurückgeben",
+    "description": "Stadtbibliothek - 3 Bücher",
+    "status": "open",
+    "priority": "low",
+    "group": "Personal",
+    "createdAt": "2025-01-11T16:00:00.000Z",
+    "updatedAt": "2025-01-11T16:00:00.000Z",
+    "userId": "user-1"
+  },
+  {
+    "id": "task-11",
+    "title": "Code-Review durchführen",
+    "description": "PR #234 reviewen und Feedback geben",
+    "status": "in_progress",
+    "priority": "high",
+    "group": "Work",
+    "createdAt": "2025-01-12T08:00:00.000Z",
+    "updatedAt": "2025-01-12T13:00:00.000Z",
+    "userId": "user-1"
+  },
+  {
+    "id": "task-12",
+    "title": "Geburtstagsgeschenk kaufen",
+    "description": "Für Sarah - etwas Persönliches finden",
+    "status": "open",
+    "priority": "medium",
+    "group": "Personal",
+    "createdAt": "2025-01-11T11:00:00.000Z",
+    "updatedAt": "2025-01-11T11:00:00.000Z",
+    "userId": "user-1"
+  }
+]
+

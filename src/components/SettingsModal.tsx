@@ -1,0 +1,196 @@
+import { useRef, useEffect, useState } from 'react';
+import { useTheme } from '../hooks/useTheme';
+
+interface SettingsModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onThemeChange: (theme: 'light' | 'dark' | 'system') => void;
+  onLogout?: () => void;
+}
+
+export const SettingsModal = ({
+  isOpen,
+  onClose,
+  onThemeChange,
+  onLogout,
+}: SettingsModalProps) => {
+  const { theme } = useTheme();
+  const [startY, setStartY] = useState<number | null>(null);
+  const [currentY, setCurrentY] = useState<number | null>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      setCurrentY(null);
+      setStartY(null);
+    }
+  }, [isOpen]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (modalRef.current) {
+      const rect = modalRef.current.getBoundingClientRect();
+      if (e.touches[0].clientY - rect.top < 60) {
+        setStartY(e.touches[0].clientY);
+      }
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (startY !== null && modalRef.current) {
+      const deltaY = e.touches[0].clientY - startY;
+      if (deltaY > 0) {
+        setCurrentY(deltaY);
+      }
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (currentY !== null && currentY > 100) {
+      onClose();
+    } else {
+      setCurrentY(0);
+    }
+    setStartY(null);
+    setTimeout(() => setCurrentY(null), 300);
+  };
+
+  if (!isOpen) return null;
+
+  const translateY = currentY !== null ? currentY : 0;
+  const isMobile = window.innerWidth <= 768;
+  const transformStyle = isMobile
+    ? `translateY(${translateY}px)`
+    : `translate(-50%, calc(-50% + ${translateY}px))`;
+
+  return (
+    <>
+      <div
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[1000] animate-in fade-in"
+        onClick={onClose}
+      />
+      <div
+        ref={modalRef}
+        className={`fixed ${
+          isMobile
+            ? 'bottom-0 left-0 right-0 rounded-t-3xl'
+            : 'top-1/2 left-1/2 max-w-lg w-full rounded-2xl'
+        } bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark shadow-2xl z-[1001] flex flex-col max-h-[90vh] md:max-h-[80vh] touch-pan-y`}
+        style={{
+          transform: transformStyle,
+          transition: currentY === null ? 'transform 0.3s ease-out' : 'none',
+        }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        <div className="w-10 h-1 bg-gray-300 dark:bg-gray-600 rounded-full mx-auto mt-3 mb-2 cursor-grab active:cursor-grabbing md:hidden" />
+        <div className="flex items-center justify-between px-5 pb-4 border-b border-border-light dark:border-border-dark">
+          <h2 className="text-xl font-semibold text-text-primary-light dark:text-text-primary-dark">
+            Einstellungen
+          </h2>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          >
+            ✕
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto px-5 py-5">
+          {/* Account Section */}
+          <section className="mb-8">
+            <h3 className="text-base font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
+              Account
+            </h3>
+            <div className="space-y-3 mb-4">
+              <div>
+                <span className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark block mb-1">
+                  E-Mail
+                </span>
+                <span className="text-sm text-text-secondary-light dark:text-text-secondary-dark">
+                  user@example.com
+                </span>
+              </div>
+              <div>
+                <span className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark block mb-1">
+                  Benutzer-ID
+                </span>
+                <span className="text-sm text-text-secondary-light dark:text-text-secondary-dark">
+                  user-1
+                </span>
+              </div>
+            </div>
+            {onLogout && (
+              <button
+                className="w-full px-4 py-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-lg font-medium hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                onClick={onLogout}
+              >
+                Abmelden
+              </button>
+            )}
+          </section>
+
+          {/* Appearance Section */}
+          <section>
+            <h3 className="text-base font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
+              Erscheinungsbild
+            </h3>
+            <div>
+              <div className="mb-3">
+                <span className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark block mb-1">
+                  Design
+                </span>
+                <span className="text-xs text-text-secondary-light dark:text-text-secondary-dark">
+                  Wähle zwischen hellem, dunklem oder System-Design
+                </span>
+              </div>
+              <div className="grid grid-cols-3 gap-3">
+                <button
+                  className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all ${
+                    theme === 'light'
+                      ? 'border-accent-light dark:border-accent-dark bg-blue-50 dark:bg-blue-900/20'
+                      : 'border-border-light dark:border-border-dark bg-gray-50 dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600'
+                  }`}
+                  onClick={() => onThemeChange('light')}
+                  aria-label="Helles Design"
+                >
+                  <span className="text-2xl">☀️</span>
+                  <span className="text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark">
+                    Hell
+                  </span>
+                </button>
+                <button
+                  className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all ${
+                    theme === 'dark'
+                      ? 'border-accent-light dark:border-accent-dark bg-blue-50 dark:bg-blue-900/20'
+                      : 'border-border-light dark:border-border-dark bg-gray-50 dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600'
+                  }`}
+                  onClick={() => onThemeChange('dark')}
+                  aria-label="Dunkles Design"
+                >
+                  <span className="text-2xl">🌙</span>
+                  <span className="text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark">
+                    Dunkel
+                  </span>
+                </button>
+                <button
+                  className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all ${
+                    theme === 'system'
+                      ? 'border-accent-light dark:border-accent-dark bg-blue-50 dark:bg-blue-900/20'
+                      : 'border-border-light dark:border-border-dark bg-gray-50 dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600'
+                  }`}
+                  onClick={() => onThemeChange('system')}
+                  aria-label="System-Design"
+                >
+                  <span className="text-2xl">💻</span>
+                  <span className="text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark">
+                    System
+                  </span>
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </>
+  );
+};

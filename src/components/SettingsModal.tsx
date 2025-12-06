@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { IconChevronRight, IconUser, IconBarChart } from './Icons';
+import { IconChevronRight, IconUser, IconBarChart, IconCheckCircle, IconPalette } from './Icons';
 import { SettingsDetailModal, SettingsCategory } from './SettingsDetailModal';
 import { CompletedTasksModal } from './CompletedTasksModal';
 import { ResponsiveModal } from './ResponsiveModal';
@@ -8,6 +8,7 @@ interface SettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
   onThemeChange: (theme: 'light' | 'dark' | 'system') => void;
+  currentTheme: 'light' | 'dark' | 'system';
   onLogout?: () => void;
   onShowCompletedTasks?: () => void;
   completedTasksCount?: number;
@@ -22,6 +23,7 @@ export const SettingsModal = ({
   isOpen,
   onClose,
   onThemeChange,
+  currentTheme,
   onLogout,
   onShowCompletedTasks,
   completedTasksCount = 0,
@@ -47,6 +49,7 @@ export const SettingsModal = ({
       id: 'completed-tasks',
       title: 'Completed Tasks',
       description: `${completedTasksCount} completed ${completedTasksCount === 1 ? 'task' : 'tasks'}`,
+      icon: <IconCheckCircle className="w-5 h-5" />,
     },
     {
       id: 'dashboard',
@@ -58,6 +61,7 @@ export const SettingsModal = ({
       id: 'appearance',
       title: 'Appearance',
       description: 'Theme, Colors, Language',
+      icon: <IconPalette className="w-5 h-5" />,
     },
   ];
   const [selectedCategory, setSelectedCategory] = useState<SettingsCategory | null>(null);
@@ -142,6 +146,7 @@ export const SettingsModal = ({
         onShowCompletedTasks={onShowCompletedTasks}
         completedTasksCount={completedTasksCount}
         onThemeChange={onThemeChange}
+        currentTheme={currentTheme}
         tasks={tasks}
         parentModalRef={mainModalRef}
       />

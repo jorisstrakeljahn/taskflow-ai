@@ -1,5 +1,4 @@
-import { useTheme } from '../hooks/useTheme';
-import { IconCheck } from './Icons';
+import { IconSun, IconMoon, IconMonitor } from './Icons';
 import { Dashboard } from './Dashboard';
 import { ResponsiveModal } from './ResponsiveModal';
 import { Button } from './ui/Button';
@@ -14,6 +13,7 @@ interface SettingsDetailModalProps {
   onShowCompletedTasks?: () => void;
   completedTasksCount?: number;
   onThemeChange: (theme: 'light' | 'dark' | 'system') => void;
+  currentTheme: 'light' | 'dark' | 'system';
   tasks?: any[];
   parentModalRef?: React.RefObject<HTMLDivElement>; // Reference to parent modal
 }
@@ -26,10 +26,10 @@ export const SettingsDetailModal = ({
   onShowCompletedTasks,
   completedTasksCount = 0,
   onThemeChange,
+  currentTheme,
   tasks = [],
   parentModalRef,
 }: SettingsDetailModalProps) => {
-  const { theme } = useTheme();
 
   if (!isOpen) return null;
 
@@ -130,57 +130,93 @@ export const SettingsDetailModal = ({
                   Choose between light, dark, or system design
                 </span>
               </div>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="flex gap-2">
                 <button
-                  className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all ${
-                    theme === 'light'
-                      ? 'border-accent-light dark:border-accent-dark bg-blue-50 dark:bg-blue-900/20'
-                      : 'border-border-light dark:border-border-dark bg-gray-50 dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600'
+                  type="button"
+                  className={`flex-1 flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all ${
+                    currentTheme === 'light'
+                      ? 'border-accent-light dark:border-accent-dark bg-accent-light/5 dark:bg-accent-dark/5 shadow-sm'
+                      : 'border-border-light dark:border-border-dark hover:border-gray-300 dark:hover:border-gray-600'
                   }`}
                   onClick={() => onThemeChange('light')}
-                  aria-label="Light design"
+                  aria-label="Light theme"
                 >
-                  <span className="text-2xl">☀️</span>
-                  <span className="text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark">
+                  <div
+                    className={`w-5 h-5 transition-colors ${
+                      currentTheme === 'light'
+                        ? 'text-accent-light dark:text-accent-dark'
+                        : 'text-text-secondary-light dark:text-text-secondary-dark'
+                    }`}
+                  >
+                    <IconSun />
+                  </div>
+                  <span
+                    className={`text-xs font-medium ${
+                      currentTheme === 'light'
+                        ? 'text-accent-light dark:text-accent-dark'
+                        : 'text-text-secondary-light dark:text-text-secondary-dark'
+                    }`}
+                  >
                     Light
                   </span>
-                  {theme === 'light' && (
-                    <IconCheck className="w-4 h-4 text-accent-light dark:text-accent-dark" />
-                  )}
                 </button>
                 <button
-                  className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all ${
-                    theme === 'dark'
-                      ? 'border-accent-light dark:border-accent-dark bg-blue-50 dark:bg-blue-900/20'
-                      : 'border-border-light dark:border-border-dark bg-gray-50 dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600'
+                  type="button"
+                  className={`flex-1 flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all ${
+                    currentTheme === 'dark'
+                      ? 'border-accent-light dark:border-accent-dark bg-accent-light/5 dark:bg-accent-dark/5 shadow-sm'
+                      : 'border-border-light dark:border-border-dark hover:border-gray-300 dark:hover:border-gray-600'
                   }`}
                   onClick={() => onThemeChange('dark')}
-                  aria-label="Dark design"
+                  aria-label="Dark theme"
                 >
-                  <span className="text-2xl">🌙</span>
-                  <span className="text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark">
+                  <div
+                    className={`w-5 h-5 transition-colors ${
+                      currentTheme === 'dark'
+                        ? 'text-accent-light dark:text-accent-dark'
+                        : 'text-text-secondary-light dark:text-text-secondary-dark'
+                    }`}
+                  >
+                    <IconMoon />
+                  </div>
+                  <span
+                    className={`text-xs font-medium ${
+                      currentTheme === 'dark'
+                        ? 'text-accent-light dark:text-accent-dark'
+                        : 'text-text-secondary-light dark:text-text-secondary-dark'
+                    }`}
+                  >
                     Dark
                   </span>
-                  {theme === 'dark' && (
-                    <IconCheck className="w-4 h-4 text-accent-light dark:text-accent-dark" />
-                  )}
                 </button>
                 <button
-                  className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all ${
-                    theme === 'system'
-                      ? 'border-accent-light dark:border-accent-dark bg-blue-50 dark:bg-blue-900/20'
-                      : 'border-border-light dark:border-border-dark bg-gray-50 dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600'
+                  type="button"
+                  className={`flex-1 flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all ${
+                    currentTheme === 'system'
+                      ? 'border-accent-light dark:border-accent-dark bg-accent-light/5 dark:bg-accent-dark/5 shadow-sm'
+                      : 'border-border-light dark:border-border-dark hover:border-gray-300 dark:hover:border-gray-600'
                   }`}
                   onClick={() => onThemeChange('system')}
-                  aria-label="System design"
+                  aria-label="System theme"
                 >
-                  <span className="text-2xl">💻</span>
-                  <span className="text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark">
+                  <div
+                    className={`w-5 h-5 transition-colors ${
+                      currentTheme === 'system'
+                        ? 'text-accent-light dark:text-accent-dark'
+                        : 'text-text-secondary-light dark:text-text-secondary-dark'
+                    }`}
+                  >
+                    <IconMonitor />
+                  </div>
+                  <span
+                    className={`text-xs font-medium ${
+                      currentTheme === 'system'
+                        ? 'text-accent-light dark:text-accent-dark'
+                        : 'text-text-secondary-light dark:text-text-secondary-dark'
+                    }`}
+                  >
                     System
                   </span>
-                  {theme === 'system' && (
-                    <IconCheck className="w-4 h-4 text-accent-light dark:text-accent-dark" />
-                  )}
                 </button>
               </div>
             </div>

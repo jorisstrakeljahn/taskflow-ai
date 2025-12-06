@@ -22,7 +22,7 @@ function App() {
     deleteTask,
     resetToSampleTasks,
   } = useTasks();
-  const { setThemePreference } = useTheme();
+  const { theme, setThemePreference } = useTheme();
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [isEditTaskModalOpen, setIsEditTaskModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
@@ -205,6 +205,7 @@ function App() {
         isOpen={isSettingsModalOpen}
         onClose={() => setIsSettingsModalOpen(false)}
         onThemeChange={setThemePreference}
+        currentTheme={theme}
         onLogout={() => {
           // TODO: Implement logout logic
           console.log('Logout clicked');

@@ -44,14 +44,14 @@ export const CustomSelect = ({
       document.addEventListener('mousedown', handleClickOutside);
       document.addEventListener('touchstart', handleClickOutside);
       
-      // Calculate if dropdown should open above or below
+      // Calculate if dropdown should open above or below and determine max height
       if (containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();
         const spaceBelow = window.innerHeight - rect.bottom;
         const spaceAbove = rect.top;
         
         // If not enough space below but enough above, open upward
-        if (spaceBelow < 200 && spaceAbove > spaceBelow) {
+        if (spaceBelow < 240 && spaceAbove > spaceBelow) {
           setDropdownPosition('top');
         } else {
           setDropdownPosition('bottom');
@@ -111,14 +111,23 @@ export const CustomSelect = ({
           />
           <div
             ref={dropdownRef}
-            className={`absolute z-[9999] w-full bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-lg shadow-xl max-h-[200px] overflow-y-auto overscroll-contain ${
+            className={`absolute z-[9999] w-full bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-lg shadow-xl overflow-y-auto overscroll-contain custom-scrollbar ${
               dropdownPosition === 'top' ? 'bottom-full mb-1' : 'top-full mt-1'
             }`}
             style={{
-              // Position dropdown above everything, prevent going off screen
               position: 'absolute',
               left: 0,
               right: 0,
+              maxHeight: (() => {
+                const container = containerRef.current;
+                if (!container) return '400px';
+                const rect = container.getBoundingClientRect();
+                if (dropdownPosition === 'top') {
+                  return `${Math.min(400, rect.top - 20)}px`;
+                } else {
+                  return `${Math.min(400, window.innerHeight - rect.bottom - 20)}px`;
+                }
+              })(),
             }}
           >
             {options.map((option) => (

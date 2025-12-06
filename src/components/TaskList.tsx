@@ -1,15 +1,13 @@
 import { useMemo, useState } from 'react';
 import { Task } from '../types/task';
 import { TaskItem } from './TaskItem';
-import { CustomSelect } from './CustomSelect';
 import {
   getRootTasks,
   getSubtasks,
   getTasksByGroup,
   getTasksByStatus,
 } from '../utils/taskUtils';
-import { TASK_STATUSES } from '../constants/taskConstants';
-import { LABEL_CLASSES } from '../constants/uiConstants';
+import { TaskFilters } from './TaskFilters';
 
 interface TaskListProps {
   tasks: Task[];
@@ -30,6 +28,7 @@ export const TaskList = ({
 }: TaskListProps) => {
   const [filterGroup, setFilterGroup] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [filterPriority, setFilterPriority] = useState<string>('all');
 
   const groups = useMemo(() => {
     const uniqueGroups = Array.from(new Set(tasks.map((t) => t.group)));
@@ -39,21 +38,36 @@ export const TaskList = ({
   const filteredTasks = useMemo(() => {
     let filtered = tasks;
 
-    // Always hide completed tasks (except when explicitly filtering for "done")
-    if (filterStatus !== 'done') {
+    // Filter by status
+    if (filterStatus === 'done') {
+      // Only show completed tasks
+      filtered = getTasksByStatus(filtered, 'done');
+    } else if (filterStatus !== 'all') {
+      // Filter by specific status and exclude completed tasks
+      filtered = getTasksByStatus(filtered, filterStatus as Task['status']);
+    } else {
+      // Show all except completed tasks when "all" is selected
       filtered = filtered.filter((t) => t.status !== 'done');
     }
 
+    // Filter by group
     if (filterGroup !== 'all') {
       filtered = getTasksByGroup(filtered, filterGroup);
     }
 
-    if (filterStatus !== 'all' && filterStatus !== 'done') {
-      filtered = getTasksByStatus(filtered, filterStatus as Task['status']);
+    // Filter by priority
+    if (filterPriority !== 'all') {
+      filtered = filtered.filter((t) => t.priority === filterPriority);
     }
 
     return filtered;
-  }, [tasks, filterGroup, filterStatus]);
+  }, [tasks, filterGroup, filterStatus, filterPriority]);
+
+  const handleResetFilters = () => {
+    setFilterGroup('all');
+    setFilterStatus('all');
+    setFilterPriority('all');
+  };
 
   const rootTasks = useMemo(() => {
     return getRootTasks(filteredTasks);
@@ -68,46 +82,17 @@ export const TaskList = ({
 
   return (
     <div className="flex flex-col h-full">
-      <div className="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-lg p-4 mb-4">
-        <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
-          <div className="flex flex-col sm:flex-row gap-3 flex-1">
-            <div className="flex flex-col gap-2">
-              <label
-                htmlFor="group-filter"
-                className={LABEL_CLASSES}
-              >
-                Group
-              </label>
-              <CustomSelect
-                id="group-filter"
-                value={filterGroup}
-                onChange={(value) => setFilterGroup(value)}
-                options={[
-                  { value: 'all', label: 'All' },
-                  ...groups.map((group) => ({ value: group, label: group })),
-                ]}
-              />
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label
-                htmlFor="status-filter"
-                className={LABEL_CLASSES}
-              >
-                Status
-              </label>
-              <CustomSelect
-                id="status-filter"
-                value={filterStatus}
-                onChange={(value) => setFilterStatus(value)}
-                options={[
-                  { value: 'all', label: 'All' },
-                  ...TASK_STATUSES.map((s) => ({ value: s.value, label: s.label })),
-                ]}
-              />
-            </div>
-          </div>
-        </div>
+      <div className="sticky top-0 z-40 -mx-4 sm:-mx-6 mb-4">
+        <TaskFilters
+          filterGroup={filterGroup}
+          filterStatus={filterStatus}
+          filterPriority={filterPriority}
+          groups={groups}
+          onGroupChange={setFilterGroup}
+          onStatusChange={setFilterStatus}
+          onPriorityChange={setFilterPriority}
+          onReset={handleResetFilters}
+        />
       </div>
 
       <div className="flex-1 overflow-y-auto">

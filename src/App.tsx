@@ -160,7 +160,7 @@ function App() {
         </div>
       </header>
 
-      <main className="flex-1 px-4 sm:px-6 py-6 max-w-7xl w-full mx-auto">
+      <main className="flex-1 flex flex-col max-w-7xl w-full mx-auto px-4 sm:px-6">
         {isLoading ? (
           <div className="text-center py-12 text-text-secondary-light dark:text-text-secondary-dark">
             Loading tasks...

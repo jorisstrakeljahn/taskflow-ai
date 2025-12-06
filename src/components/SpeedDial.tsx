@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { IconTask, IconChat, IconPlus, IconClose } from './Icons';
+import { useColor } from '../contexts/ColorContext';
+import { useTheme } from '../hooks/useTheme';
 
 interface SpeedDialProps {
   onTaskClick: () => void;
@@ -8,6 +10,10 @@ interface SpeedDialProps {
 
 export const SpeedDial = ({ onTaskClick, onChatClick }: SpeedDialProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const { getColorValue } = useColor();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const accentColor = getColorValue(isDark ? 'dark' : 'light');
 
   const handleMainClick = () => {
     setIsOpen(!isOpen);
@@ -63,7 +69,8 @@ export const SpeedDial = ({ onTaskClick, onChatClick }: SpeedDialProps) => {
           <IconChat className="w-6 h-6 md:w-7 md:h-7 text-text-primary-light dark:text-text-primary-dark" />
         </button>
         <button
-          className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-accent-light dark:bg-accent-dark text-white shadow-lg hover:shadow-xl flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 z-[999]"
+          className="w-16 h-16 md:w-20 md:h-20 rounded-full text-white shadow-lg hover:shadow-xl flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 z-[999]"
+          style={{ backgroundColor: accentColor }}
           onClick={handleMainClick}
           aria-label={isOpen ? 'Menü schließen' : 'Menü öffnen'}
           title={isOpen ? 'Menü schließen' : 'Menü öffnen'}

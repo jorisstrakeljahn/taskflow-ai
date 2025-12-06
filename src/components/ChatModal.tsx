@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { ResponsiveModal } from './ResponsiveModal';
 import { Button } from './ui/Button';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useColor } from '../contexts/ColorContext';
+import { useTheme } from '../hooks/useTheme';
 
 interface ChatModalProps {
   isOpen: boolean;
@@ -15,6 +17,10 @@ export const ChatModal = ({
   onSendMessage,
 }: ChatModalProps) => {
   const { t } = useLanguage();
+  const { getColorValue } = useColor();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const accentColor = getColorValue(isDark ? 'dark' : 'light');
   const [message, setMessage] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -67,7 +73,10 @@ export const ChatModal = ({
               onChange={(e) => setMessage(e.target.value)}
               placeholder={t('chat.placeholder')}
               rows={6}
-              className="px-3 py-3 border-2 border-border-light dark:border-border-dark rounded-lg bg-card-light dark:bg-card-dark text-text-primary-light dark:text-text-primary-dark text-base resize-y min-h-[120px] focus:outline-none focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark focus:border-transparent transition-all disabled:bg-gray-50 dark:disabled:bg-gray-900 disabled:cursor-not-allowed"
+              className="px-3 py-3 border-2 border-border-light dark:border-border-dark rounded-lg bg-card-light dark:bg-card-dark text-text-primary-light dark:text-text-primary-dark text-base resize-y min-h-[120px] focus:outline-none focus:ring-2 focus:border-transparent transition-all disabled:bg-gray-50 dark:disabled:bg-gray-900 disabled:cursor-not-allowed"
+              style={{
+                '--tw-ring-color': accentColor,
+              } as React.CSSProperties & { '--tw-ring-color': string }}
               disabled={isProcessing}
             />
             <Button

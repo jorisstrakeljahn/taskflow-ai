@@ -1,4 +1,6 @@
 import { forwardRef } from 'react';
+import { useColor } from '../../contexts/ColorContext';
+import { useTheme } from '../../hooks/useTheme';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -8,6 +10,10 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ label, error, className = '', id, ...props }, ref) => {
     const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
+    const { getColorValue } = useColor();
+    const { theme } = useTheme();
+    const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    const accentColor = getColorValue(isDark ? 'dark' : 'light');
 
     return (
       <div className="flex flex-col gap-2">
@@ -22,9 +28,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         <input
           ref={ref}
           id={inputId}
-          className={`px-3 py-2.5 border border-border-light dark:border-border-dark rounded-lg bg-card-light dark:bg-card-dark text-text-primary-light dark:text-text-primary-dark text-base focus:outline-none focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark focus:border-transparent transition-all ${
+          className={`px-3 py-2.5 border border-border-light dark:border-border-dark rounded-lg bg-card-light dark:bg-card-dark text-text-primary-light dark:text-text-primary-dark text-base focus:outline-none focus:ring-2 focus:border-transparent transition-all ${
             error ? 'border-red-500 dark:border-red-500' : ''
           } ${className}`}
+          style={{
+            '--tw-ring-color': accentColor,
+          } as React.CSSProperties & { '--tw-ring-color': string }}
           {...props}
         />
         {error && (

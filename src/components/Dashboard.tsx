@@ -71,8 +71,8 @@ export const Dashboard = ({ tasks, hideTitle = false }: DashboardProps) => {
             {t('dashboard.doneThisWeek')}
           </div>
         </div>
-        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-5 text-center transition-all hover:shadow-sm">
-          <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">
+        <div className="bg-accent-light/10 dark:bg-accent-dark/10 border border-accent-light/30 dark:border-accent-dark/30 rounded-lg p-5 text-center transition-all hover:shadow-sm">
+          <div className="text-3xl font-bold text-accent-light dark:text-accent-dark mb-2">
             {stats.total}
           </div>
           <div className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark">

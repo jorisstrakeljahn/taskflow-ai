@@ -97,7 +97,7 @@
       },
       "primaryColor": {
         "title": "Primary Color",
-        "comingSoon": "Coming soon: Customize your app's primary color."
+        "description": "Choose your preferred primary color for the app"
       },
       "language": {
         "title": "Language",

@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useTasks } from './hooks/useTasks';
 import { useTheme } from './hooks/useTheme';
 import { useLanguage } from './contexts/LanguageContext';
+import { useColor } from './contexts/ColorContext';
 import { TaskList } from './components/TaskList';
 import { CreateTaskModal } from './components/CreateTaskModal';
 import { EditTaskModal } from './components/EditTaskModal';
@@ -25,6 +26,7 @@ function App() {
   } = useTasks();
   const { theme, setThemePreference } = useTheme();
   const { language, setLanguage } = useLanguage();
+  const { primaryColor, setPrimaryColor } = useColor();
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [isEditTaskModalOpen, setIsEditTaskModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
@@ -183,6 +185,8 @@ function App() {
         currentTheme={theme}
         onLanguageChange={setLanguage}
         currentLanguage={language}
+        onPrimaryColorChange={setPrimaryColor}
+        currentPrimaryColor={primaryColor}
         onLogout={() => {
           // TODO: Implement logout logic
           console.log('Logout clicked');

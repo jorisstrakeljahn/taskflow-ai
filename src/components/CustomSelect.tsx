@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { IconChevronRight } from './Icons';
+import { useColor } from '../contexts/ColorContext';
+import { useTheme } from '../hooks/useTheme';
 
 interface CustomSelectOption {
   value: string;
@@ -29,6 +31,10 @@ export const CustomSelect = ({
   const [dropdownPosition, setDropdownPosition] = useState<'bottom' | 'top'>('bottom');
   const containerRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { getColorValue } = useColor();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const accentColor = getColorValue(isDark ? 'dark' : 'light');
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
@@ -86,11 +92,15 @@ export const CustomSelect = ({
         id={id}
         onClick={() => !disabled && setIsOpen(!isOpen)}
         disabled={disabled}
-        className={`w-full px-3 py-2.5 border border-border-light dark:border-border-dark rounded-lg bg-card-light dark:bg-card-dark text-text-primary-light dark:text-text-primary-dark text-base focus:outline-none focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark focus:border-transparent transition-all text-left flex items-center justify-between min-h-[44px] ${
+        className={`w-full px-3 py-2.5 border border-border-light dark:border-border-dark rounded-lg bg-card-light dark:bg-card-dark text-text-primary-light dark:text-text-primary-dark text-base focus:outline-none focus:ring-2 focus:border-transparent transition-all text-left flex items-center justify-between min-h-[44px] ${
           disabled
             ? 'opacity-50 cursor-not-allowed'
             : 'cursor-pointer hover:border-gray-400 dark:hover:border-gray-500'
-        } ${isOpen ? 'ring-2 ring-accent-light dark:ring-accent-dark border-transparent' : ''}`}
+        } ${isOpen ? 'ring-2 border-transparent' : ''}`}
+        style={{
+          '--tw-ring-color': accentColor,
+          '--tw-ring-opacity': '1',
+        } as React.CSSProperties & { '--tw-ring-color': string }}
       >
         <span className={selectedOption ? '' : 'text-text-secondary-light dark:text-text-secondary-dark'}>
           {selectedOption ? selectedOption.label : placeholder}
@@ -130,20 +140,24 @@ export const CustomSelect = ({
               })(),
             }}
           >
-            {options.map((option) => (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => handleSelect(option.value)}
-                className={`w-full px-3 py-2.5 text-left text-base transition-colors first:rounded-t-lg last:rounded-b-lg ${
-                  value === option.value
-                    ? 'bg-accent-light dark:bg-accent-dark text-white'
-                    : 'text-text-primary-light dark:text-text-primary-dark hover:bg-gray-100 dark:hover:bg-gray-800'
-                }`}
-              >
-                {option.label}
-              </button>
-            ))}
+            {options.map((option) => {
+              const isSelected = value === option.value;
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => handleSelect(option.value)}
+                  className={`w-full px-3 py-2.5 text-left text-base transition-colors first:rounded-t-lg last:rounded-b-lg ${
+                    isSelected
+                      ? 'text-white'
+                      : 'text-text-primary-light dark:text-text-primary-dark hover:bg-gray-100 dark:hover:bg-gray-800'
+                  }`}
+                  style={isSelected ? { backgroundColor: accentColor } : {}}
+                >
+                  {option.label}
+                </button>
+              );
+            })}
           </div>
         </>
       )}

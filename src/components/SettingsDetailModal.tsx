@@ -1,9 +1,11 @@
-import { IconSun, IconMoon, IconMonitor } from './Icons';
+import { IconSun, IconMoon, IconMonitor, IconCheck } from './Icons';
 import { Dashboard } from './Dashboard';
 import { ResponsiveModal } from './ResponsiveModal';
 import { Button } from './ui/Button';
 import { CustomSelect } from './CustomSelect';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useColor, PrimaryColor } from '../contexts/ColorContext';
+import { useTheme } from '../hooks/useTheme';
 
 export type SettingsCategory = 'account' | 'completed-tasks' | 'dashboard' | 'appearance';
 
@@ -18,6 +20,8 @@ interface SettingsDetailModalProps {
   currentTheme: 'light' | 'dark' | 'system';
   onLanguageChange: (language: 'de' | 'en') => void;
   currentLanguage: 'de' | 'en';
+  onPrimaryColorChange: (color: PrimaryColor) => void;
+  currentPrimaryColor: PrimaryColor;
   tasks?: any[];
   parentModalRef?: React.RefObject<HTMLDivElement>; // Reference to parent modal
 }
@@ -33,10 +37,16 @@ export const SettingsDetailModal = ({
   currentTheme,
   onLanguageChange,
   currentLanguage,
+  onPrimaryColorChange,
+  currentPrimaryColor,
   tasks = [],
   parentModalRef,
 }: SettingsDetailModalProps) => {
   const { t } = useLanguage();
+  const { colorPalettes, getTextColor, getColorValue } = useColor();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const accentColor = getColorValue(isDark ? 'dark' : 'light');
 
   if (!isOpen) return null;
 
@@ -142,27 +152,33 @@ export const SettingsDetailModal = ({
                   type="button"
                   className={`flex-1 flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all ${
                     currentTheme === 'light'
-                      ? 'border-accent-light dark:border-accent-dark bg-accent-light/5 dark:bg-accent-dark/5 shadow-sm'
+                      ? 'shadow-sm'
                       : 'border-border-light dark:border-border-dark hover:border-gray-300 dark:hover:border-gray-600'
                   }`}
+                  style={currentTheme === 'light' ? {
+                    borderColor: accentColor,
+                    backgroundColor: `${accentColor}0d`,
+                  } : {}}
                   onClick={() => onThemeChange('light')}
                   aria-label={t('settings.appearance.theme.light')}
                 >
                   <div
                     className={`w-5 h-5 transition-colors ${
                       currentTheme === 'light'
-                        ? 'text-accent-light dark:text-accent-dark'
+                        ? ''
                         : 'text-text-secondary-light dark:text-text-secondary-dark'
                     }`}
+                    style={currentTheme === 'light' ? { color: accentColor } : {}}
                   >
                     <IconSun />
                   </div>
                   <span
                     className={`text-xs font-medium ${
                       currentTheme === 'light'
-                        ? 'text-accent-light dark:text-accent-dark'
+                        ? ''
                         : 'text-text-secondary-light dark:text-text-secondary-dark'
                     }`}
+                    style={currentTheme === 'light' ? { color: accentColor } : {}}
                   >
                     {t('settings.appearance.theme.light')}
                   </span>
@@ -171,27 +187,33 @@ export const SettingsDetailModal = ({
                   type="button"
                   className={`flex-1 flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all ${
                     currentTheme === 'dark'
-                      ? 'border-accent-light dark:border-accent-dark bg-accent-light/5 dark:bg-accent-dark/5 shadow-sm'
+                      ? 'shadow-sm'
                       : 'border-border-light dark:border-border-dark hover:border-gray-300 dark:hover:border-gray-600'
                   }`}
+                  style={currentTheme === 'dark' ? {
+                    borderColor: accentColor,
+                    backgroundColor: `${accentColor}0d`,
+                  } : {}}
                   onClick={() => onThemeChange('dark')}
                   aria-label={t('settings.appearance.theme.dark')}
                 >
                   <div
                     className={`w-5 h-5 transition-colors ${
                       currentTheme === 'dark'
-                        ? 'text-accent-light dark:text-accent-dark'
+                        ? ''
                         : 'text-text-secondary-light dark:text-text-secondary-dark'
                     }`}
+                    style={currentTheme === 'dark' ? { color: accentColor } : {}}
                   >
                     <IconMoon />
                   </div>
                   <span
                     className={`text-xs font-medium ${
                       currentTheme === 'dark'
-                        ? 'text-accent-light dark:text-accent-dark'
+                        ? ''
                         : 'text-text-secondary-light dark:text-text-secondary-dark'
                     }`}
+                    style={currentTheme === 'dark' ? { color: accentColor } : {}}
                   >
                     {t('settings.appearance.theme.dark')}
                   </span>
@@ -200,27 +222,33 @@ export const SettingsDetailModal = ({
                   type="button"
                   className={`flex-1 flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all ${
                     currentTheme === 'system'
-                      ? 'border-accent-light dark:border-accent-dark bg-accent-light/5 dark:bg-accent-dark/5 shadow-sm'
+                      ? 'shadow-sm'
                       : 'border-border-light dark:border-border-dark hover:border-gray-300 dark:hover:border-gray-600'
                   }`}
+                  style={currentTheme === 'system' ? {
+                    borderColor: accentColor,
+                    backgroundColor: `${accentColor}0d`,
+                  } : {}}
                   onClick={() => onThemeChange('system')}
                   aria-label={t('settings.appearance.theme.system')}
                 >
                   <div
                     className={`w-5 h-5 transition-colors ${
                       currentTheme === 'system'
-                        ? 'text-accent-light dark:text-accent-dark'
+                        ? ''
                         : 'text-text-secondary-light dark:text-text-secondary-dark'
                     }`}
+                    style={currentTheme === 'system' ? { color: accentColor } : {}}
                   >
                     <IconMonitor />
                   </div>
                   <span
                     className={`text-xs font-medium ${
                       currentTheme === 'system'
-                        ? 'text-accent-light dark:text-accent-dark'
+                        ? ''
                         : 'text-text-secondary-light dark:text-text-secondary-dark'
                     }`}
+                    style={currentTheme === 'system' ? { color: accentColor } : {}}
                   >
                     {t('settings.appearance.theme.system')}
                   </span>
@@ -228,12 +256,57 @@ export const SettingsDetailModal = ({
               </div>
             </div>
             <div className="pt-4 border-t border-border-light dark:border-border-dark">
-              <span className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark block mb-2">
-                {t('settings.appearance.primaryColor.title')}
-              </span>
-              <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark">
-                {t('settings.appearance.primaryColor.comingSoon')}
-              </p>
+              <div className="mb-3">
+                <span className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark block mb-1">
+                  {t('settings.appearance.primaryColor.title')}
+                </span>
+                <span className="text-xs text-text-secondary-light dark:text-text-secondary-dark">
+                  {t('settings.appearance.primaryColor.description')}
+                </span>
+              </div>
+              <div className="grid grid-cols-5 gap-3">
+                {(Object.keys(colorPalettes) as PrimaryColor[]).map((colorKey) => {
+                  const color = colorPalettes[colorKey];
+                  const isSelected = currentPrimaryColor === colorKey;
+                  const lightColor = color.light;
+                  const darkColor = color.dark;
+                  // Use the lighter color to determine text color for the checkmark
+                  const textColor = getTextColor(lightColor);
+                  
+                  return (
+                    <button
+                      key={colorKey}
+                      type="button"
+                      onClick={() => onPrimaryColorChange(colorKey)}
+                      className={`relative w-full aspect-square rounded-lg border-2 transition-all hover:scale-105 ${
+                        isSelected
+                          ? 'ring-2 ring-offset-2 ring-offset-card-light dark:ring-offset-card-dark'
+                          : 'border-border-light dark:border-border-dark hover:border-gray-300 dark:hover:border-gray-600'
+                      }`}
+                      style={{
+                        background: `linear-gradient(135deg, ${lightColor} 0%, ${darkColor} 100%)`,
+                        ...(isSelected ? {
+                          borderColor: accentColor,
+                          '--tw-ring-color': accentColor,
+                          '--tw-ring-opacity': '1',
+                        } as React.CSSProperties & { '--tw-ring-color': string } : {}),
+                      }}
+                      aria-label={color.name}
+                      title={color.name}
+                    >
+                      {isSelected && (
+                        <div
+                          className={`absolute inset-0 flex items-center justify-center ${
+                            textColor === 'white' ? 'text-white drop-shadow-lg' : 'text-black drop-shadow-lg'
+                          }`}
+                        >
+                          <IconCheck className="w-5 h-5" />
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
             <div className="pt-4 border-t border-border-light dark:border-border-dark">
               <div className="mb-3">

@@ -3,6 +3,8 @@ import { Task, TaskStatus } from '../types/task';
 import { IconEdit, IconTrash } from './Icons';
 import { PRIORITY_COLORS } from '../constants/uiConstants';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useColor } from '../contexts/ColorContext';
+import { useTheme } from '../hooks/useTheme';
 
 interface TaskItemProps {
   task: Task;
@@ -28,6 +30,10 @@ export const TaskItem = ({
   disableStatusChange = false,
 }: TaskItemProps) => {
   const { t } = useLanguage();
+  const { getColorValue } = useColor();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const accentColor = getColorValue(isDark ? 'dark' : 'light');
   const [isExpanded, setIsExpanded] = useState(false);
   const [isCompleting, setIsCompleting] = useState(false);
   const [showCheckmark, setShowCheckmark] = useState(task.status === 'done');
@@ -83,11 +89,15 @@ export const TaskItem = ({
             checked={task.status === 'done' || showCheckmark}
             onChange={handleCheckboxChange}
             disabled={disableStatusChange}
-            className={`w-5 h-5 rounded border-2 border-gray-400 dark:border-gray-500 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark focus:ring-offset-0 transition-all duration-200 appearance-none checked:bg-accent-light dark:checked:bg-accent-dark checked:border-accent-light dark:checked:border-accent-dark checked:scale-110 ${
+            className={`w-5 h-5 rounded border-2 border-gray-400 dark:border-gray-500 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-offset-0 transition-all duration-200 appearance-none checked:scale-110 ${
               disableStatusChange 
                 ? 'opacity-50 cursor-not-allowed' 
                 : 'cursor-pointer'
             }`}
+            style={{
+              accentColor: accentColor,
+              '--tw-ring-color': accentColor,
+            } as React.CSSProperties & { '--tw-ring-color': string }}
           />
           {(task.status === 'done' || showCheckmark) && (
             <svg

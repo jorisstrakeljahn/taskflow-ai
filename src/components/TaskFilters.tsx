@@ -3,6 +3,8 @@ import { CustomSelect } from './CustomSelect';
 import { IconFilter, IconFolder, IconLayers, IconZap, IconChevronDown } from './Icons';
 import { TASK_STATUSES, TASK_PRIORITIES } from '../constants/taskConstants';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useColor } from '../contexts/ColorContext';
+import { useTheme } from '../hooks/useTheme';
 
 interface TaskFiltersProps {
   filterGroup: string;
@@ -26,6 +28,10 @@ export const TaskFilters = ({
   onReset,
 }: TaskFiltersProps) => {
   const { t } = useLanguage();
+  const { getColorValue } = useColor();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const accentColor = getColorValue(isDark ? 'dark' : 'light');
   const [isOpen, setIsOpen] = useState(false);
   
   const hasActiveFilters = 
@@ -49,7 +55,10 @@ export const TaskFilters = ({
             {t('filters.title')}
           </span>
           {hasActiveFilters && (
-            <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-accent-light dark:bg-accent-dark text-white">
+            <span 
+              className="px-2 py-0.5 text-xs font-semibold rounded-full text-white"
+              style={{ backgroundColor: accentColor }}
+            >
               {t('common.active')}
             </span>
           )}

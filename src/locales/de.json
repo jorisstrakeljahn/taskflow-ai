@@ -97,7 +97,7 @@
       },
       "primaryColor": {
         "title": "Primärfarbe",
-        "comingSoon": "Demnächst: Passe die Primärfarbe deiner App an."
+        "description": "Wähle deine bevorzugte Primärfarbe für die App"
       },
       "language": {
         "title": "Sprache",

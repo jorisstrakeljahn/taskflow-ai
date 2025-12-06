@@ -1,4 +1,6 @@
 import { forwardRef } from 'react';
+import { useColor } from '../../contexts/ColorContext';
+import { useTheme } from '../../hooks/useTheme';
 
 interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
@@ -8,6 +10,10 @@ interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ label, error, className = '', id, rows = 4, ...props }, ref) => {
     const textareaId = id || `textarea-${Math.random().toString(36).substr(2, 9)}`;
+    const { getColorValue } = useColor();
+    const { theme } = useTheme();
+    const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    const accentColor = getColorValue(isDark ? 'dark' : 'light');
 
     return (
       <div className="flex flex-col gap-2">
@@ -23,9 +29,12 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           ref={ref}
           id={textareaId}
           rows={rows}
-          className={`px-3 py-2.5 border border-border-light dark:border-border-dark rounded-lg bg-card-light dark:bg-card-dark text-text-primary-light dark:text-text-primary-dark text-base resize-y min-h-[100px] focus:outline-none focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark focus:border-transparent transition-all ${
+          className={`px-3 py-2.5 border border-border-light dark:border-border-dark rounded-lg bg-card-light dark:bg-card-dark text-text-primary-light dark:text-text-primary-dark text-base resize-y min-h-[100px] focus:outline-none focus:ring-2 focus:border-transparent transition-all ${
             error ? 'border-red-500 dark:border-red-500' : ''
           } ${className}`}
+          style={{
+            '--tw-ring-color': accentColor,
+          } as React.CSSProperties & { '--tw-ring-color': string }}
           {...props}
         />
         {error && (

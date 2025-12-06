@@ -4,6 +4,7 @@ import { SettingsDetailModal, SettingsCategory } from './SettingsDetailModal';
 import { CompletedTasksModal } from './CompletedTasksModal';
 import { ResponsiveModal } from './ResponsiveModal';
 import { useLanguage } from '../contexts/LanguageContext';
+import { PrimaryColor } from '../contexts/ColorContext';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -12,6 +13,8 @@ interface SettingsModalProps {
   currentTheme: 'light' | 'dark' | 'system';
   onLanguageChange: (language: 'de' | 'en') => void;
   currentLanguage: 'de' | 'en';
+  onPrimaryColorChange: (color: PrimaryColor) => void;
+  currentPrimaryColor: PrimaryColor;
   onLogout?: () => void;
   onShowCompletedTasks?: () => void;
   completedTasksCount?: number;
@@ -29,6 +32,8 @@ export const SettingsModal = ({
   currentTheme,
   onLanguageChange,
   currentLanguage,
+  onPrimaryColorChange,
+  currentPrimaryColor,
   onLogout,
   onShowCompletedTasks,
   completedTasksCount = 0,
@@ -155,6 +160,8 @@ export const SettingsModal = ({
         currentTheme={currentTheme}
         onLanguageChange={onLanguageChange}
         currentLanguage={currentLanguage}
+        onPrimaryColorChange={onPrimaryColorChange}
+        currentPrimaryColor={currentPrimaryColor}
         tasks={tasks}
         parentModalRef={mainModalRef}
       />

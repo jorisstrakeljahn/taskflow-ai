@@ -5,6 +5,8 @@ import { Textarea } from './Textarea';
 import { DEFAULT_GROUPS, TASK_PRIORITIES, TASK_STATUSES } from '../../constants/taskConstants';
 import { LABEL_CLASSES } from '../../constants/uiConstants';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useColor } from '../../contexts/ColorContext';
+import { useTheme } from '../../hooks/useTheme';
 
 interface TaskFormFieldsProps {
   title: string;
@@ -56,6 +58,10 @@ export const TaskFormFields = ({
   priorityId = 'task-priority',
 }: TaskFormFieldsProps) => {
   const { t } = useLanguage();
+  const { getColorValue } = useColor();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const accentColor = getColorValue(isDark ? 'dark' : 'light');
   // Combine existing groups with default groups
   const allGroups = Array.from(
     new Set([...existingGroups, ...DEFAULT_GROUPS])
@@ -154,7 +160,11 @@ export const TaskFormFields = ({
                       onCustomGroupChange('');
                     }
                   }}
-                  className="w-4 h-4 rounded border-2 border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark text-accent-light dark:text-accent-dark focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark"
+                  className="w-4 h-4 rounded border-2 border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark focus:ring-2"
+                  style={{
+                    accentColor: accentColor,
+                    '--tw-ring-color': accentColor,
+                  } as React.CSSProperties & { '--tw-ring-color': string }}
                 />
                 <span className="text-sm text-text-secondary-light dark:text-text-secondary-dark">
                   {t('task.useCustomGroup')}

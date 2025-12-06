@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { TaskPriority } from '../types/task';
+import { IconClose } from './Icons';
 
 interface CreateTaskModalProps {
   isOpen: boolean;
@@ -117,7 +118,7 @@ export const CreateTaskModal = ({
             onClick={onClose}
             className="p-2 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
           >
-            ✕
+            <IconClose className="w-5 h-5" />
           </button>
         </div>
         <form

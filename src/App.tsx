@@ -7,6 +7,7 @@ import { CreateTaskModal } from './components/CreateTaskModal';
 import { ChatModal } from './components/ChatModal';
 import { SettingsModal } from './components/SettingsModal';
 import { SpeedDial } from './components/SpeedDial';
+import { IconReset, IconSettings } from './components/Icons';
 import { TaskPriority } from './types/task';
 import { parseChatMessage } from './utils/aiParser';
 
@@ -75,17 +76,18 @@ function App() {
             <div className="flex items-center gap-2">
               <button
                 onClick={resetToSampleTasks}
-                className="px-3 py-1.5 text-sm font-medium rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                className="px-3 py-1.5 text-sm font-medium rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center gap-1.5"
                 title="Auf Beispieldaten zurücksetzen"
               >
-                🔄 Reset
+                <IconReset className="w-4 h-4" />
+                <span>Reset</span>
               </button>
               <button
                 onClick={() => setIsSettingsModalOpen(true)}
                 className="p-2 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 title="Einstellungen"
               >
-                ⚙️
+                <IconSettings className="w-5 h-5" />
               </button>
             </div>
           </div>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Task, TaskStatus } from '../types/task';
+import { IconEdit, IconTrash } from './Icons';
 
 interface TaskItemProps {
   task: Task;
@@ -26,6 +27,8 @@ export const TaskItem = ({
     task.description || ''
   );
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isCompleting, setIsCompleting] = useState(false);
+  const [showCheckmark, setShowCheckmark] = useState(task.status === 'done');
 
   const handleSave = () => {
     onUpdate(task.id, {
@@ -41,24 +44,68 @@ export const TaskItem = ({
     high: 'text-red-600 dark:text-red-400',
   };
 
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newStatus = e.target.checked ? 'done' : 'open';
+    if (newStatus === 'done') {
+      // Zuerst den Haken anzeigen
+      setShowCheckmark(true);
+      // Kurz warten, damit der Haken sichtbar ist (300ms)
+      setTimeout(() => {
+        // Dann die Verschwind-Animation starten
+        setIsCompleting(true);
+        // Nach der Animation den Status aktualisieren
+        setTimeout(() => {
+          onStatusChange(task.id, newStatus);
+          // Animation zurücksetzen nach kurzer Pause
+          setTimeout(() => {
+            setIsCompleting(false);
+          }, 100);
+        }, 400);
+      }, 300);
+    } else {
+      setShowCheckmark(false);
+      setIsCompleting(false);
+      onStatusChange(task.id, newStatus);
+    }
+  };
+
   return (
     <div
-      className={`bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-lg p-3 mb-2 transition-all ${
-        task.status === 'done'
+      className={`bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-lg p-3 mb-2 transition-all duration-500 ${
+        task.status === 'done' && !isCompleting
           ? 'opacity-60 bg-gray-50 dark:bg-gray-900/50'
           : 'hover:shadow-sm'
+      } ${
+        isCompleting 
+          ? 'scale-95 opacity-0 transform transition-all duration-500 ease-out' 
+          : 'scale-100 opacity-100'
       }`}
       style={{ marginLeft: `${level * 20}px` }}
     >
       <div className="flex items-start gap-3">
-        <input
-          type="checkbox"
-          checked={task.status === 'done'}
-          onChange={(e) =>
-            onStatusChange(task.id, e.target.checked ? 'done' : 'open')
-          }
-          className="w-5 h-5 mt-0.5 cursor-pointer rounded border-border-light dark:border-border-dark"
-        />
+        <div className="relative mt-0.5 flex-shrink-0">
+          <input
+            type="checkbox"
+            checked={task.status === 'done' || showCheckmark}
+            onChange={handleCheckboxChange}
+            className="w-5 h-5 cursor-pointer rounded border-2 border-gray-400 dark:border-gray-500 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark focus:ring-offset-0 transition-all duration-200 appearance-none checked:bg-accent-light dark:checked:bg-accent-dark checked:border-accent-light dark:checked:border-accent-dark checked:scale-110"
+          />
+          {(task.status === 'done' || showCheckmark) && (
+            <svg
+              className="absolute top-0 left-0 w-5 h-5 pointer-events-none text-white animate-in fade-in zoom-in duration-200"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="3"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+          )}
+        </div>
         {isEditing ? (
           <div className="flex-1 flex flex-col gap-2">
             <input
@@ -144,14 +191,14 @@ export const TaskItem = ({
                 className="p-2 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 title="Bearbeiten"
               >
-                ✏️
+                <IconEdit className="w-4 h-4" />
               </button>
               <button
                 onClick={() => onDelete(task.id)}
                 className="p-2 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                 title="Löschen"
               >
-                🗑️
+                <IconTrash className="w-4 h-4" />
               </button>
             </div>
           </>

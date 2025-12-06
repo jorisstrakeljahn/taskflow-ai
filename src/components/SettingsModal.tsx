@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import { useTheme } from '../hooks/useTheme';
+import { IconClose } from './Icons';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -92,7 +93,7 @@ export const SettingsModal = ({
             onClick={onClose}
             className="p-2 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
           >
-            ✕
+            <IconClose className="w-5 h-5" />
           </button>
         </div>
         <div className="flex-1 overflow-y-auto px-5 py-5">

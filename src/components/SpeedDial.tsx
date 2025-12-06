@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { IconTask, IconChat, IconPlus, IconClose } from './Icons';
 
 interface SpeedDialProps {
   onTaskClick: () => void;
@@ -46,10 +47,10 @@ export const SpeedDial = ({ onTaskClick, onChatClick }: SpeedDialProps) => {
           title="Task erstellen"
           style={{ transitionDelay: isOpen ? '50ms' : '0ms' }}
         >
-          <span>📝</span>
+          <IconTask className="w-6 h-6 md:w-7 md:h-7 text-text-primary-light dark:text-text-primary-dark" />
         </button>
         <button
-          className={`w-14 h-14 md:w-16 md:h-16 rounded-full bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark shadow-lg flex items-center justify-center text-2xl md:text-3xl transition-all duration-300 ${
+          className={`w-14 h-14 md:w-16 md:h-16 rounded-full bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark shadow-lg flex items-center justify-center transition-all duration-300 ${
             isOpen
               ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto'
               : 'opacity-0 translate-y-5 scale-90 pointer-events-none'
@@ -59,21 +60,19 @@ export const SpeedDial = ({ onTaskClick, onChatClick }: SpeedDialProps) => {
           title="Chat öffnen"
           style={{ transitionDelay: isOpen ? '100ms' : '0ms' }}
         >
-          <span>💬</span>
+          <IconChat className="w-6 h-6 md:w-7 md:h-7 text-text-primary-light dark:text-text-primary-dark" />
         </button>
         <button
-          className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-accent-light dark:bg-accent-dark text-white shadow-lg hover:shadow-xl flex items-center justify-center text-3xl md:text-4xl font-light transition-all duration-300 hover:scale-105 active:scale-95 z-[999]"
+          className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-accent-light dark:bg-accent-dark text-white shadow-lg hover:shadow-xl flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 z-[999]"
           onClick={handleMainClick}
           aria-label={isOpen ? 'Menü schließen' : 'Menü öffnen'}
           title={isOpen ? 'Menü schließen' : 'Menü öffnen'}
         >
-          <span
-            className={`transition-transform duration-300 ${
-              isOpen ? 'rotate-45' : 'rotate-0'
-            }`}
-          >
-            {isOpen ? '✕' : '+'}
-          </span>
+          {isOpen ? (
+            <IconClose className="w-6 h-6 md:w-8 md:h-8 transition-transform duration-300" />
+          ) : (
+            <IconPlus className="w-6 h-6 md:w-8 md:h-8 transition-transform duration-300" />
+          )}
         </button>
       </div>
     </>

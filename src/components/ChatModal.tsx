@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { IconClose } from './Icons';
 
 interface ChatModalProps {
   isOpen: boolean;
@@ -110,7 +111,7 @@ export const ChatModal = ({
             onClick={onClose}
             className="p-2 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
           >
-            ✕
+            <IconClose className="w-5 h-5" />
           </button>
         </div>
         <div className="flex-1 overflow-y-auto px-5 py-5 flex flex-col gap-4">

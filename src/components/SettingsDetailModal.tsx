@@ -1,8 +1,9 @@
 import { useRef, useEffect, useState } from 'react';
 import { useTheme } from '../hooks/useTheme';
 import { IconClose, IconCheck } from './Icons';
+import { Dashboard } from './Dashboard';
 
-export type SettingsCategory = 'account' | 'completed-tasks' | 'appearance';
+export type SettingsCategory = 'account' | 'completed-tasks' | 'dashboard' | 'appearance';
 
 interface SettingsDetailModalProps {
   isOpen: boolean;
@@ -12,6 +13,7 @@ interface SettingsDetailModalProps {
   onShowCompletedTasks?: () => void;
   completedTasksCount?: number;
   onThemeChange: (theme: 'light' | 'dark' | 'system') => void;
+  tasks?: any[];
 }
 
 export const SettingsDetailModal = ({
@@ -22,6 +24,7 @@ export const SettingsDetailModal = ({
   onShowCompletedTasks,
   completedTasksCount = 0,
   onThemeChange,
+  tasks = [],
 }: SettingsDetailModalProps) => {
   const { theme } = useTheme();
   const [startY, setStartY] = useState<number | null>(null);
@@ -77,6 +80,8 @@ export const SettingsDetailModal = ({
         return 'Account';
       case 'completed-tasks':
         return 'Completed Tasks';
+      case 'dashboard':
+        return 'Dashboard';
       case 'appearance':
         return 'Appearance';
       default:
@@ -145,6 +150,13 @@ export const SettingsDetailModal = ({
                 )}
               </button>
             )}
+          </div>
+        );
+
+      case 'dashboard':
+        return (
+          <div>
+            <Dashboard tasks={tasks} hideTitle={true} />
           </div>
         );
 

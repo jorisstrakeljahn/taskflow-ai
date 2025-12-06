@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useTasks } from './hooks/useTasks';
 import { useTheme } from './hooks/useTheme';
 import { TaskList } from './components/TaskList';
-import { Dashboard } from './components/Dashboard';
 import { CreateTaskModal } from './components/CreateTaskModal';
 import { ChatModal } from './components/ChatModal';
 import { SettingsModal } from './components/SettingsModal';
@@ -11,8 +10,6 @@ import { SpeedDial } from './components/SpeedDial';
 import { IconReset, IconSettings } from './components/Icons';
 import { TaskPriority } from './types/task';
 import { parseChatMessage } from './utils/aiParser';
-
-type View = 'tasks' | 'dashboard';
 
 function App() {
   const {
@@ -25,7 +22,6 @@ function App() {
     resetToSampleTasks,
   } = useTasks();
   const { setThemePreference } = useTheme();
-  const [currentView, setCurrentView] = useState<View>('tasks');
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
@@ -101,7 +97,7 @@ function App() {
     <div className="min-h-screen flex flex-col bg-surface-light dark:bg-surface-dark transition-colors">
       <header className="sticky top-0 z-50 bg-card-light dark:bg-card-dark border-b border-border-light dark:border-border-dark shadow-sm">
         <div className="px-4 sm:px-6 py-4">
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between">
             <h1 className="text-2xl sm:text-3xl font-bold text-text-primary-light dark:text-text-primary-dark">
               TaskFlow AI
             </h1>
@@ -112,7 +108,7 @@ function App() {
                 title="Reset to sample data"
               >
                 <IconReset className="w-4 h-4" />
-                <span>Reset</span>
+                <span className="hidden sm:inline">Reset</span>
               </button>
               <button
                 onClick={() => setIsSettingsModalOpen(true)}
@@ -123,28 +119,6 @@ function App() {
               </button>
             </div>
           </div>
-          <nav className="flex gap-2">
-            <button
-              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                currentView === 'tasks'
-                  ? 'bg-accent-light dark:bg-accent-dark text-white'
-                  : 'text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-50 dark:hover:bg-gray-800'
-              }`}
-              onClick={() => setCurrentView('tasks')}
-            >
-              Tasks
-            </button>
-            <button
-              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                currentView === 'dashboard'
-                  ? 'bg-accent-light dark:bg-accent-dark text-white'
-                  : 'text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-50 dark:hover:bg-gray-800'
-              }`}
-              onClick={() => setCurrentView('dashboard')}
-            >
-              Dashboard
-            </button>
-          </nav>
         </div>
       </header>
 
@@ -154,18 +128,13 @@ function App() {
             Loading tasks...
           </div>
         ) : (
-          <>
-            {currentView === 'tasks' && (
-              <TaskList
-                tasks={tasks}
-                onStatusChange={changeTaskStatus}
-                onUpdate={updateTask}
-                onDelete={deleteTask}
-                onAddSubtask={handleAddSubtask}
-              />
-            )}
-            {currentView === 'dashboard' && <Dashboard tasks={tasks} />}
-          </>
+          <TaskList
+            tasks={tasks}
+            onStatusChange={changeTaskStatus}
+            onUpdate={updateTask}
+            onDelete={deleteTask}
+            onAddSubtask={handleAddSubtask}
+          />
         )}
       </main>
 

@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
-import { IconClose, IconChevronRight, IconUser } from './Icons';
+import { IconClose, IconChevronRight, IconUser, IconBarChart } from './Icons';
 import { SettingsDetailModal, SettingsCategory } from './SettingsDetailModal';
 import { CompletedTasksModal } from './CompletedTasksModal';
 
@@ -46,6 +46,12 @@ export const SettingsModal = ({
       id: 'completed-tasks',
       title: 'Completed Tasks',
       description: `${completedTasksCount} completed ${completedTasksCount === 1 ? 'task' : 'tasks'}`,
+    },
+    {
+      id: 'dashboard',
+      title: 'Dashboard',
+      description: 'Statistics and overview',
+      icon: <IconBarChart className="w-5 h-5" />,
     },
     {
       id: 'appearance',
@@ -201,6 +207,7 @@ export const SettingsModal = ({
         onShowCompletedTasks={onShowCompletedTasks}
         completedTasksCount={completedTasksCount}
         onThemeChange={onThemeChange}
+        tasks={tasks}
       />
       <CompletedTasksModal
         isOpen={isCompletedTasksOpen}

@@ -8,6 +8,7 @@ import {
   getTasksByStatus,
 } from '../utils/taskUtils';
 import { TaskFilters } from './TaskFilters';
+import { EmptyState } from './ui/EmptyState';
 
 interface TaskListProps {
   tasks: Task[];
@@ -95,15 +96,13 @@ export const TaskList = ({
         />
       </div>
 
-      <div className="flex-1 overflow-y-auto">
-        {rootTasks.length === 0 ? (
-          <div className="text-center py-12 text-text-secondary-light dark:text-text-secondary-dark">
-            <p className="mb-2">No tasks found.</p>
-            <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark">
-              Use the chat to create new tasks!
-            </p>
-          </div>
-        ) : (
+            <div className="flex-1 overflow-y-auto">
+              {rootTasks.length === 0 ? (
+                <EmptyState
+                  title="No tasks found."
+                  description="Use the chat to create new tasks!"
+                />
+              ) : (
           rootTasks.map((task) => {
             const subtasks = getSubtasks(filteredTasks, task.id);
             return (

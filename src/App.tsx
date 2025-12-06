@@ -8,7 +8,8 @@ import { ChatModal } from './components/ChatModal';
 import { SettingsModal } from './components/SettingsModal';
 import { CompletedTasksModal } from './components/CompletedTasksModal';
 import { SpeedDial } from './components/SpeedDial';
-import { IconReset, IconSettings } from './components/Icons';
+import { Header } from './components/Header';
+import { LoadingSpinner } from './components/ui/LoadingSpinner';
 import { TaskPriority, Task, TaskStatus } from './types/task';
 import { parseChatMessage } from './utils/aiParser';
 
@@ -20,7 +21,6 @@ function App() {
     updateTask,
     changeTaskStatus,
     deleteTask,
-    resetToSampleTasks,
   } = useTasks();
   const { theme, setThemePreference } = useTheme();
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
@@ -133,38 +133,11 @@ function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-surface-light dark:bg-surface-dark transition-colors">
-      <header className="sticky top-0 z-50 bg-card-light dark:bg-card-dark border-b border-border-light dark:border-border-dark shadow-sm">
-        <div className="px-4 sm:px-6 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl sm:text-3xl font-bold text-text-primary-light dark:text-text-primary-dark">
-              TaskFlow AI
-            </h1>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={resetToSampleTasks}
-                className="px-3 py-1.5 text-sm font-medium rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center gap-1.5"
-                title="Reset to sample data"
-              >
-                <IconReset className="w-4 h-4" />
-                <span className="hidden sm:inline">Reset</span>
-              </button>
-              <button
-                onClick={() => setIsSettingsModalOpen(true)}
-                className="p-2 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                title="Settings"
-              >
-                <IconSettings className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header onSettingsClick={() => setIsSettingsModalOpen(true)} />
 
       <main className="flex-1 flex flex-col max-w-7xl w-full mx-auto px-4 sm:px-6">
         {isLoading ? (
-          <div className="text-center py-12 text-text-secondary-light dark:text-text-secondary-dark">
-            Loading tasks...
-          </div>
+          <LoadingSpinner />
         ) : (
           <TaskList
             tasks={tasks}

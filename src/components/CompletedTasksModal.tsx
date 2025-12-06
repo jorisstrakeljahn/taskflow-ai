@@ -4,6 +4,7 @@ import { TaskItem } from './TaskItem';
 import { getRootTasks, getSubtasks } from '../utils/taskUtils';
 import { ResponsiveModal } from './ResponsiveModal';
 import { Button } from './ui/Button';
+import { EmptyState } from './ui/EmptyState';
 
 interface CompletedTasksModalProps {
   isOpen: boolean;
@@ -53,14 +54,12 @@ export const CompletedTasksModal = ({
       level={2}
       parentModalRef={parentModalRef}
     >
-          {rootTasks.length === 0 ? (
-            <div className="text-center py-12 text-text-secondary-light dark:text-text-secondary-dark">
-              <p className="mb-2">No completed tasks found.</p>
-              <p className="text-sm">
-                Completed tasks will appear here once you check them off.
-              </p>
-            </div>
-          ) : (
+                {rootTasks.length === 0 ? (
+                  <EmptyState
+                    title="No completed tasks found."
+                    description="Completed tasks will appear here once you check them off."
+                  />
+                ) : (
             <div className="space-y-3">
               {rootTasks.map((task) => {
                 const subtasks = getSubtasks(completedTasks, task.id);

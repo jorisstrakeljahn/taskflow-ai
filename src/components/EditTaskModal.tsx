@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Task, TaskPriority, TaskStatus } from '../types/task';
-import { IconClose } from './Icons';
 import { CustomSelect } from './CustomSelect';
+import { ResponsiveModal } from './ResponsiveModal';
 
 interface EditTaskModalProps {
   isOpen: boolean;
@@ -31,9 +31,6 @@ export const EditTaskModal = ({
   const [customGroup, setCustomGroup] = useState('');
   const [useCustomGroup, setUseCustomGroup] = useState(false);
   const [priority, setPriority] = useState<TaskPriority | ''>('');
-  const [startY, setStartY] = useState<number | null>(null);
-  const [currentY, setCurrentY] = useState<number | null>(null);
-  const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isOpen && task) {
@@ -44,8 +41,6 @@ export const EditTaskModal = ({
       setCustomGroup('');
       setUseCustomGroup(false);
       setPriority(task.priority || '');
-      setCurrentY(null);
-      setStartY(null);
     }
   }, [isOpen, task]);
 
@@ -67,82 +62,21 @@ export const EditTaskModal = ({
     }
   };
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (modalRef.current) {
-      const rect = modalRef.current.getBoundingClientRect();
-      if (e.touches[0].clientY - rect.top < 60) {
-        setStartY(e.touches[0].clientY);
-      }
-    }
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (startY !== null && modalRef.current) {
-      const deltaY = e.touches[0].clientY - startY;
-      if (deltaY > 0) {
-        setCurrentY(deltaY);
-      }
-    }
-  };
-
-  const handleTouchEnd = () => {
-    if (currentY !== null && currentY > 100) {
-      onClose();
-    } else {
-      setCurrentY(0);
-    }
-    setStartY(null);
-    setTimeout(() => setCurrentY(null), 300);
-  };
-
   if (!isOpen || !task) return null;
-
-  const translateY = currentY !== null ? currentY : 0;
-  const isMobile = window.innerWidth <= 768;
-  const transformStyle = isMobile
-    ? `translateY(${translateY}px)`
-    : `translate(-50%, calc(-50% + ${translateY}px))`;
 
   // Combine existing groups with common default groups, removing duplicates
   const allGroups = Array.from(new Set([...existingGroups, 'General', 'Work', 'Personal', 'Health', 'Finance'])).sort();
 
   return (
-    <>
-      <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[1000] animate-in fade-in"
-        onClick={onClose}
-      />
-      <div
-        ref={modalRef}
-        className={`fixed ${
-          isMobile
-            ? 'bottom-0 left-0 right-0 rounded-t-3xl h-[90vh]'
-            : 'top-1/2 left-1/2 max-w-lg w-full rounded-2xl h-[90vh]'
-        } bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark shadow-2xl z-[1001] flex flex-col touch-pan-y`}
-        style={{
-          transform: transformStyle,
-          transition: currentY === null ? 'transform 0.3s ease-out' : 'none',
-        }}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
+    <ResponsiveModal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Edit Task"
+    >
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-4 h-full"
       >
-        <div className="w-10 h-1 bg-gray-300 dark:bg-gray-600 rounded-full mx-auto mt-3 mb-2 cursor-grab active:cursor-grabbing md:hidden" />
-        <div className="flex items-center justify-between px-5 pb-4 border-b border-border-light dark:border-border-dark">
-          <h2 className="text-xl font-semibold text-text-primary-light dark:text-text-primary-dark">
-            Edit Task
-          </h2>
-          <button
-            onClick={onClose}
-            className="p-2 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-          >
-            <IconClose className="w-5 h-5" />
-          </button>
-        </div>
-        <form
-          onSubmit={handleSubmit}
-          className="flex-1 overflow-y-auto px-5 py-5 flex flex-col gap-4"
-        >
           <div className="flex flex-col gap-2">
             <label
               htmlFor="edit-task-title"
@@ -264,7 +198,7 @@ export const EditTaskModal = ({
             />
           </div>
 
-          <div className="flex gap-3 pt-2 mt-auto">
+          <div className="flex gap-3 pt-2 mt-4">
             <button
               type="button"
               onClick={onClose}
@@ -280,8 +214,7 @@ export const EditTaskModal = ({
             </button>
           </div>
         </form>
-      </div>
-    </>
+    </ResponsiveModal>
   );
 };
 

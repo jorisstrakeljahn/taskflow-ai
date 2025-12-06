@@ -3,6 +3,7 @@ import { Task, TaskPriority, TaskStatus } from '../types/task';
 import { ResponsiveModal } from './ResponsiveModal';
 import { TaskFormFields } from './ui/TaskFormFields';
 import { Button } from './ui/Button';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface EditTaskModalProps {
   isOpen: boolean;
@@ -25,6 +26,7 @@ export const EditTaskModal = ({
   existingGroups,
   onSubmit,
 }: EditTaskModalProps) => {
+  const { t } = useLanguage();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState<TaskStatus>('open');
@@ -69,7 +71,7 @@ export const EditTaskModal = ({
     <ResponsiveModal
       isOpen={isOpen}
       onClose={onClose}
-      title="Edit Task"
+      title={t('modals.editTask.title')}
     >
       <form
         onSubmit={handleSubmit}
@@ -102,10 +104,10 @@ export const EditTaskModal = ({
 
         <div className="flex gap-3 pt-2 mt-4">
           <Button type="button" variant="secondary" fullWidth onClick={onClose}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button type="submit" variant="primary" fullWidth>
-            Save Changes
+            {t('modals.editTask.saveChanges')}
           </Button>
         </div>
       </form>

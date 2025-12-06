@@ -4,6 +4,7 @@ import { Input } from './Input';
 import { Textarea } from './Textarea';
 import { DEFAULT_GROUPS, TASK_PRIORITIES, TASK_STATUSES } from '../../constants/taskConstants';
 import { LABEL_CLASSES } from '../../constants/uiConstants';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface TaskFormFieldsProps {
   title: string;
@@ -54,6 +55,7 @@ export const TaskFormFields = ({
   groupId = 'task-group',
   priorityId = 'task-priority',
 }: TaskFormFieldsProps) => {
+  const { t } = useLanguage();
   // Combine existing groups with default groups
   const allGroups = Array.from(
     new Set([...existingGroups, ...DEFAULT_GROUPS])
@@ -63,20 +65,20 @@ export const TaskFormFields = ({
     <>
       <Input
         id={titleId}
-        label="Title *"
+        label={`${t('task.title')} *`}
         value={title}
         onChange={(e) => onTitleChange(e.target.value)}
-        placeholder="e.g. Prepare presentation"
+        placeholder={t('modals.createTask.titlePlaceholder')}
         required
         autoFocus
       />
 
       <Textarea
         id={descriptionId}
-        label="Description"
+        label={t('task.description')}
         value={description}
         onChange={(e) => onDescriptionChange(e.target.value)}
-        placeholder="Optional description..."
+        placeholder={t('modals.createTask.descriptionPlaceholder')}
         rows={4}
       />
 
@@ -87,13 +89,16 @@ export const TaskFormFields = ({
               htmlFor={statusId}
               className={LABEL_CLASSES}
             >
-              Status
+              {t('task.status')}
             </label>
             <CustomSelect
               id={statusId}
               value={status}
               onChange={(value) => onStatusChange(value as TaskStatus)}
-              options={TASK_STATUSES.map((s) => ({ value: s.value, label: s.label }))}
+              options={TASK_STATUSES.map((s) => {
+                const statusKey = s.value === 'in_progress' ? 'inProgress' : s.value;
+                return { value: s.value, label: t(`status.${statusKey}`) };
+              })}
             />
           </div>
         )}
@@ -103,13 +108,16 @@ export const TaskFormFields = ({
             htmlFor={priorityId}
             className={LABEL_CLASSES}
           >
-            Priority
+            {t('task.priority')}
           </label>
           <CustomSelect
             id={priorityId}
             value={priority}
             onChange={(value) => onPriorityChange(value as TaskPriority | '')}
-            options={TASK_PRIORITIES.map((p) => ({ value: p.value, label: p.label }))}
+            options={TASK_PRIORITIES.map((p) => ({ 
+              value: p.value, 
+              label: p.value ? t(`priority.${p.value}`) : t('priority.none')
+            }))}
           />
         </div>
       </div>
@@ -119,7 +127,7 @@ export const TaskFormFields = ({
           htmlFor={groupId}
           className={LABEL_CLASSES}
         >
-          Group
+          {t('task.group')}
         </label>
         <div className="flex flex-col gap-2">
           <CustomSelect
@@ -149,14 +157,14 @@ export const TaskFormFields = ({
                   className="w-4 h-4 rounded border-2 border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark text-accent-light dark:text-accent-dark focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark"
                 />
                 <span className="text-sm text-text-secondary-light dark:text-text-secondary-dark">
-                  Use custom group
+                  {t('task.useCustomGroup')}
                 </span>
               </label>
               {useCustomGroup && (
                 <Input
                   value={customGroup}
                   onChange={(e) => onCustomGroupChange(e.target.value)}
-                  placeholder="Enter new group name"
+                  placeholder={t('task.customGroupPlaceholder')}
                 />
               )}
             </>

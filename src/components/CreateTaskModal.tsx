@@ -3,6 +3,7 @@ import { TaskPriority } from '../types/task';
 import { ResponsiveModal } from './ResponsiveModal';
 import { TaskFormFields } from './ui/TaskFormFields';
 import { Button } from './ui/Button';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface CreateTaskModalProps {
   isOpen: boolean;
@@ -20,6 +21,7 @@ export const CreateTaskModal = ({
   onClose,
   onSubmit,
 }: CreateTaskModalProps) => {
+  const { t } = useLanguage();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [group, setGroup] = useState('General');
@@ -51,7 +53,7 @@ export const CreateTaskModal = ({
     <ResponsiveModal
       isOpen={isOpen}
       onClose={onClose}
-      title="Create New Task"
+      title={t('modals.createTask.title')}
     >
       <form
         onSubmit={handleSubmit}
@@ -70,10 +72,10 @@ export const CreateTaskModal = ({
 
         <div className="flex gap-3 pt-2 mt-4">
           <Button type="button" variant="secondary" fullWidth onClick={onClose}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button type="submit" variant="primary" fullWidth>
-            Create
+            {t('modals.createTask.create')}
           </Button>
         </div>
       </form>

@@ -1,0 +1,123 @@
+{
+  "common": {
+    "loading": "Lädt...",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "close": "Schließen",
+    "reset": "Zurücksetzen",
+    "active": "Aktiv"
+  },
+  "header": {
+    "title": "TaskFlow AI"
+  },
+  "task": {
+    "title": "Titel",
+    "description": "Beschreibung",
+    "status": "Status",
+    "priority": "Priorität",
+    "group": "Gruppe",
+    "create": "Neue Aufgabe erstellen",
+    "edit": "Aufgabe bearbeiten",
+    "delete": "Aufgabe löschen",
+    "addSubtask": "Unteraufgabe hinzufügen",
+    "reactivate": "Reaktivieren",
+    "noTasks": "Keine Aufgaben gefunden.",
+    "noTasksDescription": "Nutze den Chat, um neue Aufgaben zu erstellen!",
+    "noCompletedTasks": "Keine abgeschlossenen Aufgaben gefunden.",
+    "noCompletedTasksDescription": "Abgeschlossene Aufgaben erscheinen hier, sobald du sie abhakst.",
+    "loadingTasks": "Lädt Aufgaben...",
+    "subtaskTitle": "Unteraufgabe Titel:",
+    "useCustomGroup": "Eigene Gruppe verwenden",
+    "customGroupPlaceholder": "Neuen Gruppennamen eingeben"
+  },
+  "status": {
+    "open": "Offen",
+    "inProgress": "In Bearbeitung",
+    "done": "Erledigt",
+    "all": "Alle Status"
+  },
+  "priority": {
+    "none": "Keine",
+    "low": "Niedrig",
+    "medium": "Mittel",
+    "high": "Hoch",
+    "all": "Alle Prioritäten"
+  },
+  "filters": {
+    "title": "Filter",
+    "group": "Gruppe",
+    "status": "Status",
+    "priority": "Priorität",
+    "allGroups": "Alle Gruppen",
+    "reset": "Zurücksetzen"
+  },
+  "chat": {
+    "title": "AI Task Chat",
+    "description": "Teile deine Gedanken - ich erstelle strukturierte Aufgaben daraus!",
+    "example": "Beispiel: \"Ich muss morgen die Präsentation fertigstellen, dann einkaufen gehen und den Arzttermin vereinbaren\"",
+    "placeholder": "Schreibe deine Gedanken hier...",
+    "createTasks": "Aufgaben erstellen",
+    "processing": "Verarbeitet..."
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "account": {
+      "title": "Account",
+      "description": "E-Mail, Benutzer-ID, Abmelden",
+      "email": "E-Mail",
+      "userId": "Benutzer-ID",
+      "logout": "Abmelden"
+    },
+    "completedTasks": {
+      "title": "Abgeschlossene Aufgaben",
+      "description": "Alle abgeschlossenen Aufgaben anzeigen",
+      "viewDescription": "Zeige alle deine abgeschlossenen Aufgaben auf einen Blick.",
+      "viewDescriptionDetail": "Du kannst abgeschlossene Aufgaben überprüfen, reaktivieren oder löschen.",
+      "showCompletedTasks": "Abgeschlossene Aufgaben anzeigen",
+      "task": "Aufgabe",
+      "tasks": "Aufgaben"
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Statistiken und Übersicht",
+      "doneToday": "Heute erledigt",
+      "doneThisWeek": "Diese Woche erledigt",
+      "total": "Gesamt"
+    },
+    "appearance": {
+      "title": "Erscheinungsbild",
+      "theme": {
+        "title": "Design",
+        "description": "Wähle zwischen hell, dunkel oder System-Design",
+        "light": "Hell",
+        "dark": "Dunkel",
+        "system": "System"
+      },
+      "primaryColor": {
+        "title": "Primärfarbe",
+        "comingSoon": "Demnächst: Passe die Primärfarbe deiner App an."
+      },
+      "language": {
+        "title": "Sprache",
+        "description": "Wähle deine bevorzugte Sprache",
+        "german": "Deutsch",
+        "english": "Englisch"
+      }
+    }
+  },
+  "modals": {
+    "createTask": {
+      "title": "Neue Aufgabe erstellen",
+      "titlePlaceholder": "z.B. Präsentation vorbereiten",
+      "descriptionPlaceholder": "Optionale Beschreibung...",
+      "create": "Erstellen"
+    },
+    "editTask": {
+      "title": "Aufgabe bearbeiten",
+      "saveChanges": "Änderungen speichern"
+    }
+  }
+}
+

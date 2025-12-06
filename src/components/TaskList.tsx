@@ -9,6 +9,7 @@ import {
 } from '../utils/taskUtils';
 import { TaskFilters } from './TaskFilters';
 import { EmptyState } from './ui/EmptyState';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface TaskListProps {
   tasks: Task[];
@@ -27,6 +28,7 @@ export const TaskList = ({
   onAddSubtask,
   onEdit,
 }: TaskListProps) => {
+  const { t } = useLanguage();
   const [filterGroup, setFilterGroup] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterPriority, setFilterPriority] = useState<string>('all');
@@ -75,7 +77,7 @@ export const TaskList = ({
   }, [filteredTasks]);
 
   const handleAddSubtask = (parentId: string) => {
-    const title = prompt('Subtask title:');
+    const title = prompt(t('task.subtaskTitle'));
     if (title) {
       onAddSubtask(parentId, title);
     }
@@ -99,8 +101,8 @@ export const TaskList = ({
             <div className="flex-1 overflow-y-auto">
               {rootTasks.length === 0 ? (
                 <EmptyState
-                  title="No tasks found."
-                  description="Use the chat to create new tasks!"
+                  title={t('task.noTasks')}
+                  description={t('task.noTasksDescription')}
                 />
               ) : (
           rootTasks.map((task) => {

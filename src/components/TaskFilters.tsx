@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { TaskPriority, TaskStatus } from '../types/task';
 import { CustomSelect } from './CustomSelect';
 import { IconFilter, IconFolder, IconLayers, IconZap, IconChevronDown } from './Icons';
 import { TASK_STATUSES, TASK_PRIORITIES } from '../constants/taskConstants';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface TaskFiltersProps {
   filterGroup: string;
@@ -25,6 +25,7 @@ export const TaskFilters = ({
   onPriorityChange,
   onReset,
 }: TaskFiltersProps) => {
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   
   const hasActiveFilters = 
@@ -45,11 +46,11 @@ export const TaskFilters = ({
         <div className="flex items-center gap-2">
           <IconFilter className="w-5 h-5 text-text-secondary-light dark:text-text-secondary-dark" />
           <span className="font-medium text-text-primary-light dark:text-text-primary-dark">
-            Filters
+            {t('filters.title')}
           </span>
           {hasActiveFilters && (
             <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-accent-light dark:bg-accent-dark text-white">
-              Active
+              {t('common.active')}
             </span>
           )}
         </div>
@@ -62,7 +63,7 @@ export const TaskFilters = ({
               }}
               className="px-2 py-1 text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors"
             >
-              Reset
+              {t('filters.reset')}
             </button>
           )}
           <IconChevronDown
@@ -83,7 +84,7 @@ export const TaskFilters = ({
                 htmlFor="filter-group"
                 className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark"
               >
-                Group
+                {t('filters.group')}
               </label>
             </div>
             <CustomSelect
@@ -91,7 +92,7 @@ export const TaskFilters = ({
               value={filterGroup}
               onChange={onGroupChange}
               options={[
-                { value: 'all', label: 'All Groups' },
+                { value: 'all', label: t('filters.allGroups') },
                 ...groups.map((group) => ({ value: group, label: group })),
               ]}
             />
@@ -105,7 +106,7 @@ export const TaskFilters = ({
                 htmlFor="filter-status"
                 className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark"
               >
-                Status
+                {t('filters.status')}
               </label>
             </div>
             <CustomSelect
@@ -113,8 +114,8 @@ export const TaskFilters = ({
               value={filterStatus}
               onChange={onStatusChange}
               options={[
-                { value: 'all', label: 'All Statuses' },
-                ...TASK_STATUSES.map((s) => ({ value: s.value, label: s.label })),
+                { value: 'all', label: t('status.all') },
+                ...TASK_STATUSES.map((s) => ({ value: s.value, label: t(`status.${s.value}`) })),
               ]}
             />
           </div>
@@ -127,7 +128,7 @@ export const TaskFilters = ({
                 htmlFor="filter-priority"
                 className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark"
               >
-                Priority
+                {t('filters.priority')}
               </label>
             </div>
             <CustomSelect
@@ -135,10 +136,10 @@ export const TaskFilters = ({
               value={filterPriority}
               onChange={onPriorityChange}
               options={[
-                { value: 'all', label: 'All Priorities' },
+                { value: 'all', label: t('priority.all') },
                 ...TASK_PRIORITIES.filter((p) => p.value !== '').map((p) => ({
                   value: p.value,
-                  label: p.label,
+                  label: t(`priority.${p.value}`),
                 })),
               ]}
             />

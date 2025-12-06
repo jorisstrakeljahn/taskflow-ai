@@ -1,0 +1,123 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "reset": "Reset",
+    "active": "Active"
+  },
+  "header": {
+    "title": "TaskFlow AI"
+  },
+  "task": {
+    "title": "Title",
+    "description": "Description",
+    "status": "Status",
+    "priority": "Priority",
+    "group": "Group",
+    "create": "Create New Task",
+    "edit": "Edit Task",
+    "delete": "Delete Task",
+    "addSubtask": "Add Subtask",
+    "reactivate": "Reactivate",
+    "noTasks": "No tasks found.",
+    "noTasksDescription": "Use the chat to create new tasks!",
+    "noCompletedTasks": "No completed tasks found.",
+    "noCompletedTasksDescription": "Completed tasks will appear here once you check them off.",
+    "loadingTasks": "Loading tasks...",
+    "subtaskTitle": "Subtask title:",
+    "useCustomGroup": "Use custom group",
+    "customGroupPlaceholder": "Enter new group name"
+  },
+  "status": {
+    "open": "Open",
+    "inProgress": "In Progress",
+    "done": "Done",
+    "all": "All Statuses"
+  },
+  "priority": {
+    "none": "None",
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+    "all": "All Priorities"
+  },
+  "filters": {
+    "title": "Filters",
+    "group": "Group",
+    "status": "Status",
+    "priority": "Priority",
+    "allGroups": "All Groups",
+    "reset": "Reset"
+  },
+  "chat": {
+    "title": "AI Task Chat",
+    "description": "Share your thoughts - I'll create structured tasks from them!",
+    "example": "Example: \"I need to finish the presentation tomorrow, then go grocery shopping and schedule the doctor appointment\"",
+    "placeholder": "Write your thoughts here...",
+    "createTasks": "Create Tasks",
+    "processing": "Processing..."
+  },
+  "settings": {
+    "title": "Settings",
+    "account": {
+      "title": "Account",
+      "description": "Email, User ID, Logout",
+      "email": "Email",
+      "userId": "User ID",
+      "logout": "Logout"
+    },
+    "completedTasks": {
+      "title": "Completed Tasks",
+      "description": "View all completed tasks",
+      "viewDescription": "View all your completed tasks in one place.",
+      "viewDescriptionDetail": "You can review, reactivate, or delete completed tasks.",
+      "showCompletedTasks": "Show Completed Tasks",
+      "task": "task",
+      "tasks": "tasks"
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Statistics and overview",
+      "doneToday": "Done Today",
+      "doneThisWeek": "Done This Week",
+      "total": "Total"
+    },
+    "appearance": {
+      "title": "Appearance",
+      "theme": {
+        "title": "Theme",
+        "description": "Choose between light, dark, or system design",
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System"
+      },
+      "primaryColor": {
+        "title": "Primary Color",
+        "comingSoon": "Coming soon: Customize your app's primary color."
+      },
+      "language": {
+        "title": "Language",
+        "description": "Choose your preferred language",
+        "german": "German",
+        "english": "English"
+      }
+    }
+  },
+  "modals": {
+    "createTask": {
+      "title": "Create New Task",
+      "titlePlaceholder": "e.g. Prepare presentation",
+      "descriptionPlaceholder": "Optional description...",
+      "create": "Create"
+    },
+    "editTask": {
+      "title": "Edit Task",
+      "saveChanges": "Save Changes"
+    }
+  }
+}
+

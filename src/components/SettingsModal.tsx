@@ -3,12 +3,15 @@ import { IconChevronRight, IconUser, IconBarChart, IconCheckCircle, IconPalette 
 import { SettingsDetailModal, SettingsCategory } from './SettingsDetailModal';
 import { CompletedTasksModal } from './CompletedTasksModal';
 import { ResponsiveModal } from './ResponsiveModal';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface SettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
   onThemeChange: (theme: 'light' | 'dark' | 'system') => void;
   currentTheme: 'light' | 'dark' | 'system';
+  onLanguageChange: (language: 'de' | 'en') => void;
+  currentLanguage: 'de' | 'en';
   onLogout?: () => void;
   onShowCompletedTasks?: () => void;
   completedTasksCount?: number;
@@ -24,6 +27,8 @@ export const SettingsModal = ({
   onClose,
   onThemeChange,
   currentTheme,
+  onLanguageChange,
+  currentLanguage,
   onLogout,
   onShowCompletedTasks,
   completedTasksCount = 0,
@@ -33,6 +38,7 @@ export const SettingsModal = ({
   onDelete = () => {},
   onReactivate = () => {},
 }: SettingsModalProps) => {
+  const { t } = useLanguage();
   const settingsCategories: Array<{
     id: SettingsCategory;
     title: string;
@@ -41,26 +47,26 @@ export const SettingsModal = ({
   }> = [
     {
       id: 'account',
-      title: 'Account',
-      description: 'Email, User ID, Logout',
+      title: t('settings.account.title'),
+      description: t('settings.account.description'),
       icon: <IconUser className="w-5 h-5" />,
     },
     {
       id: 'completed-tasks',
-      title: 'Completed Tasks',
-      description: `${completedTasksCount} completed ${completedTasksCount === 1 ? 'task' : 'tasks'}`,
+      title: t('settings.completedTasks.title'),
+      description: `${completedTasksCount} ${completedTasksCount === 1 ? t('settings.completedTasks.task') : t('settings.completedTasks.tasks')} ${t('settings.completedTasks.description')}`,
       icon: <IconCheckCircle className="w-5 h-5" />,
     },
     {
       id: 'dashboard',
-      title: 'Dashboard',
-      description: 'Statistics and overview',
+      title: t('settings.dashboard.title'),
+      description: t('settings.dashboard.description'),
       icon: <IconBarChart className="w-5 h-5" />,
     },
     {
       id: 'appearance',
-      title: 'Appearance',
-      description: 'Theme, Colors, Language',
+      title: t('settings.appearance.title'),
+      description: `${t('settings.appearance.theme.title')}, ${t('settings.appearance.primaryColor.title')}, ${t('settings.appearance.language.title')}`,
       icon: <IconPalette className="w-5 h-5" />,
     },
   ];
@@ -99,7 +105,7 @@ export const SettingsModal = ({
             onClose();
           }
         }}
-        title="Settings"
+        title={t('settings.title')}
         zIndex={1001}
         offsetRight={0}
         level={1}
@@ -147,6 +153,8 @@ export const SettingsModal = ({
         completedTasksCount={completedTasksCount}
         onThemeChange={onThemeChange}
         currentTheme={currentTheme}
+        onLanguageChange={onLanguageChange}
+        currentLanguage={currentLanguage}
         tasks={tasks}
         parentModalRef={mainModalRef}
       />

@@ -5,6 +5,7 @@ import { getRootTasks, getSubtasks } from '../utils/taskUtils';
 import { ResponsiveModal } from './ResponsiveModal';
 import { Button } from './ui/Button';
 import { EmptyState } from './ui/EmptyState';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface CompletedTasksModalProps {
   isOpen: boolean;
@@ -29,6 +30,7 @@ export const CompletedTasksModal = ({
   onEdit,
   parentModalRef,
 }: CompletedTasksModalProps) => {
+  const { t } = useLanguage();
 
   // Filter only completed tasks
   const completedTasks = useMemo(() => {
@@ -44,22 +46,22 @@ export const CompletedTasksModal = ({
   if (!isOpen) return null;
 
   return (
-    <ResponsiveModal
-      isOpen={isOpen}
-      onClose={onClose}
-      title="Completed Tasks"
-      subtitle={`${completedTasks.length} completed ${completedTasks.length === 1 ? 'task' : 'tasks'}`}
-      zIndex={1003}
-      offsetRight={500}
-      level={2}
-      parentModalRef={parentModalRef}
-    >
-                {rootTasks.length === 0 ? (
-                  <EmptyState
-                    title="No completed tasks found."
-                    description="Completed tasks will appear here once you check them off."
-                  />
-                ) : (
+      <ResponsiveModal
+        isOpen={isOpen}
+        onClose={onClose}
+        title={t('settings.completedTasks.title')}
+        subtitle={`${completedTasks.length} ${completedTasks.length === 1 ? t('settings.completedTasks.task') : t('settings.completedTasks.tasks')}`}
+        zIndex={1003}
+        offsetRight={500}
+        level={2}
+        parentModalRef={parentModalRef}
+      >
+          {rootTasks.length === 0 ? (
+            <EmptyState
+              title={t('task.noCompletedTasks')}
+              description={t('task.noCompletedTasksDescription')}
+            />
+          ) : (
             <div className="space-y-3">
               {rootTasks.map((task) => {
                 const subtasks = getSubtasks(completedTasks, task.id);
@@ -74,15 +76,15 @@ export const CompletedTasksModal = ({
                       subtasks={subtasks}
                       disableStatusChange={true}
                     />
-                        <div className="mt-2 flex justify-end">
-                          <Button
-                            variant="primary"
-                            onClick={() => onReactivate(task.id)}
-                            title="Reactivate task"
-                          >
-                            Reactivate
-                          </Button>
-                        </div>
+                              <div className="mt-2 flex justify-end">
+                                <Button
+                                  variant="primary"
+                                  onClick={() => onReactivate(task.id)}
+                                  title={t('task.reactivate')}
+                                >
+                                  {t('task.reactivate')}
+                                </Button>
+                              </div>
                   </div>
                 );
               })}

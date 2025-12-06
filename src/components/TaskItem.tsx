@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Task, TaskStatus } from '../types/task';
 import { IconEdit, IconTrash } from './Icons';
 import { PRIORITY_COLORS } from '../constants/uiConstants';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface TaskItemProps {
   task: Task;
@@ -26,6 +27,7 @@ export const TaskItem = ({
   level = 0,
   disableStatusChange = false,
 }: TaskItemProps) => {
+  const { t } = useLanguage();
   const [isExpanded, setIsExpanded] = useState(false);
   const [isCompleting, setIsCompleting] = useState(false);
   const [showCheckmark, setShowCheckmark] = useState(task.status === 'done');
@@ -143,7 +145,7 @@ export const TaskItem = ({
                 <button
                   onClick={() => onAddSubtask(task.id)}
                   className="p-2 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                  title="Add subtask"
+                  title={t('task.addSubtask')}
                 >
                   +
                 </button>
@@ -151,14 +153,14 @@ export const TaskItem = ({
               <button
                 onClick={() => onEdit && onEdit(task)}
                 className="p-2 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                title="Edit"
+                title={t('common.edit')}
               >
                 <IconEdit className="w-4 h-4" />
               </button>
               <button
                 onClick={() => onDelete(task.id)}
                 className="p-2 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-                title="Delete"
+                title={t('common.delete')}
               >
                 <IconTrash className="w-4 h-4" />
               </button>

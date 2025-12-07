@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useTasks } from './hooks/useTasks';
+import { useTasksFirebase as useTasks } from './hooks/useTasksFirebase';
 import { useTheme } from './hooks/useTheme';
 import { useLanguage } from './contexts/LanguageContext';
 import { useColor } from './contexts/ColorContext';
@@ -81,25 +81,35 @@ function App() {
     openSubtaskModal(parentId, parentTask?.title || '');
   };
 
-  const handleCreateSubtask = (data: ReturnType<typeof prepareCreateTaskData>) => {
-    if (data.parentId) {
-      const newTask = addTask(data.title, data.group, data.parentId);
+  const handleCreateSubtask = async (data: ReturnType<typeof prepareCreateTaskData>) => {
+    try {
+      if (data.parentId) {
+        const newTask = await addTask(data.title, data.group, data.parentId);
+        if (data.description || data.priority) {
+          await updateTask(newTask.id, {
+            description: data.description,
+            priority: data.priority,
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error creating subtask:', error);
+      alert(`Fehler beim Erstellen der Unteraufgabe: ${error instanceof Error ? error.message : 'Unbekannter Fehler'}`);
+    }
+  };
+
+  const handleCreateTask = async (data: ReturnType<typeof prepareCreateTaskData>) => {
+    try {
+      const newTask = await addTask(data.title, data.group, undefined);
       if (data.description || data.priority) {
-        updateTask(newTask.id, {
+        await updateTask(newTask.id, {
           description: data.description,
           priority: data.priority,
         });
       }
-    }
-  };
-
-  const handleCreateTask = (data: ReturnType<typeof prepareCreateTaskData>) => {
-    const newTask = addTask(data.title, data.group, undefined);
-    if (data.description || data.priority) {
-      updateTask(newTask.id, {
-        description: data.description,
-        priority: data.priority,
-      });
+    } catch (error) {
+      console.error('Error creating task:', error);
+      alert(`Fehler beim Erstellen der Aufgabe: ${error instanceof Error ? error.message : 'Unbekannter Fehler'}`);
     }
   };
 
@@ -109,13 +119,13 @@ function App() {
 
     try {
       const parsedTasks = parseChatMessage(message);
-      parsedTasks.forEach((task) => {
-        addTask(task.title, task.group, task.parentId);
-      });
+      for (const task of parsedTasks) {
+        await addTask(task.title, task.group, task.parentId);
+      }
     } catch (error) {
       console.error('Error parsing message:', error);
       // Fallback: create a single task from the message
-      addTask(message, 'General');
+      await addTask(message, 'General');
     }
   };
 

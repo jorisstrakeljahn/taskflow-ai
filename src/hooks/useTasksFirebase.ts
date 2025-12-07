@@ -25,51 +25,78 @@ export const useTasksFirebase = () => {
   useEffect(() => {
     if (!userId || authLoading) {
       setIsLoading(authLoading);
+      setTasks([]); // Clear tasks when user logs out
       return;
     }
 
     setIsLoading(true);
+    console.log('Setting up Firestore subscription for userId:', userId);
 
     // Subscribe to real-time updates
     const unsubscribe = taskService.subscribeToTasks(userId, (updatedTasks) => {
+      console.log('Firestore update received:', updatedTasks.length, 'tasks');
       setTasks(updatedTasks);
       setIsLoading(false);
     });
 
-    return () => unsubscribe();
+    // Error handling for subscription
+    // Note: onSnapshot doesn't have a direct error callback,
+    // but errors will appear in the console
+
+    return () => {
+      console.log('Unsubscribing from Firestore updates');
+      unsubscribe();
+    };
   }, [userId, authLoading]);
 
   const addTask = useCallback(
     async (title: string, group: string = 'General', parentId?: string) => {
-      if (!userId) throw new Error('User must be authenticated');
+      if (!userId) {
+        const error = new Error('User must be authenticated');
+        console.error('addTask error:', error);
+        throw error;
+      }
+
+      console.log('addTask called:', { title, group, parentId, userId });
 
       const newTask = createTaskUtil(title, userId, group, parentId);
       
-      // Set order to the end of root tasks
-      const rootTasks = tasks.filter((t) => !t.parentId);
-      const maxOrder = rootTasks.length > 0 
-        ? Math.max(...rootTasks.map((t) => t.order ?? 0))
-        : -1;
+      // Set order to the end of root tasks (only for root tasks, not subtasks)
+      let order = 0;
+      if (!parentId) {
+        const rootTasks = tasks.filter((t) => !t.parentId);
+        const maxOrder = rootTasks.length > 0 
+          ? Math.max(...rootTasks.map((t) => t.order ?? 0))
+          : -1;
+        order = maxOrder + 1;
+      }
       
-      const taskWithOrder = { ...newTask, order: maxOrder + 1 };
+      const taskWithOrder = { ...newTask, order };
+      console.log('Task prepared for Firestore:', taskWithOrder);
       
-      // Create task in Firestore (returns the Firestore document ID)
-      const firestoreId = await taskService.createTask(taskWithOrder);
-      
-      // Create task object with Firestore ID
-      const taskWithFirestoreId = { ...taskWithOrder, id: firestoreId };
-      
-      // Note: Real-time listener will update the state automatically
-      // But we can do optimistic update for immediate UI feedback
-      setTasks((prev) => {
-        // Check if task already exists (from real-time update)
-        if (prev.some((t) => t.id === firestoreId)) {
-          return prev;
-        }
-        return [...prev, taskWithFirestoreId];
-      });
-      
-      return taskWithFirestoreId;
+      try {
+        // Create task in Firestore (returns the Firestore document ID)
+        const firestoreId = await taskService.createTask(taskWithOrder);
+        console.log('Task created in Firestore with ID:', firestoreId);
+        
+        // Create task object with Firestore ID
+        const taskWithFirestoreId = { ...taskWithOrder, id: firestoreId };
+        
+        // Note: Real-time listener will update the state automatically
+        // But we can do optimistic update for immediate UI feedback
+        setTasks((prev) => {
+          // Check if task already exists (from real-time update)
+          if (prev.some((t) => t.id === firestoreId)) {
+            return prev;
+          }
+          return [...prev, taskWithFirestoreId];
+        });
+        
+        return taskWithFirestoreId;
+      } catch (error) {
+        console.error('Error in addTask:', error);
+        throw error;
+      }
     },
     [tasks, userId]
   );

@@ -41,6 +41,14 @@ if (getApps().length === 0) {
 export const auth: Auth = getAuth(app);
 export const db: Firestore = getFirestore(app);
 
+// Log Firestore initialization (only in development)
+if (import.meta.env.DEV) {
+  console.log('Firestore initialized:', {
+    projectId: firebaseConfig.projectId,
+    authDomain: firebaseConfig.authDomain,
+  });
+}
+
 // Initialize Analytics (only in browser environment)
 // Analytics is optional and initialized asynchronously
 export const initAnalytics = async (): Promise<Analytics | null> => {

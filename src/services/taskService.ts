@@ -39,14 +39,38 @@ const timestampToDate = (timestamp: Timestamp | Date | undefined): Date | undefi
 
 /**
  * Convert Task to Firestore format
+ * Removes undefined values (Firestore doesn't accept undefined)
  */
 const taskToFirestore = (task: Task): DocumentData => {
-  return {
-    ...task,
+  const data: DocumentData = {
+    title: task.title,
+    status: task.status,
+    group: task.group,
+    userId: task.userId,
     createdAt: task.createdAt ? Timestamp.fromDate(task.createdAt) : Timestamp.now(),
     updatedAt: task.updatedAt ? Timestamp.fromDate(task.updatedAt) : Timestamp.now(),
-    completedAt: task.completedAt ? Timestamp.fromDate(task.completedAt) : null,
+    // Ensure order is always a number (default to 0 if undefined)
+    order: task.order ?? 0,
   };
+
+  // Only include optional fields if they have values (not undefined)
+  if (task.description !== undefined && task.description !== null && task.description !== '') {
+    data.description = task.description;
+  }
+  
+  if (task.priority !== undefined && task.priority !== null) {
+    data.priority = task.priority;
+  }
+  
+  if (task.parentId !== undefined && task.parentId !== null) {
+    data.parentId = task.parentId;
+  }
+  
+  if (task.completedAt !== undefined && task.completedAt !== null) {
+    data.completedAt = Timestamp.fromDate(task.completedAt);
+  }
+
+  return data;
 };
 
 /**
@@ -55,9 +79,16 @@ const taskToFirestore = (task: Task): DocumentData => {
 const firestoreToTask = (docData: DocumentData, id: string): Task => {
   return {
     id,
-    ...docData,
-    createdAt: timestampToDate(docData.createdAt),
-    updatedAt: timestampToDate(docData.updatedAt),
+    title: docData.title,
+    status: docData.status || 'open',
+    group: docData.group || 'General',
+    userId: docData.userId,
+    description: docData.description || undefined,
+    priority: docData.priority || undefined,
+    parentId: docData.parentId || undefined,
+    order: docData.order ?? 0,
+    createdAt: timestampToDate(docData.createdAt) || new Date(),
+    updatedAt: timestampToDate(docData.updatedAt) || new Date(),
     completedAt: timestampToDate(docData.completedAt),
   } as Task;
 };
@@ -69,12 +100,18 @@ export const getTasks = async (userId: string): Promise<Task[]> => {
   const tasksRef = collection(db, TASKS_COLLECTION);
   const q = query(
     tasksRef,
-    where('userId', '==', userId),
-    orderBy('order', 'asc')
+    where('userId', '==', userId)
   );
 
   const querySnapshot = await getDocs(q);
-  return querySnapshot.docs.map((doc) => firestoreToTask(doc.data(), doc.id));
+  const tasks = querySnapshot.docs.map((doc) => firestoreToTask(doc.data(), doc.id));
+  
+  // Sort by order (handle undefined orders)
+  return tasks.sort((a, b) => {
+    const orderA = a.order ?? 0;
+    const orderB = b.order ?? 0;
+    return orderA - orderB;
+  });
 };
 
 /**
@@ -85,15 +122,22 @@ export const subscribeToTasks = (
   callback: (tasks: Task[]) => void
 ): Unsubscribe => {
   const tasksRef = collection(db, TASKS_COLLECTION);
+  // Note: We can't use orderBy('order') directly because order might be undefined
+  // We'll sort in memory instead
   const q = query(
     tasksRef,
-    where('userId', '==', userId),
-    orderBy('order', 'asc')
+    where('userId', '==', userId)
   );
 
   return onSnapshot(q, (snapshot: QuerySnapshot<DocumentData>) => {
     const tasks = snapshot.docs.map((doc) => firestoreToTask(doc.data(), doc.id));
-    callback(tasks);
+    // Sort by order (handle undefined orders)
+    const sortedTasks = tasks.sort((a, b) => {
+      const orderA = a.order ?? 0;
+      const orderB = b.order ?? 0;
+      return orderA - orderB;
+    });
+    callback(sortedTasks);
   });
 };
 
@@ -102,22 +146,44 @@ export const subscribeToTasks = (
  * Returns the Firestore document ID
  */
 export const createTask = async (task: Omit<Task, 'id'>): Promise<string> => {
-  const tasksRef = collection(db, TASKS_COLLECTION);
-  const taskData = taskToFirestore(task as Task);
-  const docRef = await addDoc(tasksRef, taskData);
-  // Firestore automatically generates the ID, which we use as the task ID
-  return docRef.id;
+  try {
+    const tasksRef = collection(db, TASKS_COLLECTION);
+    const taskData = taskToFirestore(task as Task);
+    console.log('Creating task in Firestore:', { taskData, collection: TASKS_COLLECTION });
+    const docRef = await addDoc(tasksRef, taskData);
+    console.log('Task created successfully with ID:', docRef.id);
+    // Firestore automatically generates the ID, which we use as the task ID
+    return docRef.id;
+  } catch (error) {
+    console.error('Error creating task in Firestore:', error);
+    throw error;
+  }
 };
 
 /**
  * Update an existing task
+ * Removes undefined values (Firestore doesn't accept undefined)
  */
 export const updateTask = async (taskId: string, updates: Partial<Task>): Promise<void> => {
   const taskRef = doc(db, TASKS_COLLECTION, taskId);
   const updateData: DocumentData = {
-    ...updates,
     updatedAt: Timestamp.now(),
   };
+
+  // Only include fields that are defined (not undefined)
+  if (updates.title !== undefined) updateData.title = updates.title;
+  if (updates.description !== undefined) {
+    updateData.description = updates.description || null;
+  }
+  if (updates.status !== undefined) updateData.status = updates.status;
+  if (updates.group !== undefined) updateData.group = updates.group;
+  if (updates.priority !== undefined) {
+    updateData.priority = updates.priority || null;
+  }
+  if (updates.parentId !== undefined) {
+    updateData.parentId = updates.parentId || null;
+  }
+  if (updates.order !== undefined) updateData.order = updates.order ?? 0;
 
   // Handle date fields
   if (updates.completedAt !== undefined) {

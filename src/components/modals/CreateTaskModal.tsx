@@ -14,7 +14,7 @@ interface CreateTaskModalProps {
     group: string;
     priority?: TaskPriority;
     parentId?: string;
-  }) => void;
+  }) => Promise<void> | void;
   parentId?: string;
   parentTaskTitle?: string;
   isSubModal?: boolean;
@@ -47,17 +47,22 @@ export const CreateTaskModal = ({
     }
   }, [isOpen]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (title.trim()) {
-      onSubmit({
-        title: title.trim(),
-        description: description.trim() || undefined,
-        group,
-        priority: priority || undefined,
-        parentId,
-      });
-      onClose();
+      try {
+        await onSubmit({
+          title: title.trim(),
+          description: description.trim() || undefined,
+          group,
+          priority: priority || undefined,
+          parentId,
+        });
+        onClose();
+      } catch (error) {
+        // Error is handled in App.tsx, but don't close modal on error
+        console.error('Error in handleSubmit:', error);
+      }
     }
   };
 

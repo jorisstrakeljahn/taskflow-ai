@@ -15,7 +15,7 @@ interface TaskListProps {
   tasks: Task[];
   onStatusChange: (id: string, status: Task['status']) => void;
   onUpdate: (id: string, updates: Partial<Task>) => void;
-  onDelete: (id: string) => void;
+  onDelete: (task: Task) => void;
   onAddSubtask: (parentId: string) => void;
   onEdit?: (task: Task) => void;
 }

@@ -6,6 +6,7 @@ import { ResponsiveModal } from './ResponsiveModal';
 import { SettingsCategoryButton } from './settings/SettingsCategoryButton';
 import { useLanguage } from '../contexts/LanguageContext';
 import { PrimaryColor } from '../contexts/ColorContext';
+import { Task } from '../types/task';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -22,7 +23,7 @@ interface SettingsModalProps {
   tasks?: any[];
   onStatusChange?: (id: string, status: any) => void;
   onUpdate?: (id: string, updates: any) => void;
-  onDelete?: (id: string) => void;
+  onDelete?: (task: Task) => void;
   onReactivate?: (id: string) => void;
 }
 

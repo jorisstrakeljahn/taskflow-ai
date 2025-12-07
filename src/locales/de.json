@@ -127,6 +127,15 @@
       "subtasks": "Unteraufgaben",
       "noSubtasks": "Noch keine Unteraufgaben",
       "addSubtask": "Unteraufgabe hinzufügen"
+    },
+    "deleteTask": {
+      "title": "Aufgabe löschen",
+      "subtaskTitle": "Unteraufgabe löschen",
+      "description": "Möchtest du die Aufgabe \"{taskTitle}\" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "descriptionWithSubtasks": "Möchtest du die Aufgabe \"{taskTitle}\" und alle {subtasksCount} Unteraufgaben wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "subtaskDescription": "Möchtest du die Unteraufgabe \"{taskTitle}\" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "warning": "Diese Aktion kann nicht rückgängig gemacht werden und die Aufgabe wird dauerhaft gelöscht.",
+      "confirm": "Löschen"
     }
   }
 }

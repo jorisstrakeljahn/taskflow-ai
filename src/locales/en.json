@@ -127,6 +127,15 @@
       "subtasks": "Subtasks",
       "noSubtasks": "No subtasks yet",
       "addSubtask": "Add Subtask"
+    },
+    "deleteTask": {
+      "title": "Delete Task",
+      "subtaskTitle": "Delete Subtask",
+      "description": "Are you sure you want to delete the task \"{taskTitle}\"? This action cannot be undone.",
+      "descriptionWithSubtasks": "Are you sure you want to delete the task \"{taskTitle}\" and all {subtasksCount} subtasks? This action cannot be undone.",
+      "subtaskDescription": "Are you sure you want to delete the subtask \"{taskTitle}\"? This action cannot be undone.",
+      "warning": "This action cannot be undone and the task will be permanently deleted.",
+      "confirm": "Delete"
     }
   }
 }

@@ -6,7 +6,7 @@ interface TaskItemProps {
   task: Task;
   onStatusChange: (id: string, status: TaskStatus) => void;
   onUpdate: (id: string, updates: Partial<Task>) => void;
-  onDelete: (id: string) => void;
+  onDelete: (task: Task) => void;
   onAddSubtask?: (parentId: string) => void;
   onEdit?: (task: Task) => void;
   subtasks?: Task[];
@@ -104,7 +104,7 @@ export const TaskItem = ({
             <TaskActions
               onAddSubtask={onAddSubtask}
               onEdit={onEdit ? () => onEdit(task) : undefined}
-              onDelete={() => onDelete(task.id)}
+              onDelete={() => onDelete(task)}
               parentId={task.id}
             />
         </>
@@ -122,7 +122,7 @@ export const TaskItem = ({
               task={subtask}
               onStatusChange={onStatusChange}
               onUpdate={onUpdate}
-              onDelete={onDelete}
+              onDelete={(task) => onDelete(task)}
               onEdit={onEdit}
               level={level + 1}
               disableStatusChange={disableStatusChange}

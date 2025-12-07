@@ -9,11 +9,13 @@ import { EditTaskModal } from './components/EditTaskModal';
 import { ChatModal } from './components/ChatModal';
 import { SettingsModal } from './components/SettingsModal';
 import { CompletedTasksModal } from './components/CompletedTasksModal';
+import { DeleteTaskConfirmModal } from './components/DeleteTaskConfirmModal';
 import { SpeedDial } from './components/SpeedDial';
 import { Header } from './components/Header';
 import { LoadingSpinner } from './components/ui/LoadingSpinner';
 import { TaskPriority, Task, TaskStatus } from './types/task';
 import { parseChatMessage } from './utils/aiParser';
+import { getSubtasks } from './utils/taskUtils';
 
 function App() {
   const {
@@ -36,9 +38,12 @@ function App() {
   const [isSubtaskModalOpen, setIsSubtaskModalOpen] = useState(false);
   const [subtaskParentId, setSubtaskParentId] = useState<string | null>(null);
   const [subtaskParentTitle, setSubtaskParentTitle] = useState<string>('');
+  const [isDeleteConfirmModalOpen, setIsDeleteConfirmModalOpen] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
   const editTaskModalRef = useRef<HTMLDivElement>(null);
 
   // Block body scroll when any modal is open (including settings detail modal)
+  // Note: DeleteConfirmModal handles its own body scroll lock
   const isAnyModalOpen = isTaskModalOpen || isEditTaskModalOpen || isChatModalOpen || isSettingsModalOpen || isCompletedTasksModalOpen || isSubtaskModalOpen;
 
   // Get all existing groups from tasks
@@ -133,6 +138,18 @@ function App() {
     setIsEditTaskModalOpen(true);
   };
 
+  const handleDeleteTask = (task: Task) => {
+    setTaskToDelete(task);
+    setIsDeleteConfirmModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (taskToDelete) {
+      deleteTask(taskToDelete.id);
+      setTaskToDelete(null);
+    }
+  };
+
   const handleSaveTaskEdit = (id: string, data: {
     title: string;
     description?: string;
@@ -172,7 +189,7 @@ function App() {
             tasks={tasks}
             onStatusChange={changeTaskStatus}
             onUpdate={updateTask}
-            onDelete={deleteTask}
+            onDelete={handleDeleteTask}
             onAddSubtask={handleOpenSubtaskModal}
             onEdit={handleEditTask}
           />
@@ -240,7 +257,7 @@ function App() {
         tasks={tasks}
         onStatusChange={changeTaskStatus}
         onUpdate={updateTask}
-        onDelete={deleteTask}
+        onDelete={handleDeleteTask}
         onReactivate={handleReactivateTask}
       />
       {/* Keep this for direct access from other places if needed */}
@@ -250,9 +267,19 @@ function App() {
         tasks={tasks}
         onStatusChange={changeTaskStatus}
         onUpdate={updateTask}
-        onDelete={deleteTask}
+        onDelete={handleDeleteTask}
         onReactivate={handleReactivateTask}
         onEdit={handleEditTask}
+      />
+      <DeleteTaskConfirmModal
+        isOpen={isDeleteConfirmModalOpen}
+        onClose={() => {
+          setIsDeleteConfirmModalOpen(false);
+          setTaskToDelete(null);
+        }}
+        onConfirm={handleConfirmDelete}
+        task={taskToDelete}
+        subtasksCount={taskToDelete ? getSubtasks(tasks, taskToDelete.id).length : 0}
       />
     </div>
   );

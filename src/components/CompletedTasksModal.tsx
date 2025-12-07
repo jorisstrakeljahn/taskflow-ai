@@ -13,7 +13,7 @@ interface CompletedTasksModalProps {
   tasks: Task[];
   onStatusChange: (id: string, status: TaskStatus) => void;
   onUpdate: (id: string, updates: Partial<Task>) => void;
-  onDelete: (id: string) => void;
+  onDelete: (task: Task) => void;
   onReactivate: (id: string) => void;
   onEdit?: (task: Task) => void;
   parentModalRef?: React.RefObject<HTMLDivElement>; // Reference to parent modal
@@ -71,7 +71,7 @@ export const CompletedTasksModal = ({
                       task={task}
                       onStatusChange={onStatusChange}
                       onUpdate={onUpdate}
-                      onDelete={onDelete}
+                      onDelete={() => onDelete(task)}
                       onEdit={onEdit}
                       subtasks={subtasks}
                       disableStatusChange={true}

@@ -27,24 +27,44 @@ export const useTaskFilters = (tasks: Task[]): UseTaskFiltersReturn => {
 
     // Filter by status
     if (filterStatus === 'done') {
-      // Only show completed tasks
-      filtered = getTasksByStatus(filtered, 'done');
+      // Only show completed root tasks (not subtasks)
+      filtered = getTasksByStatus(filtered, 'done').filter((t) => !t.parentId);
     } else if (filterStatus !== 'all') {
-      // Filter by specific status and exclude completed tasks
-      filtered = getTasksByStatus(filtered, filterStatus as Task['status']);
+      // Filter by specific status and exclude completed root tasks (but keep all subtasks)
+      const rootTasks = filtered.filter((t) => !t.parentId);
+      const subtasks = filtered.filter((t) => t.parentId);
+      
+      const filteredRootTasks = getTasksByStatus(rootTasks, filterStatus as Task['status']);
+      // Always include all subtasks, regardless of their status
+      filtered = [...filteredRootTasks, ...subtasks];
     } else {
-      // Show all except completed tasks when "all" is selected
-      filtered = filtered.filter((t) => t.status !== 'done');
+      // Show all root tasks except completed ones, but always show all subtasks
+      const rootTasks = filtered.filter((t) => !t.parentId);
+      const subtasks = filtered.filter((t) => t.parentId);
+      
+      const filteredRootTasks = rootTasks.filter((t) => t.status !== 'done');
+      // Always include all subtasks, regardless of their status
+      filtered = [...filteredRootTasks, ...subtasks];
     }
 
-    // Filter by group
+    // Filter by group (only affects root tasks, subtasks are always shown)
     if (filterGroup !== 'all') {
-      filtered = getTasksByGroup(filtered, filterGroup);
+      const rootTasks = filtered.filter((t) => !t.parentId);
+      const subtasks = filtered.filter((t) => t.parentId);
+      
+      const filteredRootTasks = getTasksByGroup(rootTasks, filterGroup);
+      // Always include all subtasks
+      filtered = [...filteredRootTasks, ...subtasks];
     }
 
-    // Filter by priority
+    // Filter by priority (only affects root tasks, subtasks are always shown)
     if (filterPriority !== 'all') {
-      filtered = filtered.filter((t) => t.priority === filterPriority);
+      const rootTasks = filtered.filter((t) => !t.parentId);
+      const subtasks = filtered.filter((t) => t.parentId);
+      
+      const filteredRootTasks = rootTasks.filter((t) => t.priority === filterPriority);
+      // Always include all subtasks
+      filtered = [...filteredRootTasks, ...subtasks];
     }
 
     return filtered;

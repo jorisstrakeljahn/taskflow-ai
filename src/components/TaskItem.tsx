@@ -37,22 +37,29 @@ export const TaskItem = ({
     }
     
     const newStatus = e.target.checked ? 'done' : 'open';
+    const isSubtask = !!task.parentId;
+    
     if (newStatus === 'done') {
       // First show the checkmark
       setShowCheckmark(true);
-      // Wait briefly so the checkmark is visible (300ms)
-      setTimeout(() => {
-        // Then start the fade-out animation
-        setIsCompleting(true);
-        // Update status after animation
+      
+      if (isSubtask) {
+        // For subtasks: just update status without animation (they stay visible)
         setTimeout(() => {
           onStatusChange(task.id, newStatus);
-          // Reset animation after short pause
+        }, 200);
+      } else {
+        // For root tasks: use the fade-out animation
+        setTimeout(() => {
+          setIsCompleting(true);
           setTimeout(() => {
-            setIsCompleting(false);
-          }, 100);
-        }, 400);
-      }, 300);
+            onStatusChange(task.id, newStatus);
+            setTimeout(() => {
+              setIsCompleting(false);
+            }, 100);
+          }, 400);
+        }, 300);
+      }
     } else {
       setShowCheckmark(false);
       setIsCompleting(false);

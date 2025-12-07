@@ -33,7 +33,14 @@ export const getTasksByGroup = (tasks: Task[], group: string): Task[] => {
 };
 
 export const getSubtasks = (tasks: Task[], parentId: string): Task[] => {
-  return tasks.filter((task) => task.parentId === parentId);
+  const subtasks = tasks.filter((task) => task.parentId === parentId);
+  // Sort: non-completed tasks first, completed tasks at the end
+  return subtasks.sort((a, b) => {
+    if (a.status === 'done' && b.status !== 'done') return 1;
+    if (a.status !== 'done' && b.status === 'done') return -1;
+    // If both have the same status, sort by createdAt (newest first)
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
 };
 
 export const getRootTasks = (tasks: Task[]): Task[] => {

@@ -30,15 +30,16 @@ import {
   GripVertical,
   type LucideProps,
 } from 'lucide-react';
+import type { CSSProperties, ComponentType } from 'react';
 
 interface IconProps {
   className?: string;
   size?: number;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
 }
 
 // Wrapper component to maintain consistent API
-const createIcon = (IconComponent: React.ComponentType<LucideProps>) => {
+const createIcon = (IconComponent: ComponentType<LucideProps>) => {
   return ({ className = '', size = 24, style }: IconProps) => (
     <IconComponent 
       className={className} 

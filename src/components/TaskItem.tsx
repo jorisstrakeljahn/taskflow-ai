@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import type { MouseEvent, ChangeEvent } from 'react';
 import { Task, TaskStatus } from '../types/task';
 import { TaskCheckbox, TaskBadges, TaskActions, TaskCard } from './tasks';
 import { useTaskSwipe } from '../hooks/useTaskSwipe';
@@ -44,7 +45,7 @@ export const TaskItem = ({
   });
 
   // Context menu handler
-  const handleContextMenu = (e: React.MouseEvent) => {
+  const handleContextMenu = (e: MouseEvent) => {
     e.preventDefault();
     setContextMenuPosition({ x: e.clientX, y: e.clientY });
     setShowContextMenu(true);
@@ -59,7 +60,7 @@ export const TaskItem = ({
     }
   }, [showContextMenu]);
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (disableStatusChange) {
       // Prevent status change when disabled
       e.preventDefault();

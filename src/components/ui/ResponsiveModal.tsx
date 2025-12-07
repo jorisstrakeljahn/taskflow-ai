@@ -1,4 +1,5 @@
-import { useRef, useEffect, useState, ReactNode, forwardRef, useImperativeHandle } from 'react';
+import React, { useRef, useEffect, useState, forwardRef, useImperativeHandle } from 'react';
+import type { ReactNode, RefObject } from 'react';
 import { IconClose } from '../Icons';
 import { useModalDrag } from '../../hooks/useModalDrag';
 
@@ -11,7 +12,7 @@ interface ResponsiveModalProps {
   zIndex?: number; // For stacking modals
   offsetRight?: number; // For stacking on desktop (offset in pixels)
   level?: number; // 1 = main modal, 2 = submodal (affects height on mobile and parent modal behavior)
-  parentModalRef?: React.RefObject<HTMLDivElement>; // Reference to parent modal for scaling/opacity
+  parentModalRef?: RefObject<HTMLDivElement>; // Reference to parent modal for scaling/opacity
 }
 
 export const ResponsiveModal = forwardRef<HTMLDivElement, ResponsiveModalProps>(({

@@ -1,4 +1,4 @@
-import React from 'react';
+import type { RefObject } from 'react';
 import { Dashboard } from '../Dashboard';
 import { ResponsiveModal } from '../ui/ResponsiveModal';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -25,7 +25,7 @@ interface SettingsDetailModalProps {
   onPrimaryColorChange: (color: PrimaryColor) => void;
   currentPrimaryColor: PrimaryColor;
   tasks?: any[];
-  parentModalRef?: React.RefObject<HTMLDivElement>; // Reference to parent modal
+  parentModalRef?: RefObject<HTMLDivElement>; // Reference to parent modal
 }
 
 export const SettingsDetailModal = ({

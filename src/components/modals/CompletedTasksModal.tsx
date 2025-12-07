@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import type { RefObject } from 'react';
 import { Task, TaskStatus } from '../../types/task';
 import { TaskItem } from '../TaskItem';
 import { getRootTasks, getSubtasks } from '../../utils/taskUtils';
@@ -16,7 +17,7 @@ interface CompletedTasksModalProps {
   onDelete: (task: Task) => void;
   onReactivate: (id: string) => void;
   onEdit?: (task: Task) => void;
-  parentModalRef?: React.RefObject<HTMLDivElement>; // Reference to parent modal
+  parentModalRef?: RefObject<HTMLDivElement>; // Reference to parent modal
 }
 
 export const CompletedTasksModal = ({

@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import type { ReactNode } from 'react';
 import { IconUser, IconBarChart, IconCheckCircle, IconPalette } from '../Icons';
 import { SettingsDetailModal, SettingsCategory } from './SettingsDetailModal';
 import { CompletedTasksModal } from './CompletedTasksModal';
@@ -50,7 +51,7 @@ export const SettingsModal = ({
     id: SettingsCategory;
     title: string;
     description: string;
-    icon?: React.ReactNode;
+    icon?: ReactNode;
   }> = [
     {
       id: 'account',

@@ -1,4 +1,4 @@
-import { IconEdit, IconTrash, IconLayers } from '../Icons';
+import { IconEdit, IconTrash, IconAddSubtask } from '../Icons';
 import { useLanguage } from '../../contexts/LanguageContext';
 
 interface TaskActionsProps {
@@ -28,7 +28,7 @@ export const TaskActions = ({
           title={t('task.addSubtask')}
           aria-label={t('task.addSubtask')}
         >
-          <IconLayers className="w-4 h-4" />
+          <IconAddSubtask className="w-4 h-4" />
         </button>
       )}
       {onEdit && (

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { IconEdit, IconTrash, IconLayers } from '../Icons';
+import { IconEdit, IconTrash, IconAddSubtask } from '../Icons';
 import { useLanguage } from '../../contexts/LanguageContext';
 
 interface TaskQuickActionsProps {
@@ -114,7 +114,7 @@ export const TaskQuickActions = ({
       ? [
           {
             label: t('task.addSubtask'),
-            icon: IconLayers,
+            icon: IconAddSubtask,
             onClick: () => {
               onAddSubtask();
               onClose();

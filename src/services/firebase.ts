@@ -11,16 +11,23 @@ import { getFirestore, Firestore } from 'firebase/firestore';
 import { getAnalytics, Analytics, isSupported } from 'firebase/analytics';
 
 // Firebase configuration
-// You can use environment variables (recommended for production) or direct config
+// IMPORTANT: All values must come from environment variables
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyDOuvEQN0DqYqQugkSZehrM2_GImEBRe8U",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "taskflow-ai-3fbef.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "taskflow-ai-3fbef",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "taskflow-ai-3fbef.firebasestorage.app",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "568801941092",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:568801941092:web:f9e06fe5063489ebd93171",
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "G-4FD8Y5QE5K",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
+
+// Validate that all required environment variables are set
+if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
+  throw new Error(
+    'Firebase configuration is missing. Please set all VITE_FIREBASE_* environment variables in your .env file.'
+  );
+}
 
 // Initialize Firebase (only if not already initialized)
 let app: FirebaseApp;

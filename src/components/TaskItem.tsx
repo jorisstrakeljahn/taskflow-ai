@@ -86,11 +86,11 @@ export const TaskItem = ({
           disabled={disableStatusChange}
           showCheckmark={showCheckmark}
         />
-        <div className="flex-1">
-          {/* Title row with actions */}
-          <div className="flex items-start justify-between gap-2 mb-1">
+        <div className="flex-1 min-w-0">
+          {/* Title row with actions - aligned to first line */}
+          <div className="flex items-start justify-between gap-2">
             <span
-              className={`flex-1 font-semibold text-base ${
+              className={`flex-1 font-semibold text-base leading-tight ${
                 task.status === 'done'
                   ? 'line-through text-text-secondary-light dark:text-text-secondary-dark'
                   : 'text-text-primary-light dark:text-text-primary-dark'

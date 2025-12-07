@@ -29,19 +29,32 @@ export const useTasks = () => {
         try {
           const parsed = JSON.parse(stored);
           const loadedTasks = parseTaskDatesArray(parsed);
-          setTasks(loadedTasks);
+          // Initialize order for tasks that don't have it
+          const tasksWithOrder = loadedTasks.map((task, index) => ({
+            ...task,
+            order: task.order !== undefined ? task.order : index,
+          }));
+          setTasks(tasksWithOrder);
         } catch (error) {
           console.error('Error parsing stored tasks:', error);
           // Fallback to sample tasks
           const sample = await loadSampleTasks();
-          setTasks(sample);
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(sample));
+          const tasksWithOrder = sample.map((task, index) => ({
+            ...task,
+            order: index,
+          }));
+          setTasks(tasksWithOrder);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(tasksWithOrder));
         }
       } else {
         // Load sample tasks if localStorage is empty
         const sample = await loadSampleTasks();
-        setTasks(sample);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(sample));
+        const tasksWithOrder = sample.map((task, index) => ({
+          ...task,
+          order: index,
+        }));
+        setTasks(tasksWithOrder);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(tasksWithOrder));
       }
       setIsLoading(false);
     };
@@ -56,9 +69,15 @@ export const useTasks = () => {
   const addTask = useCallback(
     (title: string, group: string = 'General', parentId?: string) => {
       const newTask = createTask(title, DEFAULT_USER_ID, group, parentId);
-      const newTasks = [...tasks, newTask];
+      // Set order to the end of root tasks (or subtasks if parentId exists)
+      const rootTasks = tasks.filter((t) => !t.parentId);
+      const maxOrder = rootTasks.length > 0 
+        ? Math.max(...rootTasks.map((t) => t.order ?? 0))
+        : -1;
+      const taskWithOrder = { ...newTask, order: maxOrder + 1 };
+      const newTasks = [...tasks, taskWithOrder];
       saveTasks(newTasks);
-      return newTask;
+      return taskWithOrder;
     },
     [tasks, saveTasks]
   );
@@ -96,9 +115,48 @@ export const useTasks = () => {
     [tasks, saveTasks]
   );
 
+  const reorderTasks = useCallback(
+    (activeId: string, overId: string) => {
+      const activeTask = tasks.find((t) => t.id === activeId);
+      const overTask = tasks.find((t) => t.id === overId);
+      
+      if (!activeTask || !overTask || activeTask.parentId || overTask.parentId) {
+        return; // Only allow reordering root tasks
+      }
+
+      const rootTasks = tasks.filter((t) => !t.parentId).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+      const activeIndex = rootTasks.findIndex((t) => t.id === activeId);
+      const overIndex = rootTasks.findIndex((t) => t.id === overId);
+
+      if (activeIndex === -1 || overIndex === -1) return;
+
+      const newRootTasks = [...rootTasks];
+      const [removed] = newRootTasks.splice(activeIndex, 1);
+      newRootTasks.splice(overIndex, 0, removed);
+
+      // Update order values
+      const updatedTasks = tasks.map((task) => {
+        if (task.parentId) return task; // Keep subtasks unchanged
+        
+        const newIndex = newRootTasks.findIndex((t) => t.id === task.id);
+        if (newIndex !== -1) {
+          return { ...task, order: newIndex, updatedAt: new Date() };
+        }
+        return task;
+      });
+
+      saveTasks(updatedTasks);
+    },
+    [tasks, saveTasks]
+  );
+
   const resetToSampleTasks = useCallback(async () => {
     const sample = await loadSampleTasks();
-    saveTasks(sample);
+    const tasksWithOrder = sample.map((task, index) => ({
+      ...task,
+      order: index,
+    }));
+    saveTasks(tasksWithOrder);
   }, [saveTasks]);
 
   return {
@@ -108,6 +166,7 @@ export const useTasks = () => {
     updateTask,
     changeTaskStatus,
     deleteTask,
+    reorderTasks,
     resetToSampleTasks,
   };
 };

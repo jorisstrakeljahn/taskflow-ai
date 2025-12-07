@@ -52,7 +52,10 @@
     "status": "Status",
     "priority": "Priority",
     "allGroups": "All Groups",
-    "reset": "Reset"
+    "reset": "Reset",
+    "reorder": "Reorder",
+    "dragModeOn": "Enable drag mode to reorder tasks",
+    "dragModeOff": "Disable drag mode"
   },
   "chat": {
     "title": "AI Task Chat",

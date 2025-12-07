@@ -25,6 +25,7 @@ function App() {
     updateTask,
     changeTaskStatus,
     deleteTask,
+    reorderTasks,
   } = useTasks();
   const { theme, setThemePreference } = useTheme();
   const { language, setLanguage } = useLanguage();
@@ -192,6 +193,7 @@ function App() {
             onDelete={handleDeleteTask}
             onAddSubtask={handleOpenSubtaskModal}
             onEdit={handleEditTask}
+            onReorder={reorderTasks}
           />
         )}
       </main>

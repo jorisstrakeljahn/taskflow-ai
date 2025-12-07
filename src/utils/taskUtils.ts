@@ -37,7 +37,16 @@ export const getSubtasks = (tasks: Task[], parentId: string): Task[] => {
 };
 
 export const getRootTasks = (tasks: Task[]): Task[] => {
-  return tasks.filter((task) => !task.parentId);
+  const rootTasks = tasks.filter((task) => !task.parentId);
+  // Sort by order if available, otherwise by createdAt
+  return rootTasks.sort((a, b) => {
+    if (a.order !== undefined && b.order !== undefined) {
+      return a.order - b.order;
+    }
+    if (a.order !== undefined) return -1;
+    if (b.order !== undefined) return 1;
+    return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+  });
 };
 
 export const getTasksByStatus = (tasks: Task[], status: TaskStatus): Task[] => {

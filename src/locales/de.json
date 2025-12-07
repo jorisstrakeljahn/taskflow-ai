@@ -52,7 +52,10 @@
     "status": "Status",
     "priority": "Priorität",
     "allGroups": "Alle Gruppen",
-    "reset": "Zurücksetzen"
+    "reset": "Zurücksetzen",
+    "reorder": "Neu ordnen",
+    "dragModeOn": "Drag-Modus aktivieren, um Aufgaben neu zu ordnen",
+    "dragModeOff": "Drag-Modus deaktivieren"
   },
   "chat": {
     "title": "AI Task Chat",

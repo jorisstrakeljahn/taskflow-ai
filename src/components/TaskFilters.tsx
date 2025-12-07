@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { IconFilter, IconFolder, IconLayers, IconZap, IconChevronDown } from './Icons';
+import { IconFilter, IconFolder, IconLayers, IconZap, IconChevronDown, IconGripVertical } from './Icons';
 import { FilterField } from './filters/FilterField';
+import { Toggle } from './ui/Toggle';
 import { TASK_STATUSES, TASK_PRIORITIES } from '../constants/taskConstants';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useColor } from '../contexts/ColorContext';
@@ -15,6 +16,8 @@ interface TaskFiltersProps {
   onStatusChange: (value: string) => void;
   onPriorityChange: (value: string) => void;
   onReset: () => void;
+  isDragMode?: boolean;
+  onDragModeToggle?: (enabled: boolean) => void;
 }
 
 export const TaskFilters = ({
@@ -26,6 +29,8 @@ export const TaskFilters = ({
   onStatusChange,
   onPriorityChange,
   onReset,
+  isDragMode = false,
+  onDragModeToggle,
 }: TaskFiltersProps) => {
   const { t } = useLanguage();
   const { getColorValue } = useColor();
@@ -84,7 +89,17 @@ export const TaskFilters = ({
       </button>
 
       {isOpen && (
-        <div className="px-4 py-4 space-y-4 bg-card-light dark:bg-card-dark border-t border-border-light dark:border-border-dark">
+        <div className="px-4 py-3 space-y-3 bg-card-light dark:bg-card-dark border-t border-border-light dark:border-border-dark">
+          {onDragModeToggle && (
+            <div className="pb-2 border-b border-border-light dark:border-border-dark">
+              <Toggle
+                checked={isDragMode}
+                onChange={onDragModeToggle}
+                icon={<IconGripVertical className="w-4 h-4" size={16} />}
+                alignRight={true}
+              />
+            </div>
+          )}
           <FilterField
             id="filter-group"
             label={t('filters.group')}

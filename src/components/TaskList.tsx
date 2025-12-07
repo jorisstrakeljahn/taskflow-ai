@@ -1,6 +1,19 @@
 import { useMemo, useState } from 'react';
 import { Task } from '../types/task';
-import { TaskItem } from './TaskItem';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import {
   getRootTasks,
   getSubtasks,
@@ -10,6 +23,7 @@ import {
 import { TaskFilters } from './TaskFilters';
 import { EmptyState } from './ui/EmptyState';
 import { useLanguage } from '../contexts/LanguageContext';
+import { SortableTaskItem } from './tasks/SortableTaskItem';
 
 interface TaskListProps {
   tasks: Task[];
@@ -18,6 +32,7 @@ interface TaskListProps {
   onDelete: (task: Task) => void;
   onAddSubtask: (parentId: string) => void;
   onEdit?: (task: Task) => void;
+  onReorder?: (activeId: string, overId: string) => void;
 }
 
 export const TaskList = ({
@@ -27,11 +42,33 @@ export const TaskList = ({
   onDelete,
   onAddSubtask,
   onEdit,
+  onReorder,
 }: TaskListProps) => {
   const { t } = useLanguage();
   const [filterGroup, setFilterGroup] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterPriority, setFilterPriority] = useState<string>('all');
+  const [isDragMode, setIsDragMode] = useState<boolean>(false);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        delay: 150, // Wait 150ms before drag starts (long press)
+        tolerance: 5, // Allow 5px of movement during delay
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id && onReorder) {
+      onReorder(active.id as string, over.id as string);
+    }
+  };
 
   const groups = useMemo(() => {
     const uniqueGroups = Array.from(new Set(tasks.map((t) => t.group)));
@@ -92,6 +129,8 @@ export const TaskList = ({
           onStatusChange={setFilterStatus}
           onPriorityChange={setFilterPriority}
           onReset={handleResetFilters}
+          isDragMode={isDragMode}
+          onDragModeToggle={setIsDragMode}
         />
       </div>
 
@@ -102,22 +141,34 @@ export const TaskList = ({
                   description={t('task.noTasksDescription')}
                 />
               ) : (
-          rootTasks.map((task) => {
-            const subtasks = getSubtasks(filteredTasks, task.id);
-            return (
-              <TaskItem
-                key={task.id}
-                task={task}
-                onStatusChange={onStatusChange}
-                onUpdate={onUpdate}
-                onDelete={onDelete}
-                onAddSubtask={handleAddSubtask}
-                onEdit={onEdit}
-                subtasks={subtasks}
-              />
-            );
-          })
-        )}
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={handleDragEnd}
+                >
+                  <SortableContext
+                    items={rootTasks.map((t) => t.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {rootTasks.map((task) => {
+                      const subtasks = getSubtasks(filteredTasks, task.id);
+                      return (
+                        <SortableTaskItem
+                          key={task.id}
+                          task={task}
+                          onStatusChange={onStatusChange}
+                          onUpdate={onUpdate}
+                          onDelete={onDelete}
+                          onAddSubtask={handleAddSubtask}
+                          onEdit={onEdit}
+                          subtasks={subtasks}
+                          showDragHandle={isDragMode}
+                        />
+                      );
+                    })}
+                  </SortableContext>
+                </DndContext>
+              )}
       </div>
     </div>
   );

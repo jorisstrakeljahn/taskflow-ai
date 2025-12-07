@@ -13,6 +13,7 @@ export interface Task {
   updatedAt: Date;
   completedAt?: Date;
   userId: string;
+  order?: number; // Order for drag & drop sorting
 }
 
 export interface TaskGroup {

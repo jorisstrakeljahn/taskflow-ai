@@ -1,101 +1,127 @@
 # TaskFlow AI
 
-A personal task manager with AI support - similar to "Cursor, but for tasks".
+> A modern, AI-powered task management application with real-time synchronization across devices.
+
+TaskFlow AI is a personal task manager that combines the simplicity of a to-do list with the power of AI. Dump your thoughts into a chat interface, and watch them transform into structured, actionable tasks.
 
 ## ✨ Features
 
-- **Fast Capture**: Quick brain-dump of thoughts into chat
-- **AI Parsing**: Automatic conversion of unstructured thoughts into clean tasks
-- **Task Management**: Full CRUD operations for tasks
-- **Subtasks**: Hierarchical task structure with subtasks
-- **Groups & Filters**: Filter and organize tasks by groups
-- **Dashboard**: Overview of completed tasks (today/this week)
-- **Dark Mode**: Support for light, dark, and system design
-- **Mobile-First**: Responsive design for Mac and smartphone
-- **Local Storage**: Persistent storage in browser (later Firebase)
+- **🤖 AI-Powered Task Creation**: Convert unstructured thoughts into clean, organized tasks
+- **📋 Full Task Management**: Create, edit, delete, and organize tasks with full CRUD operations
+- **🌳 Subtask Support**: Hierarchical task structure with unlimited nesting
+- **🏷️ Smart Organization**: Group tasks by category
+- **🔍 Advanced Filtering**: Filter by status, priority, and group
+- **🌓 Dark Mode**: Light, dark, and system theme support
+- **🎨 Customizable**: Choose from 10+ accent colors
+- **🌍 Internationalization**: English and German support
+- **📱 Mobile-First Design**: Optimized for smartphones and tablets
+- **⚡ Real-Time Sync**: Firebase-powered synchronization across devices
+- **🔄 Drag & Drop**: Intuitive task reordering
 
-## 🛠️ Tech Stack
+## 🚀 Quick Start
 
-- **React 18** with TypeScript
-- **Vite** as build tool
-- **Tailwind CSS** for styling (mobile-first, responsive)
-- **LocalStorage** for persistence (temporary)
+### Prerequisites
+
+- Node.js 18+ and npm
+- Firebase account (for production)
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/taskflow-ai.git
+cd taskflow-ai
+
+# Install dependencies
+npm install
+
+# Copy environment variables template
+cp .env.example .env
+
+# Edit .env and add your Firebase configuration
+# See docs/firebase-setup.md for detailed instructions
+```
+
+### Development
+
+```bash
+# Start development server
+npm run dev
+
+# The app will be available at http://localhost:5173
+```
+
+### Build & Deploy
+
+```bash
+# Build for production
+npm run build
+
+# Deploy to Firebase Hosting
+npm run deploy
+```
 
 ## 📁 Project Structure
 
 ```
-src/
-├── components/              # React components
-│   ├── TaskList.tsx         # Main list of all tasks with filters
-│   ├── TaskItem.tsx         # Individual task with edit function
-│   ├── Dashboard.tsx        # Statistics dashboard
-│   ├── CreateTaskModal.tsx  # Modal for creating tasks
-│   ├── ChatModal.tsx        # Modal for AI chat
-│   ├── SettingsModal.tsx    # Settings (Dark Mode, Account)
-│   └── SpeedDial.tsx        # Floating Action Button menu
-├── hooks/
-│   ├── useTasks.ts          # Custom hook for task management
-│   └── useTheme.ts          # Custom hook for dark mode
-├── types/
-│   └── task.ts              # TypeScript definitions
-├── utils/
-│   ├── taskUtils.ts         # Helper functions for tasks
-│   └── aiParser.ts          # AI parser (simulated, later real AI)
-├── App.tsx                  # Main app component
-├── main.tsx                 # Entry point
-└── index.css                # Tailwind CSS imports
+taskflow-ai/
+├── docs/                      # Documentation
+│   ├── code-quality.md       # Code quality guidelines
+│   ├── firebase-setup.md     # Firebase setup instructions
+│   ├── features.md           # Feature documentation
+│   └── development.md        # Development guide
+├── src/
+│   ├── components/           # React components
+│   ├── contexts/            # React contexts
+│   ├── hooks/               # Custom hooks
+│   ├── services/            # Firebase services
+│   └── utils/               # Utility functions
+└── package.json
 ```
 
-## 🚀 Installation
+## 📚 Documentation
 
-```bash
-npm install
+Comprehensive documentation is available in the `docs/` directory:
+
+- **[Firebase Setup](docs/firebase-setup.md)** - Complete Firebase configuration guide
+- **[Features](docs/features.md)** - Detailed feature documentation
+- **[Development](docs/development.md)** - Development guide and best practices
+- **[Code Quality](docs/code-quality.md)** - ESLint, Prettier, and guidelines
+
+## 🔧 Available Scripts
+
+| Command              | Description                                 |
+| -------------------- | ------------------------------------------- |
+| `npm run dev`        | Start development server                    |
+| `npm run build`      | Build for production                        |
+| `npm run lint`       | Run ESLint                                  |
+| `npm run lint:fix`   | Fix ESLint errors automatically             |
+| `npm run format`     | Format code with Prettier                   |
+| `npm run type-check` | Run TypeScript type checking                |
+| `npm run check`      | Run all checks (type-check + lint + format) |
+| `npm run deploy`     | Build and deploy to Firebase Hosting        |
+
+## 🛠️ Tech Stack
+
+- **React 18** - UI library
+- **TypeScript** - Type safety
+- **Vite** - Build tool
+- **Tailwind CSS** - Styling
+- **Firebase** - Backend (Auth, Firestore, Hosting)
+- **Lucide React** - Icons
+
+## 🔐 Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
 ```
 
-## 💻 Development
-
-```bash
-npm run dev
-```
-
-The app runs on `http://localhost:5173`
-
-## 📦 Build
-
-```bash
-npm run build
-```
-
-## 📋 Task Model
-
-Each task has the following properties:
-
-- `id`: Unique ID
-- `title`: Short, clear title
-- `description`: Optional longer notes
-- `status`: `open` | `in_progress` | `done`
-- `priority`: `low` | `medium` | `high` (optional)
-- `group`: String like "Work", "Personal", "Health" (for filtering)
-- `parentId`: Optional; if set, this is a subtask
-- `createdAt`, `updatedAt`, `completedAt`: Timestamps
-- `userId`: Task owner (for multi-user support)
-
-## 🎨 Design
-
-- **Minimalist design** with matte colors
-- **Dark Mode** with system detection
-- **Mobile-First** approach
-- **Smooth animations** and transitions
-- **Touch-optimized** for smartphones
-
-## 🔜 Next Steps
-
-- [ ] Real AI integration (OpenAI API or similar)
-- [ ] Firebase integration for sync
-- [ ] Authentication
-- [ ] Extended features (reminders, planning, collaboration)
-- [ ] PWA support for mobile app experience
-
-## 📝 License
-
-MIT
+**Built with ❤️ using React, TypeScript, and Firebase**

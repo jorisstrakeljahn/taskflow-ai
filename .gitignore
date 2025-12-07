@@ -60,3 +60,9 @@ Thumbs.db
 *.njsproj
 *.sln
 
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+

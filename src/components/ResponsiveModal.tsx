@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState, ReactNode, forwardRef, useImperativeHandle } from 'react';
 import { IconClose } from './Icons';
+import { useModalDrag } from '../hooks/useModalDrag';
 
 interface ResponsiveModalProps {
   isOpen: boolean;
@@ -25,12 +26,24 @@ export const ResponsiveModal = forwardRef<HTMLDivElement, ResponsiveModalProps>(
   parentModalRef,
 }, ref) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const [startY, setStartY] = useState<number | null>(null);
-  const [currentY, setCurrentY] = useState<number | null>(null);
-  const [startX, setStartX] = useState<number | null>(null);
-  const [currentX, setCurrentX] = useState<number | null>(null);
   const [isInitialMount, setIsInitialMount] = useState(true);
   const modalRef = useRef<HTMLDivElement>(null);
+
+  const {
+    currentY,
+    currentX,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
+    handleMouseDown,
+    handleMouseMove,
+    handleMouseUp,
+  } = useModalDrag({
+    isOpen,
+    isMobile,
+    onClose,
+    modalRef,
+  });
 
   // Expose modal ref to parent component
   useImperativeHandle(ref, () => modalRef.current!);
@@ -46,10 +59,6 @@ export const ResponsiveModal = forwardRef<HTMLDivElement, ResponsiveModalProps>(
 
   useEffect(() => {
     if (isOpen) {
-      setCurrentY(null);
-      setStartY(null);
-      setCurrentX(null);
-      setStartX(null);
       setIsInitialMount(true);
       
       // Trigger slide-in animation after mount (small delay to ensure initial render)
@@ -94,84 +103,6 @@ export const ResponsiveModal = forwardRef<HTMLDivElement, ResponsiveModalProps>(
     };
   }, [isOpen, level, parentModalRef, isMobile]);
 
-  // Touch handlers for mobile (swipe down) and desktop (swipe left from right edge)
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (isMobile && modalRef.current) {
-      const rect = modalRef.current.getBoundingClientRect();
-      if (e.touches[0].clientY - rect.top < 60) {
-        setStartY(e.touches[0].clientY);
-      }
-    } else if (!isMobile && modalRef.current) {
-      const rect = modalRef.current.getBoundingClientRect();
-      // Allow drag from right edge (last 20px) or anywhere on the panel
-      if (e.touches[0].clientX >= rect.right - 20) {
-        setStartX(e.touches[0].clientX);
-      }
-    }
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (isMobile && startY !== null && modalRef.current) {
-      const deltaY = e.touches[0].clientY - startY;
-      if (deltaY > 0) {
-        setCurrentY(deltaY);
-      }
-    } else if (!isMobile && startX !== null) {
-      // On desktop, dragging left (negative delta) should close the panel
-      const deltaX = startX - e.touches[0].clientX;
-      if (deltaX > 0) {
-        setCurrentX(deltaX);
-      }
-    }
-  };
-
-  const handleTouchEnd = () => {
-    if (isMobile && currentY !== null && currentY > 100) {
-      onClose();
-    } else if (!isMobile && currentX !== null && currentX > 100) {
-      onClose();
-    } else {
-      setCurrentY(0);
-      setCurrentX(0);
-    }
-    setStartY(null);
-    setStartX(null);
-    setTimeout(() => {
-      setCurrentY(null);
-      setCurrentX(null);
-    }, 300);
-  };
-
-  // Mouse handlers for desktop (drag from right)
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (!isMobile && modalRef.current) {
-      const rect = modalRef.current.getBoundingClientRect();
-      if (e.clientX - rect.left < 20 || rect.right - e.clientX < 20) {
-        setStartX(e.clientX);
-      }
-    }
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isMobile && startX !== null) {
-      const deltaX = startX - e.clientX;
-      if (deltaX > 0) {
-        setCurrentX(deltaX);
-      }
-    }
-  };
-
-  const handleMouseUp = () => {
-    if (!isMobile && currentX !== null && currentX > 100) {
-      onClose();
-    } else {
-      setCurrentX(0);
-    }
-    setStartX(null);
-    setTimeout(() => {
-      setCurrentX(null);
-    }, 300);
-  };
 
   if (!isOpen) return null;
 

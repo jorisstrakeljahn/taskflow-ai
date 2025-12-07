@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { IconTask, IconChat, IconPlus, IconClose } from './Icons';
-import { useColor } from '../contexts/ColorContext';
-import { useTheme } from '../hooks/useTheme';
+import { useAccentColor } from '../hooks/useAccentColor';
 
 interface SpeedDialProps {
   onTaskClick: () => void;
@@ -10,10 +9,7 @@ interface SpeedDialProps {
 
 export const SpeedDial = ({ onTaskClick, onChatClick }: SpeedDialProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { getColorValue } = useColor();
-  const { theme } = useTheme();
-  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  const accentColor = getColorValue(isDark ? 'dark' : 'light');
+  const { accentColor } = useAccentColor();
 
   const handleMainClick = () => {
     setIsOpen(!isOpen);

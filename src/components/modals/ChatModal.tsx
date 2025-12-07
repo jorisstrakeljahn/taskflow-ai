@@ -1,9 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
-import { ResponsiveModal } from './ResponsiveModal';
-import { Button } from './ui/Button';
-import { useLanguage } from '../contexts/LanguageContext';
-import { useColor } from '../contexts/ColorContext';
-import { useTheme } from '../hooks/useTheme';
+import React, { useState, useEffect, useRef } from 'react';
+import { ResponsiveModal } from '../ResponsiveModal';
+import { Button } from '../ui/Button';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { useAccentColor } from '../../hooks/useAccentColor';
 
 interface ChatModalProps {
   isOpen: boolean;
@@ -17,10 +16,7 @@ export const ChatModal = ({
   onSendMessage,
 }: ChatModalProps) => {
   const { t } = useLanguage();
-  const { getColorValue } = useColor();
-  const { theme } = useTheme();
-  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  const accentColor = getColorValue(isDark ? 'dark' : 'light');
+  const { accentColor } = useAccentColor();
   const [message, setMessage] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);

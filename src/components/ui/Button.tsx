@@ -1,6 +1,5 @@
 import { ButtonHTMLAttributes, ReactNode } from 'react';
-import { useColor } from '../../contexts/ColorContext';
-import { useTheme } from '../../hooks/useTheme';
+import { useAccentColor } from '../../hooks/useAccentColor';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'danger';
@@ -15,10 +14,7 @@ export const Button = ({
   children,
   ...props
 }: ButtonProps) => {
-  const { getColorValue } = useColor();
-  const { theme } = useTheme();
-  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  const accentColor = getColorValue(isDark ? 'dark' : 'light');
+  const { accentColor } = useAccentColor();
   
   const baseStyles =
     'px-4 py-3 rounded-lg font-medium transition-all min-h-[44px] disabled:opacity-50 disabled:cursor-not-allowed';

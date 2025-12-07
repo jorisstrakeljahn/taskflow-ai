@@ -1,5 +1,4 @@
-import { useColor } from '../../contexts/ColorContext';
-import { useTheme } from '../../hooks/useTheme';
+import { useAccentColor } from '../../hooks/useAccentColor';
 
 interface TaskCheckboxProps {
   checked: boolean;
@@ -14,10 +13,7 @@ export const TaskCheckbox = ({
   disabled = false,
   showCheckmark = false,
 }: TaskCheckboxProps) => {
-  const { getColorValue } = useColor();
-  const { theme } = useTheme();
-  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  const accentColor = getColorValue(isDark ? 'dark' : 'light');
+  const { accentColor } = useAccentColor();
 
   return (
     <div className="relative mt-0.5 flex-shrink-0">

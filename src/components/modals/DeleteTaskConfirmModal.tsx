@@ -1,7 +1,7 @@
-import { CenteredModal } from './ui/CenteredModal';
-import { Button } from './ui/Button';
-import { useLanguage } from '../contexts/LanguageContext';
-import { Task } from '../types/task';
+import { CenteredModal } from '../ui/CenteredModal';
+import { Button } from '../ui/Button';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { Task } from '../../types/task';
 
 interface DeleteTaskConfirmModalProps {
   isOpen: boolean;

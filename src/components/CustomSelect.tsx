@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { IconChevronRight } from './Icons';
-import { useColor } from '../contexts/ColorContext';
-import { useTheme } from '../hooks/useTheme';
+import { useAccentColor } from '../hooks/useAccentColor';
 
 interface CustomSelectOption {
   value: string;
@@ -31,10 +30,7 @@ export const CustomSelect = ({
   const [dropdownPosition, setDropdownPosition] = useState<'bottom' | 'top'>('bottom');
   const containerRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { getColorValue } = useColor();
-  const { theme } = useTheme();
-  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  const accentColor = getColorValue(isDark ? 'dark' : 'light');
+  const { accentColor } = useAccentColor();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {

@@ -1,6 +1,5 @@
 import { forwardRef } from 'react';
-import { useColor } from '../../contexts/ColorContext';
-import { useTheme } from '../../hooks/useTheme';
+import { useAccentColor } from '../../hooks/useAccentColor';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -10,10 +9,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ label, error, className = '', id, ...props }, ref) => {
     const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
-    const { getColorValue } = useColor();
-    const { theme } = useTheme();
-    const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    const accentColor = getColorValue(isDark ? 'dark' : 'light');
+    const { accentColor } = useAccentColor();
 
     return (
       <div className="flex flex-col gap-2">

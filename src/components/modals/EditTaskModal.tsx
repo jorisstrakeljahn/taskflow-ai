@@ -1,11 +1,11 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
-import { Task, TaskPriority, TaskStatus } from '../types/task';
-import { ResponsiveModal } from './ResponsiveModal';
-import { TaskFormFields } from './ui/TaskFormFields';
-import { Button } from './ui/Button';
-import { useLanguage } from '../contexts/LanguageContext';
-import { getSubtasks } from '../utils/taskUtils';
-import { SubtasksSection } from './tasks/SubtasksSection';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { Task, TaskPriority, TaskStatus } from '../../types/task';
+import { ResponsiveModal } from '../ResponsiveModal';
+import { TaskFormFields } from '../ui/TaskFormFields';
+import { Button } from '../ui/Button';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { getSubtasks } from '../../utils/taskUtils';
+import { SubtasksSection } from '../tasks/SubtasksSection';
 
 interface EditTaskModalProps {
   isOpen: boolean;

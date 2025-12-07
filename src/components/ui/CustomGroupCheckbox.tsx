@@ -1,6 +1,5 @@
 import { useLanguage } from '../../contexts/LanguageContext';
-import { useColor } from '../../contexts/ColorContext';
-import { useTheme } from '../../hooks/useTheme';
+import { useAccentColor } from '../../hooks/useAccentColor';
 
 interface CustomGroupCheckboxProps {
   checked: boolean;
@@ -14,10 +13,7 @@ export const CustomGroupCheckbox = ({
   onCustomGroupChange,
 }: CustomGroupCheckboxProps) => {
   const { t } = useLanguage();
-  const { getColorValue } = useColor();
-  const { theme } = useTheme();
-  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  const accentColor = getColorValue(isDark ? 'dark' : 'light');
+  const { accentColor } = useAccentColor();
 
   return (
     <label className="flex items-center gap-2.5 cursor-pointer">

@@ -4,8 +4,7 @@ import { FilterField } from './filters/FilterField';
 import { Toggle } from './ui/Toggle';
 import { TASK_STATUSES, TASK_PRIORITIES } from '../constants/taskConstants';
 import { useLanguage } from '../contexts/LanguageContext';
-import { useColor } from '../contexts/ColorContext';
-import { useTheme } from '../hooks/useTheme';
+import { useAccentColor } from '../hooks/useAccentColor';
 
 interface TaskFiltersProps {
   filterGroup: string;
@@ -33,10 +32,7 @@ export const TaskFilters = ({
   onDragModeToggle,
 }: TaskFiltersProps) => {
   const { t } = useLanguage();
-  const { getColorValue } = useColor();
-  const { theme } = useTheme();
-  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  const accentColor = getColorValue(isDark ? 'dark' : 'light');
+  const { accentColor } = useAccentColor();
   const [isOpen, setIsOpen] = useState(false);
   
   const hasActiveFilters = 

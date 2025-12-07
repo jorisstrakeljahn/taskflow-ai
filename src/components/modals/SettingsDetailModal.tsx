@@ -1,13 +1,13 @@
-import { Dashboard } from './Dashboard';
-import { ResponsiveModal } from './ResponsiveModal';
-import { useLanguage } from '../contexts/LanguageContext';
-import { useColor, PrimaryColor } from '../contexts/ColorContext';
-import { useTheme } from '../hooks/useTheme';
+import React from 'react';
+import { Dashboard } from '../Dashboard';
+import { ResponsiveModal } from '../ResponsiveModal';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { PrimaryColor } from '../../contexts/ColorContext';
 import {
   AccountSection,
   CompletedTasksSection,
   AppearanceSection,
-} from './settings';
+} from '../settings';
 
 export type SettingsCategory = 'account' | 'completed-tasks' | 'dashboard' | 'appearance';
 
@@ -45,10 +45,6 @@ export const SettingsDetailModal = ({
   parentModalRef,
 }: SettingsDetailModalProps) => {
   const { t } = useLanguage();
-  const { getColorValue } = useColor();
-  const { theme } = useTheme();
-  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  const accentColor = getColorValue(isDark ? 'dark' : 'light');
 
   if (!isOpen) return null;
 
@@ -97,7 +93,6 @@ export const SettingsDetailModal = ({
             onLanguageChange={onLanguageChange}
             currentPrimaryColor={currentPrimaryColor}
             onPrimaryColorChange={onPrimaryColorChange}
-            accentColor={accentColor}
           />
         );
 

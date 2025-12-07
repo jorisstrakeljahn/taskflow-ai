@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
-import { useColor } from '../../contexts/ColorContext';
-import { useTheme } from '../../hooks/useTheme';
+import { useAccentColor } from '../../hooks/useAccentColor';
 
 interface ToggleProps {
   checked: boolean;
@@ -19,10 +18,7 @@ export const Toggle = ({
   disabled = false,
   alignRight = false,
 }: ToggleProps) => {
-  const { getColorValue } = useColor();
-  const { theme } = useTheme();
-  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  const accentColor = getColorValue(isDark ? 'dark' : 'light');
+  const { accentColor } = useAccentColor();
 
   return (
     <div className={`flex items-center gap-3 ${alignRight ? 'justify-end' : ''}`}>

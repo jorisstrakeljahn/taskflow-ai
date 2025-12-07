@@ -3,6 +3,7 @@ import { ThemeSelector } from './ThemeSelector';
 import { PrimaryColorSelector } from './PrimaryColorSelector';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { PrimaryColor } from '../../contexts/ColorContext';
+import { useAccentColor } from '../../hooks/useAccentColor';
 
 interface AppearanceSectionProps {
   currentTheme: 'light' | 'dark' | 'system';
@@ -11,7 +12,6 @@ interface AppearanceSectionProps {
   onLanguageChange: (language: 'de' | 'en') => void;
   currentPrimaryColor: PrimaryColor;
   onPrimaryColorChange: (color: PrimaryColor) => void;
-  accentColor: string;
 }
 
 export const AppearanceSection = ({
@@ -21,9 +21,9 @@ export const AppearanceSection = ({
   onLanguageChange,
   currentPrimaryColor,
   onPrimaryColorChange,
-  accentColor,
 }: AppearanceSectionProps) => {
   const { t } = useLanguage();
+  const { accentColor } = useAccentColor();
 
   return (
     <div className="space-y-6">

@@ -17,13 +17,12 @@ import {
 import {
   getRootTasks,
   getSubtasks,
-  getTasksByGroup,
-  getTasksByStatus,
 } from '../utils/taskUtils';
 import { TaskFilters } from './TaskFilters';
 import { EmptyState } from './ui/EmptyState';
 import { useLanguage } from '../contexts/LanguageContext';
 import { SortableTaskItem } from './tasks/SortableTaskItem';
+import { useTaskFilters } from '../hooks/useTaskFilters';
 
 interface TaskListProps {
   tasks: Task[];
@@ -45,10 +44,18 @@ export const TaskList = ({
   onReorder,
 }: TaskListProps) => {
   const { t } = useLanguage();
-  const [filterGroup, setFilterGroup] = useState<string>('all');
-  const [filterStatus, setFilterStatus] = useState<string>('all');
-  const [filterPriority, setFilterPriority] = useState<string>('all');
   const [isDragMode, setIsDragMode] = useState<boolean>(false);
+  
+  const {
+    filterGroup,
+    filterStatus,
+    filterPriority,
+    setFilterGroup,
+    setFilterStatus,
+    setFilterPriority,
+    filteredTasks,
+    resetFilters,
+  } = useTaskFilters(tasks);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -75,40 +82,6 @@ export const TaskList = ({
     return uniqueGroups.sort();
   }, [tasks]);
 
-  const filteredTasks = useMemo(() => {
-    let filtered = tasks;
-
-    // Filter by status
-    if (filterStatus === 'done') {
-      // Only show completed tasks
-      filtered = getTasksByStatus(filtered, 'done');
-    } else if (filterStatus !== 'all') {
-      // Filter by specific status and exclude completed tasks
-      filtered = getTasksByStatus(filtered, filterStatus as Task['status']);
-    } else {
-      // Show all except completed tasks when "all" is selected
-      filtered = filtered.filter((t) => t.status !== 'done');
-    }
-
-    // Filter by group
-    if (filterGroup !== 'all') {
-      filtered = getTasksByGroup(filtered, filterGroup);
-    }
-
-    // Filter by priority
-    if (filterPriority !== 'all') {
-      filtered = filtered.filter((t) => t.priority === filterPriority);
-    }
-
-    return filtered;
-  }, [tasks, filterGroup, filterStatus, filterPriority]);
-
-  const handleResetFilters = () => {
-    setFilterGroup('all');
-    setFilterStatus('all');
-    setFilterPriority('all');
-  };
-
   const rootTasks = useMemo(() => {
     return getRootTasks(filteredTasks);
   }, [filteredTasks]);
@@ -128,7 +101,7 @@ export const TaskList = ({
           onGroupChange={setFilterGroup}
           onStatusChange={setFilterStatus}
           onPriorityChange={setFilterPriority}
-          onReset={handleResetFilters}
+          onReset={resetFilters}
           isDragMode={isDragMode}
           onDragModeToggle={setIsDragMode}
         />

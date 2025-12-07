@@ -1,12 +1,12 @@
-import { useState, useRef } from 'react';
-import { IconUser, IconBarChart, IconCheckCircle, IconPalette } from './Icons';
+import React, { useState, useRef } from 'react';
+import { IconUser, IconBarChart, IconCheckCircle, IconPalette } from '../Icons';
 import { SettingsDetailModal, SettingsCategory } from './SettingsDetailModal';
 import { CompletedTasksModal } from './CompletedTasksModal';
-import { ResponsiveModal } from './ResponsiveModal';
-import { SettingsCategoryButton } from './settings/SettingsCategoryButton';
-import { useLanguage } from '../contexts/LanguageContext';
-import { PrimaryColor } from '../contexts/ColorContext';
-import { Task } from '../types/task';
+import { ResponsiveModal } from '../ResponsiveModal';
+import { SettingsCategoryButton } from '../settings/SettingsCategoryButton';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { PrimaryColor } from '../../contexts/ColorContext';
+import { Task } from '../../types/task';
 
 interface SettingsModalProps {
   isOpen: boolean;

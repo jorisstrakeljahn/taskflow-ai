@@ -30,6 +30,7 @@
     "loadingTasks": "Loading tasks...",
     "subtaskTitle": "Subtask title:",
     "useCustomGroup": "Use custom group",
+    "createNewGroup": "Create new group",
     "customGroupPlaceholder": "Enter new group name"
   },
   "status": {
@@ -114,9 +115,18 @@
       "descriptionPlaceholder": "Optional description...",
       "create": "Create"
     },
+    "createSubtask": {
+      "title": "Add Subtask to",
+      "titlePlaceholder": "e.g. Prepare presentation",
+      "descriptionPlaceholder": "Optional description...",
+      "create": "Add Subtask"
+    },
     "editTask": {
       "title": "Edit Task",
-      "saveChanges": "Save Changes"
+      "saveChanges": "Save Changes",
+      "subtasks": "Subtasks",
+      "noSubtasks": "No subtasks yet",
+      "addSubtask": "Add Subtask"
     }
   }
 }

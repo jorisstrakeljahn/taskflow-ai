@@ -16,7 +16,7 @@ interface TaskListProps {
   onStatusChange: (id: string, status: Task['status']) => void;
   onUpdate: (id: string, updates: Partial<Task>) => void;
   onDelete: (id: string) => void;
-  onAddSubtask: (parentId: string, title: string) => void;
+  onAddSubtask: (parentId: string) => void;
   onEdit?: (task: Task) => void;
 }
 
@@ -77,10 +77,7 @@ export const TaskList = ({
   }, [filteredTasks]);
 
   const handleAddSubtask = (parentId: string) => {
-    const title = prompt(t('task.subtaskTitle'));
-    if (title) {
-      onAddSubtask(parentId, title);
-    }
+    onAddSubtask(parentId);
   };
 
   return (

@@ -30,6 +30,7 @@
     "loadingTasks": "Lädt Aufgaben...",
     "subtaskTitle": "Unteraufgabe Titel:",
     "useCustomGroup": "Eigene Gruppe verwenden",
+    "createNewGroup": "Neue Gruppe anlegen",
     "customGroupPlaceholder": "Neuen Gruppennamen eingeben"
   },
   "status": {
@@ -114,9 +115,18 @@
       "descriptionPlaceholder": "Optionale Beschreibung...",
       "create": "Erstellen"
     },
+    "createSubtask": {
+      "title": "Unteraufgabe zu",
+      "titlePlaceholder": "z.B. Präsentation vorbereiten",
+      "descriptionPlaceholder": "Optionale Beschreibung...",
+      "create": "Unteraufgabe hinzufügen"
+    },
     "editTask": {
       "title": "Aufgabe bearbeiten",
-      "saveChanges": "Änderungen speichern"
+      "saveChanges": "Änderungen speichern",
+      "subtasks": "Unteraufgaben",
+      "noSubtasks": "Noch keine Unteraufgaben",
+      "addSubtask": "Unteraufgabe hinzufügen"
     }
   }
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useTasks } from './hooks/useTasks';
 import { useTheme } from './hooks/useTheme';
 import { useLanguage } from './contexts/LanguageContext';
@@ -33,9 +33,13 @@ function App() {
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isCompletedTasksModalOpen, setIsCompletedTasksModalOpen] = useState(false);
+  const [isSubtaskModalOpen, setIsSubtaskModalOpen] = useState(false);
+  const [subtaskParentId, setSubtaskParentId] = useState<string | null>(null);
+  const [subtaskParentTitle, setSubtaskParentTitle] = useState<string>('');
+  const editTaskModalRef = useRef<HTMLDivElement>(null);
 
   // Block body scroll when any modal is open (including settings detail modal)
-  const isAnyModalOpen = isTaskModalOpen || isEditTaskModalOpen || isChatModalOpen || isSettingsModalOpen || isCompletedTasksModalOpen;
+  const isAnyModalOpen = isTaskModalOpen || isEditTaskModalOpen || isChatModalOpen || isSettingsModalOpen || isCompletedTasksModalOpen || isSubtaskModalOpen;
 
   // Get all existing groups from tasks
   const existingGroups = useMemo(() => {
@@ -63,8 +67,29 @@ function App() {
     }
   }, [isAnyModalOpen]);
 
-  const handleAddSubtask = (parentId: string, title: string) => {
-    addTask(title, 'General', parentId);
+  const handleOpenSubtaskModal = (parentId: string) => {
+    const parentTask = tasks.find((t) => t.id === parentId);
+    setSubtaskParentId(parentId);
+    setSubtaskParentTitle(parentTask?.title || '');
+    setIsSubtaskModalOpen(true);
+  };
+
+  const handleCreateSubtask = (data: {
+    title: string;
+    description?: string;
+    group: string;
+    priority?: TaskPriority;
+    parentId?: string;
+  }) => {
+    if (data.parentId) {
+      const newTask = addTask(data.title, data.group, data.parentId);
+      if (data.description || data.priority) {
+        updateTask(newTask.id, {
+          description: data.description,
+          priority: data.priority,
+        });
+      }
+    }
   };
 
   const handleCreateTask = (data: {
@@ -148,7 +173,7 @@ function App() {
             onStatusChange={changeTaskStatus}
             onUpdate={updateTask}
             onDelete={deleteTask}
-            onAddSubtask={handleAddSubtask}
+            onAddSubtask={handleOpenSubtaskModal}
             onEdit={handleEditTask}
           />
         )}
@@ -163,15 +188,34 @@ function App() {
         onClose={() => setIsTaskModalOpen(false)}
         onSubmit={handleCreateTask}
       />
+      <CreateTaskModal
+        isOpen={isSubtaskModalOpen}
+        onClose={() => {
+          setIsSubtaskModalOpen(false);
+          setSubtaskParentId(null);
+          setSubtaskParentTitle('');
+        }}
+        onSubmit={handleCreateSubtask}
+        parentId={subtaskParentId || undefined}
+        parentTaskTitle={subtaskParentTitle}
+        isSubModal={isEditTaskModalOpen}
+        parentModalRef={editTaskModalRef}
+      />
       <EditTaskModal
         isOpen={isEditTaskModalOpen}
         onClose={() => {
-          setIsEditTaskModalOpen(false);
-          setEditingTask(null);
+          // Only close if subtask modal is not open
+          if (!isSubtaskModalOpen) {
+            setIsEditTaskModalOpen(false);
+            setEditingTask(null);
+          }
         }}
         task={editingTask}
         existingGroups={existingGroups}
+        allTasks={tasks}
         onSubmit={handleSaveTaskEdit}
+        onAddSubtask={handleOpenSubtaskModal}
+        parentModalRef={editTaskModalRef}
       />
       <ChatModal
         isOpen={isChatModalOpen}

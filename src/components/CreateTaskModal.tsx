@@ -13,13 +13,22 @@ interface CreateTaskModalProps {
     description?: string;
     group: string;
     priority?: TaskPriority;
+    parentId?: string;
   }) => void;
+  parentId?: string;
+  parentTaskTitle?: string;
+  isSubModal?: boolean;
+  parentModalRef?: React.RefObject<HTMLDivElement>;
 }
 
 export const CreateTaskModal = ({
   isOpen,
   onClose,
   onSubmit,
+  parentId,
+  parentTaskTitle,
+  isSubModal = false,
+  parentModalRef,
 }: CreateTaskModalProps) => {
   const { t } = useLanguage();
   const [title, setTitle] = useState('');
@@ -44,16 +53,25 @@ export const CreateTaskModal = ({
         description: description.trim() || undefined,
         group,
         priority: priority || undefined,
+        parentId,
       });
       onClose();
     }
   };
 
+  const modalTitle = parentId 
+    ? `${t('modals.createSubtask.title')} "${parentTaskTitle || ''}"`
+    : t('modals.createTask.title');
+
   return (
     <ResponsiveModal
       isOpen={isOpen}
       onClose={onClose}
-      title={t('modals.createTask.title')}
+      title={modalTitle}
+      zIndex={isSubModal ? 1002 : 1001}
+      offsetRight={isSubModal ? 500 : 0}
+      level={isSubModal ? 2 : 1}
+      parentModalRef={isSubModal ? parentModalRef : undefined}
     >
       <form
         onSubmit={handleSubmit}
@@ -70,12 +88,19 @@ export const CreateTaskModal = ({
           onPriorityChange={(value) => setPriority(value as TaskPriority | '')}
         />
 
-        <div className="flex gap-3 pt-2 mt-4">
-          <Button type="button" variant="secondary" fullWidth onClick={onClose}>
-            {t('common.cancel')}
-          </Button>
-          <Button type="submit" variant="primary" fullWidth>
-            {t('modals.createTask.create')}
+        <div className={`flex gap-2 pt-2 mt-4 ${parentId ? 'pb-6' : ''}`}>
+          {!parentId && (
+            <Button type="button" variant="secondary" fullWidth onClick={onClose}>
+              {t('common.cancel')}
+            </Button>
+          )}
+          <Button 
+            type="submit" 
+            variant="primary" 
+            fullWidth
+            className={parentId ? 'text-sm py-2 min-h-[40px]' : ''}
+          >
+            {parentId ? t('modals.createSubtask.create') : t('modals.createTask.create')}
           </Button>
         </div>
       </form>

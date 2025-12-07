@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 import deTranslations from '../locales/de.json';
+import { logger } from '../utils/logger';
 import enTranslations from '../locales/en.json';
 
 export type Language = 'de' | 'en';
@@ -37,7 +38,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     for (const k of keys) {
       value = value?.[k];
       if (value === undefined) {
-        console.warn(`Translation missing for key: ${key}`);
+        logger.warn(`Translation missing for key: ${key}`);
         return key;
       }
     }

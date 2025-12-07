@@ -3,6 +3,7 @@ import { ResponsiveModal } from '../ui/ResponsiveModal';
 import { Button } from '../ui/Button';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useAccentColor } from '../../hooks/useAccentColor';
+import { logger } from '../../utils/logger';
 
 interface ChatModalProps {
   isOpen: boolean;
@@ -38,7 +39,7 @@ export const ChatModal = ({
         await onSendMessage(message.trim());
         setMessage('');
       } catch (error) {
-        console.error('Error sending message:', error);
+        logger.error('Error sending message:', error);
       } finally {
         setIsProcessing(false);
       }

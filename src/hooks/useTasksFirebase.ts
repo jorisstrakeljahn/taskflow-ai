@@ -1,13 +1,8 @@
 /**
  * useTasks Hook with Firebase Integration
  * 
- * This is the Firebase version of useTasks.
- * It uses Firestore for persistence and real-time updates.
- * 
- * Migration path:
- * 1. Start with this hook alongside useTasks
- * 2. Switch App.tsx to use this hook when ready
- * 3. Remove old useTasks.ts
+ * Manages task state and operations using Firestore for persistence
+ * and real-time synchronization across devices.
  */
 
 import { useState, useCallback, useEffect } from 'react';
@@ -15,6 +10,32 @@ import { Task, TaskStatus } from '../types/task';
 import { createTask as createTaskUtil, updateTaskStatus } from '../utils/taskUtils';
 import { useAuth } from '../contexts/AuthContext';
 import * as taskService from '../services/taskService';
+import { logger } from '../utils/logger';
+
+/**
+ * Calculate the next order value for a new root task
+ */
+const calculateNextOrder = (tasks: Task[]): number => {
+  const rootTasks = tasks.filter((t) => !t.parentId);
+  if (rootTasks.length === 0) return 0;
+  const maxOrder = Math.max(...rootTasks.map((t) => t.order ?? 0));
+  return maxOrder + 1;
+};
+
+/**
+ * Reload tasks from Firestore on error
+ */
+const reloadTasksOnError = async (
+  userId: string,
+  setTasks: React.Dispatch<React.SetStateAction<Task[]>>
+): Promise<void> => {
+  try {
+    const reloadedTasks = await taskService.getTasks(userId);
+    setTasks(reloadedTasks);
+  } catch (reloadError) {
+    logger.error('Error reloading tasks:', reloadError);
+  }
+};
 
 export const useTasksFirebase = () => {
   const { userId, loading: authLoading } = useAuth();
@@ -30,21 +51,17 @@ export const useTasksFirebase = () => {
     }
 
     setIsLoading(true);
-    console.log('Setting up Firestore subscription for userId:', userId);
+    logger.log('Setting up Firestore subscription for userId:', userId);
 
     // Subscribe to real-time updates
     const unsubscribe = taskService.subscribeToTasks(userId, (updatedTasks) => {
-      console.log('Firestore update received:', updatedTasks.length, 'tasks');
+      logger.log('Firestore update received:', updatedTasks.length, 'tasks');
       setTasks(updatedTasks);
       setIsLoading(false);
     });
 
-    // Error handling for subscription
-    // Note: onSnapshot doesn't have a direct error callback,
-    // but errors will appear in the console
-
     return () => {
-      console.log('Unsubscribing from Firestore updates');
+      logger.log('Unsubscribing from Firestore updates');
       unsubscribe();
     };
   }, [userId, authLoading]);
@@ -53,48 +70,42 @@ export const useTasksFirebase = () => {
     async (title: string, group: string = 'General', parentId?: string) => {
       if (!userId) {
         const error = new Error('User must be authenticated');
-        console.error('addTask error:', error);
+        logger.error('addTask error:', error);
         throw error;
       }
 
-      console.log('addTask called:', { title, group, parentId, userId });
+      logger.log('addTask called:', { title, group, parentId, userId });
 
       const newTask = createTaskUtil(title, userId, group, parentId);
       
       // Set order to the end of root tasks (only for root tasks, not subtasks)
-      let order = 0;
-      if (!parentId) {
-        const rootTasks = tasks.filter((t) => !t.parentId);
-        const maxOrder = rootTasks.length > 0 
-          ? Math.max(...rootTasks.map((t) => t.order ?? 0))
-          : -1;
-        order = maxOrder + 1;
-      }
+      const order = !parentId
+        ? calculateNextOrder(tasks)
+        : undefined;
       
       const taskWithOrder = { ...newTask, order };
-      console.log('Task prepared for Firestore:', taskWithOrder);
+      logger.log('Task prepared for Firestore:', taskWithOrder);
       
       try {
         // Create task in Firestore (returns the Firestore document ID)
         const firestoreId = await taskService.createTask(taskWithOrder);
-        console.log('Task created in Firestore with ID:', firestoreId);
+        logger.log('Task created in Firestore with ID:', firestoreId);
         
         // Create task object with Firestore ID
         const taskWithFirestoreId = { ...taskWithOrder, id: firestoreId };
         
-        // Note: Real-time listener will update the state automatically
-        // But we can do optimistic update for immediate UI feedback
+        // Optimistic update for immediate UI feedback
+        // Real-time listener will update the state automatically
         setTasks((prev) => {
-          // Check if task already exists (from real-time update)
           if (prev.some((t) => t.id === firestoreId)) {
-            return prev;
+            return prev; // Task already exists from real-time update
           }
           return [...prev, taskWithFirestoreId];
         });
         
         return taskWithFirestoreId;
       } catch (error) {
-        console.error('Error in addTask:', error);
+        logger.error('Error in addTask:', error);
         throw error;
       }
     },
@@ -117,9 +128,7 @@ export const useTasksFirebase = () => {
       try {
         await taskService.updateTask(id, updates);
       } catch (error) {
-        // Reload tasks on error
-        const reloadedTasks = await taskService.getTasks(userId);
-        setTasks(reloadedTasks);
+        await reloadTasksOnError(userId, setTasks);
         throw error;
       }
     },
@@ -148,9 +157,7 @@ export const useTasksFirebase = () => {
       try {
         await taskService.deleteTaskWithSubtasks(id, tasks);
       } catch (error) {
-        // Reload tasks on error
-        const reloadedTasks = await taskService.getTasks(userId);
-        setTasks(reloadedTasks);
+        await reloadTasksOnError(userId, setTasks);
         throw error;
       }
     },
@@ -200,9 +207,7 @@ export const useTasksFirebase = () => {
             .map((task) => taskService.updateTask(task.id, { order: task.order }))
         );
       } catch (error) {
-        // Reload tasks on error
-        const reloadedTasks = await taskService.getTasks(userId);
-        setTasks(reloadedTasks);
+        await reloadTasksOnError(userId, setTasks);
         throw error;
       }
     },

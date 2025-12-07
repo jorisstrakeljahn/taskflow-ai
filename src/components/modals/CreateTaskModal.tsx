@@ -4,6 +4,7 @@ import { ResponsiveModal } from '../ui/ResponsiveModal';
 import { TaskFormFields } from '../ui/TaskFormFields';
 import { Button } from '../ui/Button';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { logger } from '../../utils/logger';
 
 interface CreateTaskModalProps {
   isOpen: boolean;
@@ -61,7 +62,7 @@ export const CreateTaskModal = ({
         onClose();
       } catch (error) {
         // Error is handled in App.tsx, but don't close modal on error
-        console.error('Error in handleSubmit:', error);
+        logger.error('Error in handleSubmit:', error);
       }
     }
   };

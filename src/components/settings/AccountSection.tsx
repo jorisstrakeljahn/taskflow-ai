@@ -3,6 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { Button } from '../ui/Button';
 import { IconUser, IconMail, IconLogOut, IconShield } from '../Icons';
+import { logger } from '../../utils/logger';
 
 interface AccountSectionProps {
   onLogout?: () => void;
@@ -22,9 +23,9 @@ export const AccountSection = ({ onLogout }: AccountSectionProps) => {
       if (onLogout) {
         onLogout();
       }
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
+      } catch (error) {
+        logger.error('Logout error:', error);
+      }
   };
 
   const handleResetPassword = async (e: React.FormEvent) => {

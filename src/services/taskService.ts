@@ -16,7 +16,6 @@ import {
   getDocs,
   query,
   where,
-  orderBy,
   onSnapshot,
   Timestamp,
   QuerySnapshot,
@@ -25,6 +24,7 @@ import {
 } from 'firebase/firestore';
 import { db } from './firebase';
 import { Task } from '../types/task';
+import { logger } from '../utils/logger';
 
 const TASKS_COLLECTION = 'tasks';
 
@@ -94,24 +94,27 @@ const firestoreToTask = (docData: DocumentData, id: string): Task => {
 };
 
 /**
- * Get all tasks for a user
+ * Sort tasks by order (handles undefined orders)
  */
-export const getTasks = async (userId: string): Promise<Task[]> => {
-  const tasksRef = collection(db, TASKS_COLLECTION);
-  const q = query(
-    tasksRef,
-    where('userId', '==', userId)
-  );
-
-  const querySnapshot = await getDocs(q);
-  const tasks = querySnapshot.docs.map((doc) => firestoreToTask(doc.data(), doc.id));
-  
-  // Sort by order (handle undefined orders)
+const sortTasksByOrder = (tasks: Task[]): Task[] => {
   return tasks.sort((a, b) => {
     const orderA = a.order ?? 0;
     const orderB = b.order ?? 0;
     return orderA - orderB;
   });
+};
+
+/**
+ * Get all tasks for a user
+ */
+export const getTasks = async (userId: string): Promise<Task[]> => {
+  const tasksRef = collection(db, TASKS_COLLECTION);
+  const q = query(tasksRef, where('userId', '==', userId));
+
+  const querySnapshot = await getDocs(q);
+  const tasks = querySnapshot.docs.map((doc) => firestoreToTask(doc.data(), doc.id));
+  
+  return sortTasksByOrder(tasks);
 };
 
 /**
@@ -122,21 +125,12 @@ export const subscribeToTasks = (
   callback: (tasks: Task[]) => void
 ): Unsubscribe => {
   const tasksRef = collection(db, TASKS_COLLECTION);
-  // Note: We can't use orderBy('order') directly because order might be undefined
-  // We'll sort in memory instead
-  const q = query(
-    tasksRef,
-    where('userId', '==', userId)
-  );
+  // Sort in memory because order might be undefined for some tasks
+  const q = query(tasksRef, where('userId', '==', userId));
 
   return onSnapshot(q, (snapshot: QuerySnapshot<DocumentData>) => {
     const tasks = snapshot.docs.map((doc) => firestoreToTask(doc.data(), doc.id));
-    // Sort by order (handle undefined orders)
-    const sortedTasks = tasks.sort((a, b) => {
-      const orderA = a.order ?? 0;
-      const orderB = b.order ?? 0;
-      return orderA - orderB;
-    });
+    const sortedTasks = sortTasksByOrder(tasks);
     callback(sortedTasks);
   });
 };
@@ -149,13 +143,12 @@ export const createTask = async (task: Omit<Task, 'id'>): Promise<string> => {
   try {
     const tasksRef = collection(db, TASKS_COLLECTION);
     const taskData = taskToFirestore(task as Task);
-    console.log('Creating task in Firestore:', { taskData, collection: TASKS_COLLECTION });
+    logger.log('Creating task in Firestore:', { taskData, collection: TASKS_COLLECTION });
     const docRef = await addDoc(tasksRef, taskData);
-    console.log('Task created successfully with ID:', docRef.id);
-    // Firestore automatically generates the ID, which we use as the task ID
+    logger.log('Task created successfully with ID:', docRef.id);
     return docRef.id;
   } catch (error) {
-    console.error('Error creating task in Firestore:', error);
+    logger.error('Error creating task in Firestore:', error);
     throw error;
   }
 };

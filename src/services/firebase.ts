@@ -42,8 +42,10 @@ export const auth: Auth = getAuth(app);
 export const db: Firestore = getFirestore(app);
 
 // Log Firestore initialization (only in development)
+import { logger } from '../utils/logger';
+
 if (import.meta.env.DEV) {
-  console.log('Firestore initialized:', {
+  logger.log('Firestore initialized:', {
     projectId: firebaseConfig.projectId,
     authDomain: firebaseConfig.authDomain,
   });

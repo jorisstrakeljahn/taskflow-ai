@@ -1,6 +1,6 @@
 /**
  * Authentication Context
- * 
+ *
  * Provides authentication state and methods throughout the app
  */
 
@@ -38,21 +38,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const signUp = async (data: SignUpData) => {
-    try {
-      await authService.signUp(data);
-      // User state will be updated via onAuthStateChanged
-    } catch (error: any) {
-      throw error; // Re-throw to let the component handle it
-    }
+    await authService.signUp(data);
+    // User state will be updated via onAuthStateChanged
   };
 
   const signIn = async (data: SignInData) => {
-    try {
-      await authService.signIn(data);
-      // User state will be updated via onAuthStateChanged
-    } catch (error: any) {
-      throw error; // Re-throw to let the component handle it
-    }
+    await authService.signIn(data);
+    // User state will be updated via onAuthStateChanged
   };
 
   const signOut = async () => {
@@ -84,4 +76,3 @@ export const useAuth = () => {
   }
   return context;
 };
-

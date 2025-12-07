@@ -7,11 +7,7 @@ interface ThemeSelectorProps {
   accentColor: string;
 }
 
-export const ThemeSelector = ({
-  currentTheme,
-  onThemeChange,
-  accentColor,
-}: ThemeSelectorProps) => {
+export const ThemeSelector = ({ currentTheme, onThemeChange, accentColor }: ThemeSelectorProps) => {
   const { t } = useLanguage();
 
   const ThemeButton = ({
@@ -32,18 +28,20 @@ export const ThemeSelector = ({
             ? 'shadow-sm'
             : 'border-border-light dark:border-border-dark hover:border-gray-300 dark:hover:border-gray-600'
         }`}
-        style={isSelected ? {
-          borderColor: accentColor,
-          backgroundColor: `${accentColor}0d`,
-        } : {}}
+        style={
+          isSelected
+            ? {
+                borderColor: accentColor,
+                backgroundColor: `${accentColor}0d`,
+              }
+            : {}
+        }
         onClick={() => onThemeChange(theme)}
         aria-label={label}
       >
         <div
           className={`w-5 h-5 transition-colors ${
-            isSelected
-              ? ''
-              : 'text-text-secondary-light dark:text-text-secondary-dark'
+            isSelected ? '' : 'text-text-secondary-light dark:text-text-secondary-dark'
           }`}
           style={isSelected ? { color: accentColor } : {}}
         >
@@ -51,9 +49,7 @@ export const ThemeSelector = ({
         </div>
         <span
           className={`text-xs font-medium ${
-            isSelected
-              ? ''
-              : 'text-text-secondary-light dark:text-text-secondary-dark'
+            isSelected ? '' : 'text-text-secondary-light dark:text-text-secondary-dark'
           }`}
           style={isSelected ? { color: accentColor } : {}}
         >
@@ -74,16 +70,8 @@ export const ThemeSelector = ({
         </span>
       </div>
       <div className="flex gap-2">
-        <ThemeButton
-          theme="light"
-          icon={IconSun}
-          label={t('settings.appearance.theme.light')}
-        />
-        <ThemeButton
-          theme="dark"
-          icon={IconMoon}
-          label={t('settings.appearance.theme.dark')}
-        />
+        <ThemeButton theme="light" icon={IconSun} label={t('settings.appearance.theme.light')} />
+        <ThemeButton theme="dark" icon={IconMoon} label={t('settings.appearance.theme.dark')} />
         <ThemeButton
           theme="system"
           icon={IconMonitor}
@@ -93,4 +81,3 @@ export const ThemeSelector = ({
     </div>
   );
 };
-

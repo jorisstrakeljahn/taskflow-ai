@@ -10,10 +10,10 @@ export const useTheme = () => {
 
   useEffect(() => {
     const root = document.documentElement;
-    
+
     const applyTheme = (preference: ThemePreference) => {
       let effectiveTheme: 'light' | 'dark';
-      
+
       if (preference === 'system') {
         effectiveTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
           ? 'dark'
@@ -53,5 +53,3 @@ export const useTheme = () => {
 
   return { theme, setThemePreference };
 };
-
-

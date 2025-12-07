@@ -37,10 +37,7 @@ export const prepareCreateTaskData = (data: CreateTaskData) => {
 /**
  * Prepares task data for editing, including status change logic
  */
-export const prepareEditTaskData = (
-  currentTask: Task | undefined,
-  data: EditTaskData
-) => {
+export const prepareEditTaskData = (currentTask: Task | undefined, data: EditTaskData) => {
   const statusChangedToDone = data.status === 'done' && currentTask?.status !== 'done';
   const statusChangedFromDone = data.status !== 'done' && currentTask?.status === 'done';
 
@@ -50,11 +47,10 @@ export const prepareEditTaskData = (
     status: data.status,
     group: data.group,
     priority: data.priority,
-    completedAt: statusChangedToDone 
-      ? new Date() 
-      : statusChangedFromDone 
-        ? undefined 
+    completedAt: statusChangedToDone
+      ? new Date()
+      : statusChangedFromDone
+        ? undefined
         : currentTask?.completedAt,
   };
 };
-

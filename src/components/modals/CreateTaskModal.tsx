@@ -67,7 +67,7 @@ export const CreateTaskModal = ({
     }
   };
 
-  const modalTitle = parentId 
+  const modalTitle = parentId
     ? `${t('modals.createSubtask.title')} "${parentTaskTitle || ''}"`
     : t('modals.createTask.title');
 
@@ -81,10 +81,7 @@ export const CreateTaskModal = ({
       level={isSubModal ? 2 : 1}
       parentModalRef={isSubModal ? parentModalRef : undefined}
     >
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col gap-4 h-full"
-      >
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4 h-full">
         <TaskFormFields
           title={title}
           description={description}
@@ -105,9 +102,9 @@ export const CreateTaskModal = ({
               {t('common.cancel')}
             </Button>
           )}
-          <Button 
-            type="submit" 
-            variant="primary" 
+          <Button
+            type="submit"
+            variant="primary"
             fullWidth
             className={parentId ? 'text-sm py-2 min-h-[40px]' : ''}
           >

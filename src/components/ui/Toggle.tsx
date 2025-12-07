@@ -36,9 +36,7 @@ export const Toggle = ({
           onClick={() => !disabled && onChange(!checked)}
         >
           {icon && (
-            <span className="text-text-secondary-light dark:text-text-secondary-dark">
-              {icon}
-            </span>
+            <span className="text-text-secondary-light dark:text-text-secondary-dark">{icon}</span>
           )}
           {label}
         </label>
@@ -50,18 +48,14 @@ export const Toggle = ({
         disabled={disabled}
         onClick={() => onChange(!checked)}
         className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-          disabled
-            ? 'opacity-50 cursor-not-allowed'
-            : 'cursor-pointer'
-        } ${
-          checked
-            ? ''
-            : 'bg-gray-200 dark:bg-gray-700'
-        }`}
-        style={{
-          backgroundColor: checked ? accentColor : undefined,
-          '--tw-ring-color': accentColor,
-        } as React.CSSProperties & { '--tw-ring-color': string }}
+          disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+        } ${checked ? '' : 'bg-gray-200 dark:bg-gray-700'}`}
+        style={
+          {
+            backgroundColor: checked ? accentColor : undefined,
+            '--tw-ring-color': accentColor,
+          } as React.CSSProperties & { '--tw-ring-color': string }
+        }
       >
         <span
           className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 ease-in-out ${
@@ -72,4 +66,3 @@ export const Toggle = ({
     </div>
   );
 };
-

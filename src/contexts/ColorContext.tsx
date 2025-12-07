@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-export type PrimaryColor = 
+export type PrimaryColor =
   | 'blue'
   | 'purple'
   | 'green'
@@ -85,12 +85,12 @@ const ColorContext = createContext<ColorContextType | undefined>(undefined);
 const getLuminance = (hex: string): number => {
   const rgb = hexToRgb(hex);
   if (!rgb) return 0;
-  
+
   const [r, g, b] = [rgb.r, rgb.g, rgb.b].map((val) => {
     val = val / 255;
     return val <= 0.03928 ? val / 12.92 : Math.pow((val + 0.055) / 1.055, 2.4);
   });
-  
+
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 };
 
@@ -108,13 +108,13 @@ const hexToRgb = (hex: string): { r: number; g: number; b: number } | null => {
 // Initialize CSS variables synchronously before React renders
 const initializeColorVariables = () => {
   if (typeof window === 'undefined') return;
-  
+
   const root = document.documentElement;
   const stored = localStorage.getItem('primary-color-preference');
   const initialColor = (stored as PrimaryColor) || 'blue';
   const lightColor = colorPalettes[initialColor].light;
   const darkColor = colorPalettes[initialColor].dark;
-  
+
   root.style.setProperty('--accent-light', lightColor);
   root.style.setProperty('--accent-dark', darkColor);
 };
@@ -150,7 +150,7 @@ export const ColorProvider = ({ children }: { children: ReactNode }) => {
     const root = document.documentElement;
     const lightColor = colorPalettes[primaryColor].light;
     const darkColor = colorPalettes[primaryColor].dark;
-    
+
     root.style.setProperty('--accent-light', lightColor);
     root.style.setProperty('--accent-dark', darkColor);
   }, [primaryColor]);
@@ -177,4 +177,3 @@ export const useColor = () => {
   }
   return context;
 };
-

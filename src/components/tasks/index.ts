@@ -7,4 +7,3 @@ export { StatusSelector } from './StatusSelector';
 export { PrioritySelector } from './PrioritySelector';
 export { TaskQuickActions } from './TaskQuickActions';
 export { TaskCard } from './TaskCard';
-

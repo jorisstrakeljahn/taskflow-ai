@@ -20,10 +20,7 @@ export const FormSelectField = ({
 }: FormSelectFieldProps) => {
   return (
     <div className="flex flex-col gap-2">
-      <label
-        htmlFor={id}
-        className={LABEL_CLASSES}
-      >
+      <label htmlFor={id} className={LABEL_CLASSES}>
         {label}
       </label>
       <CustomSelect
@@ -36,4 +33,3 @@ export const FormSelectField = ({
     </div>
   );
 };
-

@@ -21,9 +21,9 @@ interface SettingsModalProps {
   onLogout?: () => void;
   onShowCompletedTasks?: () => void;
   completedTasksCount?: number;
-  tasks?: any[];
-  onStatusChange?: (id: string, status: any) => void;
-  onUpdate?: (id: string, updates: any) => void;
+  tasks?: Task[];
+  onStatusChange?: (id: string, status: Task['status']) => void;
+  onUpdate?: (id: string, updates: Partial<Task>) => void;
   onDelete?: (task: Task) => void;
   onReactivate?: (id: string) => void;
 }

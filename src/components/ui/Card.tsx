@@ -21,4 +21,3 @@ export const Card = ({ children, className = '', onClick, style }: CardProps) =>
     </div>
   );
 };
-

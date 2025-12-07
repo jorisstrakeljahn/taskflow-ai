@@ -8,13 +8,14 @@ import { useTheme } from './useTheme';
 export const useAccentColor = () => {
   const { getColorValue } = useColor();
   const { theme } = useTheme();
-  
-  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+  const isDark =
+    theme === 'dark' ||
+    (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
   const accentColor = getColorValue(isDark ? 'dark' : 'light');
-  
+
   return {
     accentColor,
     isDark,
   };
 };
-

@@ -8,12 +8,7 @@ interface TaskActionsProps {
   parentId: string;
 }
 
-export const TaskActions = ({
-  onAddSubtask,
-  onEdit,
-  onDelete,
-  parentId,
-}: TaskActionsProps) => {
+export const TaskActions = ({ onAddSubtask, onEdit, onDelete, parentId }: TaskActionsProps) => {
   const { t } = useLanguage();
 
   return (
@@ -58,4 +53,3 @@ export const TaskActions = ({
     </div>
   );
 };
-

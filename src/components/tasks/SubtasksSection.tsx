@@ -8,11 +8,7 @@ interface SubtasksSectionProps {
   parentId: string;
 }
 
-export const SubtasksSection = ({
-  subtasks,
-  onAddSubtask,
-  parentId,
-}: SubtasksSectionProps) => {
+export const SubtasksSection = ({ subtasks, onAddSubtask, parentId }: SubtasksSectionProps) => {
   const { t } = useLanguage();
 
   return (
@@ -67,4 +63,3 @@ export const SubtasksSection = ({
     </div>
   );
 };
-

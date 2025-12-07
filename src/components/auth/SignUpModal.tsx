@@ -48,20 +48,16 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }: SignUpModalPro
       setPassword('');
       setConfirmPassword('');
       setDisplayName('');
-    } catch (err: any) {
-      setError(err.message || t('auth.signUpError'));
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : t('auth.signUpError');
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <ResponsiveModal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={t('auth.signUp')}
-      level={1}
-    >
+    <ResponsiveModal isOpen={isOpen} onClose={onClose} title={t('auth.signUp')} level={1}>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {error && (
           <div className="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 text-sm">
@@ -70,7 +66,10 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }: SignUpModalPro
         )}
 
         <div>
-          <label htmlFor="signup-name" className="block text-sm font-medium mb-1 text-text-primary-light dark:text-text-primary-dark">
+          <label
+            htmlFor="signup-name"
+            className="block text-sm font-medium mb-1 text-text-primary-light dark:text-text-primary-dark"
+          >
             {t('auth.displayName')} ({t('common.optional')})
           </label>
           <Input
@@ -84,7 +83,10 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }: SignUpModalPro
         </div>
 
         <div>
-          <label htmlFor="signup-email" className="block text-sm font-medium mb-1 text-text-primary-light dark:text-text-primary-dark">
+          <label
+            htmlFor="signup-email"
+            className="block text-sm font-medium mb-1 text-text-primary-light dark:text-text-primary-dark"
+          >
             {t('auth.email')}
           </label>
           <Input
@@ -99,7 +101,10 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }: SignUpModalPro
         </div>
 
         <div>
-          <label htmlFor="signup-password" className="block text-sm font-medium mb-1 text-text-primary-light dark:text-text-primary-dark">
+          <label
+            htmlFor="signup-password"
+            className="block text-sm font-medium mb-1 text-text-primary-light dark:text-text-primary-dark"
+          >
             {t('auth.password')}
           </label>
           <Input
@@ -118,7 +123,10 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }: SignUpModalPro
         </div>
 
         <div>
-          <label htmlFor="signup-confirm-password" className="block text-sm font-medium mb-1 text-text-primary-light dark:text-text-primary-dark">
+          <label
+            htmlFor="signup-confirm-password"
+            className="block text-sm font-medium mb-1 text-text-primary-light dark:text-text-primary-dark"
+          >
             {t('auth.confirmPassword')}
           </label>
           <Input
@@ -133,12 +141,7 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }: SignUpModalPro
         </div>
 
         <div className="flex flex-col gap-2 pt-2">
-          <Button
-            type="submit"
-            variant="primary"
-            fullWidth
-            disabled={isLoading}
-          >
+          <Button type="submit" variant="primary" fullWidth disabled={isLoading}>
             {isLoading ? t('auth.creatingAccount') : t('auth.signUp')}
           </Button>
 
@@ -157,4 +160,3 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }: SignUpModalPro
     </ResponsiveModal>
   );
 };
-

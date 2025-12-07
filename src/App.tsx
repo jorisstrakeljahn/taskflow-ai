@@ -29,19 +29,12 @@ function App() {
   const { t } = useLanguage();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
-  const {
-    tasks,
-    isLoading,
-    addTask,
-    updateTask,
-    changeTaskStatus,
-    deleteTask,
-    reorderTasks,
-  } = useTasks();
+  const { tasks, isLoading, addTask, updateTask, changeTaskStatus, deleteTask, reorderTasks } =
+    useTasks();
   const { theme, setThemePreference } = useTheme();
   const { language, setLanguage } = useLanguage();
   const { primaryColor, setPrimaryColor } = useColor();
-  
+
   // Modal state management
   const {
     isTaskModalOpen,
@@ -115,7 +108,9 @@ function App() {
       }
     } catch (error) {
       logger.error('Error creating subtask:', error);
-      alert(`Fehler beim Erstellen der Unteraufgabe: ${error instanceof Error ? error.message : 'Unbekannter Fehler'}`);
+      alert(
+        `Fehler beim Erstellen der Unteraufgabe: ${error instanceof Error ? error.message : 'Unbekannter Fehler'}`
+      );
     }
   };
 
@@ -130,7 +125,9 @@ function App() {
       );
     } catch (error) {
       logger.error('Error creating task:', error);
-      alert(`Fehler beim Erstellen der Aufgabe: ${error instanceof Error ? error.message : 'Unbekannter Fehler'}`);
+      alert(
+        `Fehler beim Erstellen der Aufgabe: ${error instanceof Error ? error.message : 'Unbekannter Fehler'}`
+      );
     }
   };
 
@@ -169,13 +166,16 @@ function App() {
     }
   };
 
-  const handleSaveTaskEdit = (id: string, data: {
-    title: string;
-    description?: string;
-    status: TaskStatus;
-    group: string;
-    priority?: TaskPriority;
-  }) => {
+  const handleSaveTaskEdit = (
+    id: string,
+    data: {
+      title: string;
+      description?: string;
+      status: TaskStatus;
+      group: string;
+      priority?: TaskPriority;
+    }
+  ) => {
     const currentTask = tasks.find((t) => t.id === id);
     const updateData = prepareEditTaskData(currentTask, data);
     updateTask(id, updateData);
@@ -240,10 +240,7 @@ function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-surface-light dark:bg-surface-dark transition-colors">
-      <Header 
-        onSettingsClick={() => setIsSettingsModalOpen(true)}
-        user={user}
-      />
+      <Header onSettingsClick={() => setIsSettingsModalOpen(true)} />
 
       <main className="flex-1 flex flex-col max-w-7xl w-full mx-auto px-4 sm:px-6">
         {isLoading ? (
@@ -342,4 +339,3 @@ function App() {
 }
 
 export default App;
-

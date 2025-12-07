@@ -61,7 +61,7 @@ export const useTaskSwipe = ({
     if (startX === null) return;
 
     const deltaX = e.touches[0].clientX - startX;
-    
+
     // Only allow horizontal swipes (not vertical scrolling)
     if (Math.abs(deltaX) > 10) {
       setIsSwiping(true);
@@ -78,9 +78,7 @@ export const useTaskSwipe = ({
     }
 
     const deltaX = currentX;
-    const swipeDuration = touchStartTime.current 
-      ? Date.now() - touchStartTime.current 
-      : 0;
+    const swipeDuration = touchStartTime.current ? Date.now() - touchStartTime.current : 0;
 
     // Check if it's a valid swipe (fast enough or far enough)
     const isFastSwipe = swipeDuration < 300 && Math.abs(deltaX) > 30;
@@ -138,9 +136,7 @@ export const useTaskSwipe = ({
     }
 
     const deltaX = currentX;
-    const swipeDuration = touchStartTime.current 
-      ? Date.now() - touchStartTime.current 
-      : 0;
+    const swipeDuration = touchStartTime.current ? Date.now() - touchStartTime.current : 0;
 
     const isFastSwipe = swipeDuration < 300 && Math.abs(deltaX) > 30;
     const isLongSwipe = Math.abs(deltaX) > threshold;
@@ -169,4 +165,3 @@ export const useTaskSwipe = ({
     handleMouseUp,
   };
 };
-

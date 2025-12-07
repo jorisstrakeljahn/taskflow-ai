@@ -23,14 +23,14 @@ export const TaskCheckbox = ({
         onChange={onChange}
         disabled={disabled}
         className={`w-5 h-5 rounded border-2 border-gray-400 dark:border-gray-500 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-offset-0 transition-all duration-200 appearance-none checked:scale-110 ${
-          disabled 
-            ? 'opacity-50 cursor-not-allowed' 
-            : 'cursor-pointer'
+          disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
         }`}
-        style={{
-          accentColor: accentColor,
-          '--tw-ring-color': accentColor,
-        } as React.CSSProperties & { '--tw-ring-color': string }}
+        style={
+          {
+            accentColor: accentColor,
+            '--tw-ring-color': accentColor,
+          } as React.CSSProperties & { '--tw-ring-color': string }
+        }
       />
       {(checked || showCheckmark) && (
         <svg
@@ -40,14 +40,9 @@ export const TaskCheckbox = ({
           stroke="currentColor"
           strokeWidth="3"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M5 13l4 4L19 7"
-          />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
         </svg>
       )}
     </div>
   );
 };
-

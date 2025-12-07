@@ -58,9 +58,7 @@ export const TaskFormFields = ({
 }: TaskFormFieldsProps) => {
   const { t } = useLanguage();
   // Combine existing groups with default groups
-  const allGroups = Array.from(
-    new Set([...existingGroups, ...DEFAULT_GROUPS])
-  ).sort();
+  const allGroups = Array.from(new Set([...existingGroups, ...DEFAULT_GROUPS])).sort();
 
   return (
     <>
@@ -105,9 +103,9 @@ export const TaskFormFields = ({
               label={t('task.priority')}
               value={priority}
               onChange={(value) => onPriorityChange(value as TaskPriority | '')}
-              options={TASK_PRIORITIES.map((p) => ({ 
-                value: p.value, 
-                label: p.value ? t(`priority.${p.value}`) : t('priority.none')
+              options={TASK_PRIORITIES.map((p) => ({
+                value: p.value,
+                label: p.value ? t(`priority.${p.value}`) : t('priority.none'),
               }))}
             />
           )}
@@ -148,4 +146,3 @@ export const TaskFormFields = ({
     </>
   );
 };
-

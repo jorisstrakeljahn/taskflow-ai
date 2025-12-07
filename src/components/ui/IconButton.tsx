@@ -14,10 +14,12 @@ export const IconButton = ({
   ...props
 }: IconButtonProps) => {
   const baseStyles = 'rounded-lg border transition-colors flex items-center justify-center';
-  
+
   const variantStyles = {
-    default: 'border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-50 dark:hover:bg-gray-800',
-    ghost: 'border-transparent bg-transparent text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-50 dark:hover:bg-gray-800',
+    default:
+      'border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-50 dark:hover:bg-gray-800',
+    ghost:
+      'border-transparent bg-transparent text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-50 dark:hover:bg-gray-800',
   };
 
   const sizeStyles = {
@@ -35,4 +37,3 @@ export const IconButton = ({
     </button>
   );
 };
-

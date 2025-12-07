@@ -34,10 +34,7 @@ export const CustomSelect = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
@@ -45,13 +42,13 @@ export const CustomSelect = ({
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
       document.addEventListener('touchstart', handleClickOutside);
-      
+
       // Calculate if dropdown should open above or below and determine max height
       if (containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();
         const spaceBelow = window.innerHeight - rect.bottom;
         const spaceAbove = rect.top;
-        
+
         // If not enough space below but enough above, open upward
         if (spaceBelow < 240 && spaceAbove > spaceBelow) {
           setDropdownPosition('top');
@@ -59,7 +56,7 @@ export const CustomSelect = ({
           setDropdownPosition('bottom');
         }
       }
-      
+
       // Scroll dropdown into view on mobile
       if (dropdownRef.current && dropdownPosition === 'bottom') {
         setTimeout(() => {
@@ -93,12 +90,18 @@ export const CustomSelect = ({
             ? 'opacity-50 cursor-not-allowed'
             : 'cursor-pointer hover:border-gray-400 dark:hover:border-gray-500'
         } ${isOpen ? 'ring-2 border-transparent' : ''}`}
-        style={{
-          '--tw-ring-color': accentColor,
-          '--tw-ring-opacity': '1',
-        } as React.CSSProperties & { '--tw-ring-color': string }}
+        style={
+          {
+            '--tw-ring-color': accentColor,
+            '--tw-ring-opacity': '1',
+          } as React.CSSProperties & { '--tw-ring-color': string }
+        }
       >
-        <span className={selectedOption ? '' : 'text-text-secondary-light dark:text-text-secondary-dark'}>
+        <span
+          className={
+            selectedOption ? '' : 'text-text-secondary-light dark:text-text-secondary-dark'
+          }
+        >
           {selectedOption ? selectedOption.label : placeholder}
         </span>
         <IconChevronRight
@@ -110,8 +113,8 @@ export const CustomSelect = ({
 
       {isOpen && (
         <>
-          <div 
-            className="fixed inset-0 z-[9998] bg-transparent" 
+          <div
+            className="fixed inset-0 z-[9998] bg-transparent"
             onClick={() => setIsOpen(false)}
             style={{ touchAction: 'none' }}
           />
@@ -160,4 +163,3 @@ export const CustomSelect = ({
     </div>
   );
 };
-

@@ -33,7 +33,7 @@ export const PrimaryColorSelector = ({
           const lightColor = color.light;
           const darkColor = color.dark;
           const textColor = getTextColor(lightColor);
-          
+
           return (
             <button
               key={colorKey}
@@ -46,11 +46,13 @@ export const PrimaryColorSelector = ({
               }`}
               style={{
                 background: `linear-gradient(135deg, ${lightColor} 0%, ${darkColor} 100%)`,
-                ...(isSelected ? {
-                  borderColor: accentColor,
-                  '--tw-ring-color': accentColor,
-                  '--tw-ring-opacity': '1',
-                } as React.CSSProperties & { '--tw-ring-color': string } : {}),
+                ...(isSelected
+                  ? ({
+                      borderColor: accentColor,
+                      '--tw-ring-color': accentColor,
+                      '--tw-ring-opacity': '1',
+                    } as React.CSSProperties & { '--tw-ring-color': string })
+                  : {}),
               }}
               aria-label={color.name}
               title={color.name}
@@ -58,7 +60,9 @@ export const PrimaryColorSelector = ({
               {isSelected && (
                 <div
                   className={`absolute inset-0 flex items-center justify-center ${
-                    textColor === 'white' ? 'text-white drop-shadow-lg' : 'text-black drop-shadow-lg'
+                    textColor === 'white'
+                      ? 'text-white drop-shadow-lg'
+                      : 'text-black drop-shadow-lg'
                   }`}
                 >
                   <IconCheck className="w-5 h-5" />
@@ -71,4 +75,3 @@ export const PrimaryColorSelector = ({
     </div>
   );
 };
-

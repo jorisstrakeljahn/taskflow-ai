@@ -18,12 +18,12 @@ export const useModalState = () => {
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
   const editTaskModalRef = useRef<HTMLDivElement>(null);
 
-  const isAnyModalOpen = 
-    isTaskModalOpen || 
-    isEditTaskModalOpen || 
-    isChatModalOpen || 
-    isSettingsModalOpen || 
-    isCompletedTasksModalOpen || 
+  const isAnyModalOpen =
+    isTaskModalOpen ||
+    isEditTaskModalOpen ||
+    isChatModalOpen ||
+    isSettingsModalOpen ||
+    isCompletedTasksModalOpen ||
     isSubtaskModalOpen;
 
   const openEditTaskModal = (task: Task) => {
@@ -62,39 +62,39 @@ export const useModalState = () => {
     // Task Modal
     isTaskModalOpen,
     setIsTaskModalOpen,
-    
+
     // Edit Task Modal
     isEditTaskModalOpen,
     editingTask,
     openEditTaskModal,
     closeEditTaskModal,
     editTaskModalRef,
-    
+
     // Chat Modal
     isChatModalOpen,
     setIsChatModalOpen,
-    
+
     // Settings Modal
     isSettingsModalOpen,
     setIsSettingsModalOpen,
-    
+
     // Completed Tasks Modal
     isCompletedTasksModalOpen,
     setIsCompletedTasksModalOpen,
-    
+
     // Subtask Modal
     isSubtaskModalOpen,
     subtaskParentId,
     subtaskParentTitle,
     openSubtaskModal,
     closeSubtaskModal,
-    
+
     // Delete Confirm Modal
     isDeleteConfirmModalOpen,
     taskToDelete,
     openDeleteConfirmModal,
     closeDeleteConfirmModal,
-    
+
     // Computed
     isAnyModalOpen,
   };

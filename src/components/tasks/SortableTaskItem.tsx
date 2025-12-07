@@ -29,14 +29,7 @@ export const SortableTaskItem = ({
   disableStatusChange = false,
   showDragHandle = false,
 }: SortableTaskItemProps) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: task.id,
     disabled: !!task.parentId || disableStatusChange, // Disable drag for subtasks
   });
@@ -101,4 +94,3 @@ export const SortableTaskItem = ({
     </div>
   );
 };
-

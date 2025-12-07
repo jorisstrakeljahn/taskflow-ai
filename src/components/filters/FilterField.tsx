@@ -10,21 +10,12 @@ interface FilterFieldProps {
   options: Array<{ value: string; label: string }>;
 }
 
-export const FilterField = ({
-  id,
-  label,
-  icon,
-  value,
-  onChange,
-  options,
-}: FilterFieldProps) => {
+export const FilterField = ({ id, label, icon, value, onChange, options }: FilterFieldProps) => {
   return (
     <div className="flex flex-col gap-1.5">
       <div className="flex items-center gap-2 mb-0.5">
         {icon && (
-          <div className="text-text-secondary-light dark:text-text-secondary-dark">
-            {icon}
-          </div>
+          <div className="text-text-secondary-light dark:text-text-secondary-dark">{icon}</div>
         )}
         <label
           htmlFor={id}
@@ -33,13 +24,7 @@ export const FilterField = ({
           {label}
         </label>
       </div>
-      <CustomSelect
-        id={id}
-        value={value}
-        onChange={onChange}
-        options={options}
-      />
+      <CustomSelect id={id} value={value} onChange={onChange} options={options} />
     </div>
   );
 };
-

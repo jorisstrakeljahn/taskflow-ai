@@ -20,7 +20,9 @@ export const StatusSelector = ({
   const { t } = useLanguage();
   const { accentColor } = useAccentColor();
   const [isOpen, setIsOpen] = useState(false);
-  const [dropdownPosition, setDropdownPosition] = useState<{ top: number; left: number } | null>(null);
+  const [dropdownPosition, setDropdownPosition] = useState<{ top: number; left: number } | null>(
+    null
+  );
   const containerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -72,14 +74,14 @@ export const StatusSelector = ({
           });
         }
       };
-      
+
       // Update position immediately
       updatePosition();
-      
+
       // Update position on scroll (in case parent container scrolls)
       window.addEventListener('scroll', updatePosition, true);
       window.addEventListener('resize', updatePosition);
-      
+
       return () => {
         window.removeEventListener('scroll', updatePosition, true);
         window.removeEventListener('resize', updatePosition);
@@ -130,52 +132,54 @@ export const StatusSelector = ({
         </button>
       </div>
 
-      {isOpen && dropdownPosition && typeof document !== 'undefined' && createPortal(
-        <div
-          data-status-dropdown
-          className="fixed z-[10000] min-w-[140px] bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-lg shadow-lg py-1"
-          style={{
-            top: `${dropdownPosition.top}px`,
-            left: `${dropdownPosition.left}px`,
-          }}
-          onClick={(e) => e.stopPropagation()}
-        >
-          {TASK_STATUSES.map((status) => {
-            const isSelected = status.value === currentStatus;
-            return (
-              <button
-                key={status.value}
-                type="button"
-                onClick={(e) => handleStatusClick(status.value as TaskStatus, e)}
-                onMouseDown={(e) => e.stopPropagation()}
-                className={`w-full text-left px-3 py-2 text-sm flex items-center justify-between gap-2 transition-colors ${
-                  isSelected
-                    ? 'bg-accent-light/10 dark:bg-accent-dark/10'
-                    : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'
-                }`}
-                style={
-                  isSelected
-                    ? {
-                        color: accentColor,
-                      }
-                    : {}
-                }
-              >
-                <span className="text-text-primary-light dark:text-text-primary-dark">
-                  {t(`status.${getStatusKey(status.value as TaskStatus)}`)}
-                </span>
-                {isSelected && (
-                  <span style={{ color: accentColor }}>
-                    <IconCheck className="w-4 h-4 flex-shrink-0" />
+      {isOpen &&
+        dropdownPosition &&
+        typeof document !== 'undefined' &&
+        createPortal(
+          <div
+            data-status-dropdown
+            className="fixed z-[10000] min-w-[140px] bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-lg shadow-lg py-1"
+            style={{
+              top: `${dropdownPosition.top}px`,
+              left: `${dropdownPosition.left}px`,
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {TASK_STATUSES.map((status) => {
+              const isSelected = status.value === currentStatus;
+              return (
+                <button
+                  key={status.value}
+                  type="button"
+                  onClick={(e) => handleStatusClick(status.value as TaskStatus, e)}
+                  onMouseDown={(e) => e.stopPropagation()}
+                  className={`w-full text-left px-3 py-2 text-sm flex items-center justify-between gap-2 transition-colors ${
+                    isSelected
+                      ? 'bg-accent-light/10 dark:bg-accent-dark/10'
+                      : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'
+                  }`}
+                  style={
+                    isSelected
+                      ? {
+                          color: accentColor,
+                        }
+                      : {}
+                  }
+                >
+                  <span className="text-text-primary-light dark:text-text-primary-dark">
+                    {t(`status.${getStatusKey(status.value as TaskStatus)}`)}
                   </span>
-                )}
-              </button>
-            );
-          })}
-        </div>,
-        document.body
-      )}
+                  {isSelected && (
+                    <span style={{ color: accentColor }}>
+                      <IconCheck className="w-4 h-4 flex-shrink-0" />
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>,
+          document.body
+        )}
     </>
   );
 };
-

@@ -47,51 +47,50 @@ export const CompletedTasksModal = ({
   if (!isOpen) return null;
 
   return (
-      <ResponsiveModal
-        isOpen={isOpen}
-        onClose={onClose}
-        title={t('settings.completedTasks.title')}
-        subtitle={`${completedTasks.length} ${completedTasks.length === 1 ? t('settings.completedTasks.task') : t('settings.completedTasks.tasks')}`}
-        zIndex={1003}
-        offsetRight={500}
-        level={2}
-        parentModalRef={parentModalRef}
-      >
-          {rootTasks.length === 0 ? (
-            <EmptyState
-              title={t('task.noCompletedTasks')}
-              description={t('task.noCompletedTasksDescription')}
-            />
-          ) : (
-            <div className="space-y-3">
-              {rootTasks.map((task) => {
-                const subtasks = getSubtasks(completedTasks, task.id);
-                return (
-                  <div key={task.id} className="relative">
-                    <TaskItem
-                      task={task}
-                      onStatusChange={onStatusChange}
-                      onUpdate={onUpdate}
-                      onDelete={() => onDelete(task)}
-                      onEdit={onEdit}
-                      subtasks={subtasks}
-                      disableStatusChange={true}
-                    />
-                              <div className="mt-2 flex justify-end">
-                                <Button
-                                  variant="primary"
-                                  onClick={() => onReactivate(task.id)}
-                                  title={t('task.reactivate')}
-                                >
-                                  {t('task.reactivate')}
-                                </Button>
-                              </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+    <ResponsiveModal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={t('settings.completedTasks.title')}
+      subtitle={`${completedTasks.length} ${completedTasks.length === 1 ? t('settings.completedTasks.task') : t('settings.completedTasks.tasks')}`}
+      zIndex={1003}
+      offsetRight={500}
+      level={2}
+      parentModalRef={parentModalRef}
+    >
+      {rootTasks.length === 0 ? (
+        <EmptyState
+          title={t('task.noCompletedTasks')}
+          description={t('task.noCompletedTasksDescription')}
+        />
+      ) : (
+        <div className="space-y-3">
+          {rootTasks.map((task) => {
+            const subtasks = getSubtasks(completedTasks, task.id);
+            return (
+              <div key={task.id} className="relative">
+                <TaskItem
+                  task={task}
+                  onStatusChange={onStatusChange}
+                  onUpdate={onUpdate}
+                  onDelete={() => onDelete(task)}
+                  onEdit={onEdit}
+                  subtasks={subtasks}
+                  disableStatusChange={true}
+                />
+                <div className="mt-2 flex justify-end">
+                  <Button
+                    variant="primary"
+                    onClick={() => onReactivate(task.id)}
+                    title={t('task.reactivate')}
+                  >
+                    {t('task.reactivate')}
+                  </Button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </ResponsiveModal>
   );
 };
-

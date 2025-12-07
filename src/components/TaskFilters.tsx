@@ -1,5 +1,12 @@
 import { useState } from 'react';
-import { IconFilter, IconFolder, IconLayers, IconZap, IconChevronDown, IconGripVertical } from './Icons';
+import {
+  IconFilter,
+  IconFolder,
+  IconLayers,
+  IconZap,
+  IconChevronDown,
+  IconGripVertical,
+} from './Icons';
 import { FilterField } from './filters/FilterField';
 import { Toggle } from './ui/Toggle';
 import { TASK_STATUSES, TASK_PRIORITIES } from '../constants/taskConstants';
@@ -34,11 +41,9 @@ export const TaskFilters = ({
   const { t } = useLanguage();
   const { accentColor } = useAccentColor();
   const [isOpen, setIsOpen] = useState(false);
-  
-  const hasActiveFilters = 
-    filterGroup !== 'all' || 
-    filterStatus !== 'all' || 
-    filterPriority !== 'all';
+
+  const hasActiveFilters =
+    filterGroup !== 'all' || filterStatus !== 'all' || filterPriority !== 'all';
 
   return (
     <div className="bg-card-light dark:bg-card-dark border-b border-border-light dark:border-border-dark shadow-sm">
@@ -56,7 +61,7 @@ export const TaskFilters = ({
             {t('filters.title')}
           </span>
           {hasActiveFilters && (
-            <span 
+            <span
               className="px-2 py-0.5 text-xs font-semibold rounded-full text-white"
               style={{ backgroundColor: accentColor }}
             >
@@ -115,7 +120,10 @@ export const TaskFilters = ({
             onChange={onStatusChange}
             options={[
               { value: 'all', label: t('status.all') },
-              ...TASK_STATUSES.map((s) => ({ value: s.value, label: t(`status.${s.value}`) })),
+              ...TASK_STATUSES.map((s) => {
+                const statusKey = s.value === 'in_progress' ? 'inProgress' : s.value;
+                return { value: s.value, label: t(`status.${statusKey}`) };
+              }),
             ]}
           />
           <FilterField
@@ -137,4 +145,3 @@ export const TaskFilters = ({
     </div>
   );
 };
-

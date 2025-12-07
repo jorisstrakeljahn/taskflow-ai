@@ -33,34 +33,38 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
 
   const t = (key: string, params?: Record<string, string | number>): string => {
     const keys = key.split('.');
-    let value: any = translations[language];
-    
+    let value: unknown = translations[language];
+
     for (const k of keys) {
-      value = value?.[k];
+      if (typeof value === 'object' && value !== null && k in value) {
+        value = (value as Record<string, unknown>)[k];
+      } else {
+        value = undefined;
+      }
       if (value === undefined) {
         logger.warn(`Translation missing for key: ${key}`);
         return key;
       }
     }
-    
+
     let result = typeof value === 'string' ? value : key;
-    
+
     // Replace parameters in the string
     if (params) {
       Object.keys(params).forEach((paramKey) => {
         result = result.replace(new RegExp(`\\{${paramKey}\\}`, 'g'), String(params[paramKey]));
       });
     }
-    
+
     return result;
   };
-  
+
   // Helper function to translate status values (handles underscores)
   const translateStatus = (status: string): string => {
     const statusKey = status === 'in_progress' ? 'inProgress' : status;
     return t(`status.${statusKey}`);
   };
-  
+
   // Helper function to translate priority values
   const translatePriority = (priority: string): string => {
     if (!priority) return t('priority.none');
@@ -89,4 +93,3 @@ export const useLanguage = () => {
   }
   return context;
 };
-

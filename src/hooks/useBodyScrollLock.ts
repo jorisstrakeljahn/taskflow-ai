@@ -8,13 +8,13 @@ export const useBodyScrollLock = (isLocked: boolean) => {
     if (isLocked) {
       // Save current scroll position
       const scrollY = window.scrollY;
-      
+
       // Block body scroll
       document.body.style.position = 'fixed';
       document.body.style.top = `-${scrollY}px`;
       document.body.style.width = '100%';
       document.body.style.overflow = 'hidden';
-      
+
       return () => {
         // Restore body scroll
         document.body.style.position = '';
@@ -26,4 +26,3 @@ export const useBodyScrollLock = (isLocked: boolean) => {
     }
   }, [isLocked]);
 };
-

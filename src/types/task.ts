@@ -20,4 +20,3 @@ export interface TaskGroup {
   name: string;
   count: number;
 }
-

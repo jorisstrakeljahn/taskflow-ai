@@ -33,11 +33,8 @@ export const CenteredModal = ({
   return (
     <>
       {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/50 z-[1000] animate-in fade-in"
-        onClick={onClose}
-      />
-      
+      <div className="fixed inset-0 bg-black/50 z-[1000] animate-in fade-in" onClick={onClose} />
+
       {/* Modal */}
       <div className="fixed inset-0 z-[1001] flex items-center justify-center p-4 pointer-events-none">
         <div
@@ -57,14 +54,11 @@ export const CenteredModal = ({
               <IconClose className="w-5 h-5" />
             </button>
           </div>
-          
+
           {/* Content */}
-          <div className="px-6 py-5">
-            {children}
-          </div>
+          <div className="px-6 py-5">{children}</div>
         </div>
       </div>
     </>
   );
 };
-

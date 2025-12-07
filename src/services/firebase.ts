@@ -1,6 +1,6 @@
 /**
  * Firebase Configuration and Initialization
- * 
+ *
  * This file initializes Firebase services (Auth, Firestore, Analytics)
  * and exports them for use throughout the application.
  */
@@ -55,7 +55,7 @@ if (import.meta.env.DEV) {
 // Analytics is optional and initialized asynchronously
 export const initAnalytics = async (): Promise<Analytics | null> => {
   if (typeof window === 'undefined') return null;
-  
+
   const supported = await isSupported();
   if (supported) {
     return getAnalytics(app);
@@ -64,4 +64,3 @@ export const initAnalytics = async (): Promise<Analytics | null> => {
 };
 
 export default app;
-

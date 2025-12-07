@@ -9,6 +9,9 @@
     "reset": "Reset",
     "active": "Active"
   },
+  "app": {
+    "title": "TaskFlow AI"
+  },
   "header": {
     "title": "TaskFlow AI"
   },
@@ -195,4 +198,3 @@
     "optional": "Optional"
   }
 }
-

@@ -12,4 +12,3 @@ export const TASK_PRIORITIES = [
   { value: 'medium', label: 'Medium' },
   { value: 'high', label: 'High' },
 ] as const;
-

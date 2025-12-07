@@ -21,7 +21,9 @@ export const PrioritySelector = ({
   const { t } = useLanguage();
   const { accentColor } = useAccentColor();
   const [isOpen, setIsOpen] = useState(false);
-  const [dropdownPosition, setDropdownPosition] = useState<{ top: number; left: number } | null>(null);
+  const [dropdownPosition, setDropdownPosition] = useState<{ top: number; left: number } | null>(
+    null
+  );
   const containerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -29,7 +31,7 @@ export const PrioritySelector = ({
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       const target = event.target as Node;
       const dropdownElement = document.querySelector('[data-priority-dropdown]');
-      
+
       // Don't close if clicking inside the dropdown or button
       if (
         (containerRef.current && containerRef.current.contains(target)) ||
@@ -38,7 +40,7 @@ export const PrioritySelector = ({
       ) {
         return;
       }
-      
+
       // Close if clicking outside
       setIsOpen(false);
       setDropdownPosition(null);
@@ -68,12 +70,12 @@ export const PrioritySelector = ({
           });
         }
       };
-      
+
       updatePosition();
-      
+
       window.addEventListener('scroll', updatePosition, true);
       window.addEventListener('resize', updatePosition);
-      
+
       return () => {
         window.removeEventListener('scroll', updatePosition, true);
         window.removeEventListener('resize', updatePosition);
@@ -98,7 +100,9 @@ export const PrioritySelector = ({
       return null;
     }
     return (
-      <span className={`px-2 py-0.5 text-xs rounded font-semibold bg-gray-100 dark:bg-gray-800 ${PRIORITY_COLORS[currentPriority]}`}>
+      <span
+        className={`px-2 py-0.5 text-xs rounded font-semibold bg-gray-100 dark:bg-gray-800 ${PRIORITY_COLORS[currentPriority]}`}
+      >
         {t(`priority.${currentPriority}`)}
       </span>
     );
@@ -136,52 +140,60 @@ export const PrioritySelector = ({
         )}
       </div>
 
-      {isOpen && dropdownPosition && typeof document !== 'undefined' && createPortal(
-        <div
-          data-priority-dropdown
-          className="fixed z-[10000] min-w-[140px] bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-lg shadow-lg py-1"
-          style={{
-            top: `${dropdownPosition.top}px`,
-            left: `${dropdownPosition.left}px`,
-          }}
-          onClick={(e) => e.stopPropagation()}
-        >
-          {TASK_PRIORITIES.map((priority) => {
-            const isSelected = priority.value === currentPriority;
-            return (
-              <button
-                key={priority.value || 'none'}
-                type="button"
-                onClick={(e) => handlePriorityClick(priority.value as TaskPriority | '', e)}
-                onMouseDown={(e) => e.stopPropagation()}
-                className={`w-full text-left px-3 py-2 text-sm flex items-center justify-between gap-2 transition-colors ${
-                  isSelected
-                    ? 'bg-accent-light/10 dark:bg-accent-dark/10'
-                    : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'
-                }`}
-                style={
-                  isSelected
-                    ? {
-                        color: accentColor,
-                      }
-                    : {}
-                }
-              >
-                <span className={priority.value ? PRIORITY_COLORS[priority.value] : 'text-text-primary-light dark:text-text-primary-dark'}>
-                  {priority.value ? t(`priority.${priority.value}`) : t('priority.none')}
-                </span>
-                {isSelected && (
-                  <span style={{ color: accentColor }}>
-                    <IconCheck className="w-4 h-4 flex-shrink-0" />
+      {isOpen &&
+        dropdownPosition &&
+        typeof document !== 'undefined' &&
+        createPortal(
+          <div
+            data-priority-dropdown
+            className="fixed z-[10000] min-w-[140px] bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-lg shadow-lg py-1"
+            style={{
+              top: `${dropdownPosition.top}px`,
+              left: `${dropdownPosition.left}px`,
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {TASK_PRIORITIES.map((priority) => {
+              const isSelected = priority.value === currentPriority;
+              return (
+                <button
+                  key={priority.value || 'none'}
+                  type="button"
+                  onClick={(e) => handlePriorityClick(priority.value as TaskPriority | '', e)}
+                  onMouseDown={(e) => e.stopPropagation()}
+                  className={`w-full text-left px-3 py-2 text-sm flex items-center justify-between gap-2 transition-colors ${
+                    isSelected
+                      ? 'bg-accent-light/10 dark:bg-accent-dark/10'
+                      : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'
+                  }`}
+                  style={
+                    isSelected
+                      ? {
+                          color: accentColor,
+                        }
+                      : {}
+                  }
+                >
+                  <span
+                    className={
+                      priority.value
+                        ? PRIORITY_COLORS[priority.value]
+                        : 'text-text-primary-light dark:text-text-primary-dark'
+                    }
+                  >
+                    {priority.value ? t(`priority.${priority.value}`) : t('priority.none')}
                   </span>
-                )}
-              </button>
-            );
-          })}
-        </div>,
-        document.body
-      )}
+                  {isSelected && (
+                    <span style={{ color: accentColor }}>
+                      <IconCheck className="w-4 h-4 flex-shrink-0" />
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>,
+          document.body
+        )}
     </>
   );
 };
-

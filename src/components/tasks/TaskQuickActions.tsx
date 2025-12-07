@@ -36,7 +36,7 @@ export const TaskQuickActions = ({
       const updatePosition = () => {
         if (triggerElement && menuRef.current) {
           const rect = triggerElement.getBoundingClientRect();
-          
+
           let top: number;
           let left: number;
 
@@ -55,7 +55,11 @@ export const TaskQuickActions = ({
           if (menuRef.current) {
             const menuRect = menuRef.current.getBoundingClientRect();
             if (left + menuRect.width > window.innerWidth + window.scrollX) {
-              left = (position === 'context' ? contextMenuPosition?.x || 0 : rect.left) + window.scrollX - menuRect.width - 8;
+              left =
+                (position === 'context' ? contextMenuPosition?.x || 0 : rect.left) +
+                window.scrollX -
+                menuRect.width -
+                8;
             }
 
             if (top + menuRect.height > window.innerHeight + window.scrollY) {
@@ -147,35 +151,37 @@ export const TaskQuickActions = ({
     },
   ];
 
-  return typeof document !== 'undefined' && createPortal(
-    <div
-      ref={menuRef}
-      className="fixed z-[10001] min-w-[180px] bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-lg shadow-xl py-1"
-      style={{
-        top: `${menuPosition.top}px`,
-        left: `${menuPosition.left}px`,
-      }}
-      onClick={(e) => e.stopPropagation()}
-    >
-      {actions.map((action, index) => {
-        const Icon = action.icon;
-        return (
-          <button
-            key={index}
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              action.onClick();
-            }}
-            className={`w-full text-left px-4 py-2.5 text-sm flex items-center gap-3 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50 ${action.className}`}
-          >
-            <Icon className="w-4 h-4 flex-shrink-0" />
-            <span>{action.label}</span>
-          </button>
-        );
-      })}
-    </div>,
-    document.body
+  return (
+    typeof document !== 'undefined' &&
+    createPortal(
+      <div
+        ref={menuRef}
+        className="fixed z-[10001] min-w-[180px] bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-lg shadow-xl py-1"
+        style={{
+          top: `${menuPosition.top}px`,
+          left: `${menuPosition.left}px`,
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {actions.map((action, index) => {
+          const Icon = action.icon;
+          return (
+            <button
+              key={index}
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                action.onClick();
+              }}
+              className={`w-full text-left px-4 py-2.5 text-sm flex items-center gap-3 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50 ${action.className}`}
+            >
+              <Icon className="w-4 h-4 flex-shrink-0" />
+              <span>{action.label}</span>
+            </button>
+          );
+        })}
+      </div>,
+      document.body
+    )
   );
 };
-

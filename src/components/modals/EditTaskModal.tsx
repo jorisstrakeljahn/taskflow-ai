@@ -13,13 +13,16 @@ interface EditTaskModalProps {
   task: Task | null;
   existingGroups: string[];
   allTasks: Task[];
-  onSubmit: (id: string, data: {
-    title: string;
-    description?: string;
-    status: TaskStatus;
-    group: string;
-    priority?: TaskPriority;
-  }) => void;
+  onSubmit: (
+    id: string,
+    data: {
+      title: string;
+      description?: string;
+      status: TaskStatus;
+      group: string;
+      priority?: TaskPriority;
+    }
+  ) => void;
   onAddSubtask?: (parentId: string) => void;
   parentModalRef?: React.RefObject<HTMLDivElement>;
 }
@@ -60,10 +63,8 @@ export const EditTaskModal = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (title.trim() && task) {
-      const selectedGroup = useCustomGroup && customGroup.trim() 
-        ? customGroup.trim() 
-        : group;
-      
+      const selectedGroup = useCustomGroup && customGroup.trim() ? customGroup.trim() : group;
+
       onSubmit(task.id, {
         title: title.trim(),
         description: description.trim() || undefined,
@@ -90,10 +91,7 @@ export const EditTaskModal = ({
       offsetRight={0}
       level={1}
     >
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col gap-3 h-full"
-      >
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3 h-full">
         <TaskFormFields
           title={title}
           description={description}
@@ -114,11 +112,7 @@ export const EditTaskModal = ({
 
         {/* Subtasks Section */}
         {task && (
-          <SubtasksSection
-            subtasks={subtasks}
-            onAddSubtask={onAddSubtask}
-            parentId={task.id}
-          />
+          <SubtasksSection subtasks={subtasks} onAddSubtask={onAddSubtask} parentId={task.id} />
         )}
 
         <div className="flex gap-2 pt-2 mt-4 pb-6">
@@ -130,4 +124,3 @@ export const EditTaskModal = ({
     </ResponsiveModal>
   );
 };
-

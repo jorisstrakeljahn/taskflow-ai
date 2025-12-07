@@ -3,11 +3,8 @@ import { Dashboard } from '../Dashboard';
 import { ResponsiveModal } from '../ui/ResponsiveModal';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { PrimaryColor } from '../../contexts/ColorContext';
-import {
-  AccountSection,
-  CompletedTasksSection,
-  AppearanceSection,
-} from '../settings';
+import { Task } from '../../types/task';
+import { AccountSection, CompletedTasksSection, AppearanceSection } from '../settings';
 
 export type SettingsCategory = 'account' | 'completed-tasks' | 'dashboard' | 'appearance';
 
@@ -24,7 +21,7 @@ interface SettingsDetailModalProps {
   currentLanguage: 'de' | 'en';
   onPrimaryColorChange: (color: PrimaryColor) => void;
   currentPrimaryColor: PrimaryColor;
-  tasks?: any[];
+  tasks?: Task[];
   parentModalRef?: RefObject<HTMLDivElement>; // Reference to parent modal
 }
 
@@ -115,4 +112,3 @@ export const SettingsDetailModal = ({
     </ResponsiveModal>
   );
 };
-

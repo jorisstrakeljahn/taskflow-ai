@@ -64,10 +64,7 @@ export const getCompletedTasksToday = (tasks: Task[]): Task[] => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   return tasks.filter(
-    (task) =>
-      task.status === 'done' &&
-      task.completedAt &&
-      task.completedAt >= today
+    (task) => task.status === 'done' && task.completedAt && task.completedAt >= today
   );
 };
 
@@ -76,10 +73,6 @@ export const getCompletedTasksThisWeek = (tasks: Task[]): Task[] => {
   weekAgo.setDate(weekAgo.getDate() - 7);
   weekAgo.setHours(0, 0, 0, 0);
   return tasks.filter(
-    (task) =>
-      task.status === 'done' &&
-      task.completedAt &&
-      task.completedAt >= weekAgo
+    (task) => task.status === 'done' && task.completedAt && task.completedAt >= weekAgo
   );
 };
-

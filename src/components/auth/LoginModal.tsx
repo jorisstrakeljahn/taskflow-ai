@@ -29,20 +29,16 @@ export const LoginModal = ({ isOpen, onClose, onSwitchToSignUp }: LoginModalProp
       onClose();
       setEmail('');
       setPassword('');
-    } catch (err: any) {
-      setError(err.message || t('auth.loginError'));
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : t('auth.loginError');
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <ResponsiveModal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={t('auth.login')}
-      level={1}
-    >
+    <ResponsiveModal isOpen={isOpen} onClose={onClose} title={t('auth.login')} level={1}>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {error && (
           <div className="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 text-sm">
@@ -51,7 +47,10 @@ export const LoginModal = ({ isOpen, onClose, onSwitchToSignUp }: LoginModalProp
         )}
 
         <div>
-          <label htmlFor="login-email" className="block text-sm font-medium mb-1 text-text-primary-light dark:text-text-primary-dark">
+          <label
+            htmlFor="login-email"
+            className="block text-sm font-medium mb-1 text-text-primary-light dark:text-text-primary-dark"
+          >
             {t('auth.email')}
           </label>
           <Input
@@ -66,7 +65,10 @@ export const LoginModal = ({ isOpen, onClose, onSwitchToSignUp }: LoginModalProp
         </div>
 
         <div>
-          <label htmlFor="login-password" className="block text-sm font-medium mb-1 text-text-primary-light dark:text-text-primary-dark">
+          <label
+            htmlFor="login-password"
+            className="block text-sm font-medium mb-1 text-text-primary-light dark:text-text-primary-dark"
+          >
             {t('auth.password')}
           </label>
           <Input
@@ -81,12 +83,7 @@ export const LoginModal = ({ isOpen, onClose, onSwitchToSignUp }: LoginModalProp
         </div>
 
         <div className="flex flex-col gap-2 pt-2">
-          <Button
-            type="submit"
-            variant="primary"
-            fullWidth
-            disabled={isLoading}
-          >
+          <Button type="submit" variant="primary" fullWidth disabled={isLoading}>
             {isLoading ? t('auth.loggingIn') : t('auth.login')}
           </Button>
 
@@ -105,4 +102,3 @@ export const LoginModal = ({ isOpen, onClose, onSwitchToSignUp }: LoginModalProp
     </ResponsiveModal>
   );
 };
-

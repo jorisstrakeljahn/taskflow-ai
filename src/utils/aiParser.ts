@@ -29,13 +29,7 @@ export const parseChatMessage = (message: string): ParsedTask[] => {
   };
 
   // Simple parsing logic: search for punctuation and lists
-  const separators = [
-    /,\s*(?:and|or)\s*/gi,
-    /\.\s+/g,
-    /;\s+/g,
-    /\n+/g,
-    /,\s+/g,
-  ];
+  const separators = [/,\s*(?:and|or)\s*/gi, /\.\s+/g, /;\s+/g, /\n+/g, /,\s+/g];
 
   let parts: string[] = [message];
 
@@ -48,9 +42,7 @@ export const parseChatMessage = (message: string): ParsedTask[] => {
   }
 
   // Clean and filter empty parts
-  parts = parts
-    .map((p) => p.trim())
-    .filter((p) => p.length > 0 && p.length < 200);
+  parts = parts.map((p) => p.trim()).filter((p) => p.length > 0 && p.length < 200);
 
   // Create tasks from parts
   for (const part of parts) {
@@ -79,4 +71,3 @@ export const parseChatMessage = (message: string): ParsedTask[] => {
 
   return tasks;
 };
-

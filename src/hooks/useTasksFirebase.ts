@@ -1,6 +1,6 @@
 /**
  * useTasks Hook with Firebase Integration
- * 
+ *
  * Manages task state and operations using Firestore for persistence
  * and real-time synchronization across devices.
  */
@@ -77,23 +77,21 @@ export const useTasksFirebase = () => {
       logger.log('addTask called:', { title, group, parentId, userId });
 
       const newTask = createTaskUtil(title, userId, group, parentId);
-      
+
       // Set order to the end of root tasks (only for root tasks, not subtasks)
-      const order = !parentId
-        ? calculateNextOrder(tasks)
-        : undefined;
-      
+      const order = !parentId ? calculateNextOrder(tasks) : undefined;
+
       const taskWithOrder = { ...newTask, order };
       logger.log('Task prepared for Firestore:', taskWithOrder);
-      
+
       try {
         // Create task in Firestore (returns the Firestore document ID)
         const firestoreId = await taskService.createTask(taskWithOrder);
         logger.log('Task created in Firestore with ID:', firestoreId);
-        
+
         // Create task object with Firestore ID
         const taskWithFirestoreId = { ...taskWithOrder, id: firestoreId };
-        
+
         // Optimistic update for immediate UI feedback
         // Real-time listener will update the state automatically
         setTasks((prev) => {
@@ -102,7 +100,7 @@ export const useTasksFirebase = () => {
           }
           return [...prev, taskWithFirestoreId];
         });
-        
+
         return taskWithFirestoreId;
       } catch (error) {
         logger.error('Error in addTask:', error);
@@ -118,11 +116,7 @@ export const useTasksFirebase = () => {
 
       // Optimistic update
       setTasks((prev) =>
-        prev.map((task) =>
-          task.id === id
-            ? { ...task, ...updates, updatedAt: new Date() }
-            : task
-        )
+        prev.map((task) => (task.id === id ? { ...task, ...updates, updatedAt: new Date() } : task))
       );
 
       try {
@@ -151,7 +145,6 @@ export const useTasksFirebase = () => {
       if (!userId) throw new Error('User must be authenticated');
 
       // Optimistic update
-      const taskToDelete = tasks.find((t) => t.id === id);
       setTasks((prev) => prev.filter((task) => task.id !== id && task.parentId !== id));
 
       try {
@@ -170,12 +163,14 @@ export const useTasksFirebase = () => {
 
       const activeTask = tasks.find((t) => t.id === activeId);
       const overTask = tasks.find((t) => t.id === overId);
-      
+
       if (!activeTask || !overTask || activeTask.parentId || overTask.parentId) {
         return; // Only allow reordering root tasks
       }
 
-      const rootTasks = tasks.filter((t) => !t.parentId).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+      const rootTasks = tasks
+        .filter((t) => !t.parentId)
+        .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
       const activeIndex = rootTasks.findIndex((t) => t.id === activeId);
       const overIndex = rootTasks.findIndex((t) => t.id === overId);
 
@@ -188,7 +183,7 @@ export const useTasksFirebase = () => {
       // Update order values
       const updatedTasks = tasks.map((task) => {
         if (task.parentId) return task; // Keep subtasks unchanged
-        
+
         const newIndex = newRootTasks.findIndex((t) => t.id === task.id);
         if (newIndex !== -1) {
           return { ...task, order: newIndex, updatedAt: new Date() };
@@ -224,4 +219,3 @@ export const useTasksFirebase = () => {
     reorderTasks,
   };
 };
-

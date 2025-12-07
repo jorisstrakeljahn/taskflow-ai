@@ -33,7 +33,7 @@ export const useTaskFilters = (tasks: Task[]): UseTaskFiltersReturn => {
       // Filter by specific status and exclude completed root tasks (but keep all subtasks)
       const rootTasks = filtered.filter((t) => !t.parentId);
       const subtasks = filtered.filter((t) => t.parentId);
-      
+
       const filteredRootTasks = getTasksByStatus(rootTasks, filterStatus as Task['status']);
       // Always include all subtasks, regardless of their status
       filtered = [...filteredRootTasks, ...subtasks];
@@ -41,7 +41,7 @@ export const useTaskFilters = (tasks: Task[]): UseTaskFiltersReturn => {
       // Show all root tasks except completed ones, but always show all subtasks
       const rootTasks = filtered.filter((t) => !t.parentId);
       const subtasks = filtered.filter((t) => t.parentId);
-      
+
       const filteredRootTasks = rootTasks.filter((t) => t.status !== 'done');
       // Always include all subtasks, regardless of their status
       filtered = [...filteredRootTasks, ...subtasks];
@@ -51,7 +51,7 @@ export const useTaskFilters = (tasks: Task[]): UseTaskFiltersReturn => {
     if (filterGroup !== 'all') {
       const rootTasks = filtered.filter((t) => !t.parentId);
       const subtasks = filtered.filter((t) => t.parentId);
-      
+
       const filteredRootTasks = getTasksByGroup(rootTasks, filterGroup);
       // Always include all subtasks
       filtered = [...filteredRootTasks, ...subtasks];
@@ -61,7 +61,7 @@ export const useTaskFilters = (tasks: Task[]): UseTaskFiltersReturn => {
     if (filterPriority !== 'all') {
       const rootTasks = filtered.filter((t) => !t.parentId);
       const subtasks = filtered.filter((t) => t.parentId);
-      
+
       const filteredRootTasks = rootTasks.filter((t) => t.priority === filterPriority);
       // Always include all subtasks
       filtered = [...filteredRootTasks, ...subtasks];
@@ -70,10 +70,8 @@ export const useTaskFilters = (tasks: Task[]): UseTaskFiltersReturn => {
     return filtered;
   }, [tasks, filterGroup, filterStatus, filterPriority]);
 
-  const hasActiveFilters = 
-    filterGroup !== 'all' || 
-    filterStatus !== 'all' || 
-    filterPriority !== 'all';
+  const hasActiveFilters =
+    filterGroup !== 'all' || filterStatus !== 'all' || filterPriority !== 'all';
 
   const resetFilters = () => {
     setFilterGroup('all');
@@ -93,4 +91,3 @@ export const useTaskFilters = (tasks: Task[]): UseTaskFiltersReturn => {
     resetFilters,
   };
 };
-

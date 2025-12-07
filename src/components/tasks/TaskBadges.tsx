@@ -9,8 +9,8 @@ interface TaskBadgesProps {
   disableStatusChange?: boolean;
 }
 
-export const TaskBadges = ({ 
-  task, 
+export const TaskBadges = ({
+  task,
   onStatusChange,
   onUpdate,
   disableStatusChange = false,
@@ -45,4 +45,3 @@ export const TaskBadges = ({
     </div>
   );
 };
-

@@ -12,4 +12,3 @@ export const PRIORITY_COLORS = {
   medium: 'text-amber-600 dark:text-amber-400',
   high: 'text-red-600 dark:text-red-400',
 } as const;
-

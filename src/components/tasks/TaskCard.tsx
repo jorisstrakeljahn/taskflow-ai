@@ -26,15 +26,13 @@ export const TaskCard = ({
   return (
     <Card
       className={`p-3 mb-2 transition-all duration-500 ${
-        isDone && !isCompleting
-          ? 'opacity-60 bg-gray-50 dark:bg-gray-900/50'
-          : 'hover:shadow-sm'
+        isDone && !isCompleting ? 'opacity-60 bg-gray-50 dark:bg-gray-900/50' : 'hover:shadow-sm'
       } ${
-        isCompleting 
-          ? 'scale-95 opacity-0 transform transition-all duration-500 ease-out' 
+        isCompleting
+          ? 'scale-95 opacity-0 transform transition-all duration-500 ease-out'
           : 'scale-100 opacity-100'
       } ${isSwiping ? 'transition-none' : ''} ${className}`}
-      style={{ 
+      style={{
         marginLeft: `${level * 20}px`,
         transform: isSwiping ? `translateX(${swipeOffset}px)` : undefined,
         opacity: isSwiping && Math.abs(swipeOffset) > 40 ? 0.7 : undefined,
@@ -44,4 +42,3 @@ export const TaskCard = ({
     </Card>
   );
 };
-

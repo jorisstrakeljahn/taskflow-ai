@@ -51,12 +51,7 @@ export const DeleteTaskConfirmModal = ({
   };
 
   return (
-    <CenteredModal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={getTitle()}
-      maxWidth="max-w-md"
-    >
+    <CenteredModal isOpen={isOpen} onClose={onClose} title={getTitle()} maxWidth="max-w-md">
       <div className="flex flex-col gap-6">
         <div className="space-y-3">
           <p className="text-sm text-text-primary-light dark:text-text-primary-dark">
@@ -68,20 +63,10 @@ export const DeleteTaskConfirmModal = ({
         </div>
 
         <div className="flex gap-3 pt-2">
-          <Button
-            type="button"
-            variant="secondary"
-            fullWidth
-            onClick={onClose}
-          >
+          <Button type="button" variant="secondary" fullWidth onClick={onClose}>
             {t('common.cancel')}
           </Button>
-          <Button
-            type="button"
-            variant="danger"
-            fullWidth
-            onClick={handleConfirm}
-          >
+          <Button type="button" variant="danger" fullWidth onClick={handleConfirm}>
             {t('modals.deleteTask.confirm')}
           </Button>
         </div>
@@ -89,4 +74,3 @@ export const DeleteTaskConfirmModal = ({
     </CenteredModal>
   );
 };
-

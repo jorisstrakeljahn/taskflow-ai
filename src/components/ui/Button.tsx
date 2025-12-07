@@ -15,10 +15,10 @@ export const Button = ({
   ...props
 }: ButtonProps) => {
   const { accentColor } = useAccentColor();
-  
+
   const baseStyles =
     'px-4 py-3 rounded-lg font-medium transition-all min-h-[44px] disabled:opacity-50 disabled:cursor-not-allowed';
-  
+
   const variantStyles = {
     primary: 'text-white hover:opacity-90',
     secondary:
@@ -39,4 +39,3 @@ export const Button = ({
     </button>
   );
 };
-

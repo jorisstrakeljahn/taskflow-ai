@@ -33,16 +33,19 @@ export const TaskItem = ({
   const [showCheckmark, setShowCheckmark] = useState(task.status === 'done');
   const [isHovered, setIsHovered] = useState(false);
   const [showContextMenu, setShowContextMenu] = useState(false);
-  const [contextMenuPosition, setContextMenuPosition] = useState<{ x: number; y: number } | null>(null);
+  const [contextMenuPosition, setContextMenuPosition] = useState<{ x: number; y: number } | null>(
+    null
+  );
   const taskRef = useRef<HTMLDivElement>(null);
   const actionsRef = useRef<HTMLDivElement>(null);
 
   // Swipe gestures for mobile
-  const { swipeOffset, isSwiping, handleTouchStart, handleTouchMove, handleTouchEnd } = useTaskSwipe({
-    onSwipeLeft: () => onDelete(task),
-    onSwipeRight: onEdit ? () => onEdit(task) : undefined,
-    threshold: 80,
-  });
+  const { swipeOffset, isSwiping, handleTouchStart, handleTouchMove, handleTouchEnd } =
+    useTaskSwipe({
+      onSwipeLeft: () => onDelete(task),
+      onSwipeRight: onEdit ? () => onEdit(task) : undefined,
+      threshold: 80,
+    });
 
   // Context menu handler
   const handleContextMenu = (e: MouseEvent) => {
@@ -66,14 +69,14 @@ export const TaskItem = ({
       e.preventDefault();
       return;
     }
-    
+
     const newStatus = e.target.checked ? 'done' : 'open';
     const isSubtask = !!task.parentId;
-    
+
     if (newStatus === 'done') {
       // First show the checkmark
       setShowCheckmark(true);
-      
+
       if (isSubtask) {
         // For subtasks: just update status without animation (they stay visible)
         setTimeout(() => {
@@ -131,106 +134,106 @@ export const TaskItem = ({
         isSwiping={isSwiping}
         swipeOffset={swipeOffset}
       >
-      <div className="flex items-start gap-3">
-        <TaskCheckbox
-          checked={task.status === 'done'}
-          onChange={handleCheckboxChange}
-          disabled={disableStatusChange}
-          showCheckmark={showCheckmark}
-        />
-        <div className="flex-1 min-w-0">
-          {/* Title row with actions - aligned to first line */}
-          <div className="flex items-start justify-between gap-2">
-            <span
-              className={`flex-1 font-semibold text-base leading-tight ${
-                task.status === 'done'
-                  ? 'line-through text-text-secondary-light dark:text-text-secondary-dark'
-                  : 'text-text-primary-light dark:text-text-primary-dark'
-              }`}
-            >
-              {task.title}
-            </span>
-            <div ref={actionsRef}>
-              {/* Mobile: Always show icons + swipe gestures */}
-              {/* Desktop: Show icons on hover + hover menu */}
-              {isMobile ? (
-                // Mobile: Icons always visible
-                <TaskActions
-                  onAddSubtask={onAddSubtask}
-                  onEdit={onEdit ? () => onEdit(task) : undefined}
-                  onDelete={() => onDelete(task)}
-                  parentId={task.id}
-                />
-              ) : (
-                // Desktop: Icons only on hover, plus hover menu
-                <>
-                  {isHovered && (
-                    <TaskActions
-                      onAddSubtask={onAddSubtask}
-                      onEdit={onEdit ? () => onEdit(task) : undefined}
-                      onDelete={() => onDelete(task)}
-                      parentId={task.id}
-                    />
-                  )}
-                  {/* Hover menu for desktop - appears next to task */}
-                  {isHovered && taskRef.current && (
-                    <TaskQuickActions
-                      onEdit={onEdit ? () => onEdit(task) : undefined}
-                      onDelete={() => onDelete(task)}
-                      onAddSubtask={onAddSubtask ? () => onAddSubtask(task.id) : undefined}
-                      triggerElement={taskRef.current}
-                      isOpen={isHovered}
-                      onClose={() => setIsHovered(false)}
-                      position="hover"
-                    />
-                  )}
-                </>
-              )}
+        <div className="flex items-start gap-3">
+          <TaskCheckbox
+            checked={task.status === 'done'}
+            onChange={handleCheckboxChange}
+            disabled={disableStatusChange}
+            showCheckmark={showCheckmark}
+          />
+          <div className="flex-1 min-w-0">
+            {/* Title row with actions - aligned to first line */}
+            <div className="flex items-start justify-between gap-2">
+              <span
+                className={`flex-1 font-semibold text-base leading-tight ${
+                  task.status === 'done'
+                    ? 'line-through text-text-secondary-light dark:text-text-secondary-dark'
+                    : 'text-text-primary-light dark:text-text-primary-dark'
+                }`}
+              >
+                {task.title}
+              </span>
+              <div ref={actionsRef}>
+                {/* Mobile: Always show icons + swipe gestures */}
+                {/* Desktop: Show icons on hover + hover menu */}
+                {isMobile ? (
+                  // Mobile: Icons always visible
+                  <TaskActions
+                    onAddSubtask={onAddSubtask}
+                    onEdit={onEdit ? () => onEdit(task) : undefined}
+                    onDelete={() => onDelete(task)}
+                    parentId={task.id}
+                  />
+                ) : (
+                  // Desktop: Icons only on hover, plus hover menu
+                  <>
+                    {isHovered && (
+                      <TaskActions
+                        onAddSubtask={onAddSubtask}
+                        onEdit={onEdit ? () => onEdit(task) : undefined}
+                        onDelete={() => onDelete(task)}
+                        parentId={task.id}
+                      />
+                    )}
+                    {/* Hover menu for desktop - appears next to task */}
+                    {isHovered && taskRef.current && (
+                      <TaskQuickActions
+                        onEdit={onEdit ? () => onEdit(task) : undefined}
+                        onDelete={() => onDelete(task)}
+                        onAddSubtask={onAddSubtask ? () => onAddSubtask(task.id) : undefined}
+                        triggerElement={taskRef.current}
+                        isOpen={isHovered}
+                        onClose={() => setIsHovered(false)}
+                        position="hover"
+                      />
+                    )}
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-          {/* Context menu */}
-          {showContextMenu && contextMenuPosition && (
-            <TaskQuickActions
-              onEdit={onEdit ? () => onEdit(task) : undefined}
-              onDelete={() => onDelete(task)}
-              onAddSubtask={onAddSubtask ? () => onAddSubtask(task.id) : undefined}
-              triggerElement={taskRef.current}
-              isOpen={showContextMenu}
-              onClose={() => setShowContextMenu(false)}
-              position="context"
-              contextMenuPosition={contextMenuPosition}
-            />
-          )}
-          {/* Description and badges - full width */}
-          {task.description && (
-            <span className="block text-sm text-text-secondary-light dark:text-text-secondary-dark mb-2">
-              {task.description}
-            </span>
-          )}
-              <TaskBadges 
-                task={task} 
-                onStatusChange={onStatusChange}
-                onUpdate={onUpdate}
-                disableStatusChange={disableStatusChange}
+            {/* Context menu */}
+            {showContextMenu && contextMenuPosition && (
+              <TaskQuickActions
+                onEdit={onEdit ? () => onEdit(task) : undefined}
+                onDelete={() => onDelete(task)}
+                onAddSubtask={onAddSubtask ? () => onAddSubtask(task.id) : undefined}
+                triggerElement={taskRef.current}
+                isOpen={showContextMenu}
+                onClose={() => setShowContextMenu(false)}
+                position="context"
+                contextMenuPosition={contextMenuPosition}
               />
-        </div>
-      </div>
-      {subtasks.length > 0 && (
-        <div className="mt-3 pl-3 border-l-2 border-border-light dark:border-border-dark">
-          {subtasks.map((subtask) => (
-            <TaskItem
-              key={subtask.id}
-              task={subtask}
+            )}
+            {/* Description and badges - full width */}
+            {task.description && (
+              <span className="block text-sm text-text-secondary-light dark:text-text-secondary-dark mb-2">
+                {task.description}
+              </span>
+            )}
+            <TaskBadges
+              task={task}
               onStatusChange={onStatusChange}
               onUpdate={onUpdate}
-              onDelete={(task) => onDelete(task)}
-              onEdit={onEdit}
-              level={level + 1}
               disableStatusChange={disableStatusChange}
             />
-          )          )}
+          </div>
         </div>
-      )}
+        {subtasks.length > 0 && (
+          <div className="mt-3 pl-3 border-l-2 border-border-light dark:border-border-dark">
+            {subtasks.map((subtask) => (
+              <TaskItem
+                key={subtask.id}
+                task={subtask}
+                onStatusChange={onStatusChange}
+                onUpdate={onUpdate}
+                onDelete={(task) => onDelete(task)}
+                onEdit={onEdit}
+                level={level + 1}
+                disableStatusChange={disableStatusChange}
+              />
+            ))}
+          </div>
+        )}
       </TaskCard>
     </div>
   );

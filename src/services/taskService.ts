@@ -1,6 +1,6 @@
 /**
  * Task Service
- * 
+ *
  * Handles all Firestore operations for tasks:
  * - Create, Read, Update, Delete
  * - Real-time subscriptions
@@ -57,15 +57,15 @@ const taskToFirestore = (task: Task): DocumentData => {
   if (task.description !== undefined && task.description !== null && task.description !== '') {
     data.description = task.description;
   }
-  
+
   if (task.priority !== undefined && task.priority !== null) {
     data.priority = task.priority;
   }
-  
+
   if (task.parentId !== undefined && task.parentId !== null) {
     data.parentId = task.parentId;
   }
-  
+
   if (task.completedAt !== undefined && task.completedAt !== null) {
     data.completedAt = Timestamp.fromDate(task.completedAt);
   }
@@ -113,7 +113,7 @@ export const getTasks = async (userId: string): Promise<Task[]> => {
 
   const querySnapshot = await getDocs(q);
   const tasks = querySnapshot.docs.map((doc) => firestoreToTask(doc.data(), doc.id));
-  
+
   return sortTasksByOrder(tasks);
 };
 
@@ -180,9 +180,7 @@ export const updateTask = async (taskId: string, updates: Partial<Task>): Promis
 
   // Handle date fields
   if (updates.completedAt !== undefined) {
-    updateData.completedAt = updates.completedAt
-      ? Timestamp.fromDate(updates.completedAt)
-      : null;
+    updateData.completedAt = updates.completedAt ? Timestamp.fromDate(updates.completedAt) : null;
   }
 
   await updateDoc(taskRef, updateData);
@@ -199,14 +197,9 @@ export const deleteTask = async (taskId: string): Promise<void> => {
 /**
  * Delete a task and all its subtasks
  */
-export const deleteTaskWithSubtasks = async (
-  taskId: string,
-  allTasks: Task[]
-): Promise<void> => {
+export const deleteTaskWithSubtasks = async (taskId: string, allTasks: Task[]): Promise<void> => {
   // Get all subtask IDs
-  const subtaskIds = allTasks
-    .filter((task) => task.parentId === taskId)
-    .map((task) => task.id);
+  const subtaskIds = allTasks.filter((task) => task.parentId === taskId).map((task) => task.id);
 
   // Delete the main task
   await deleteTask(taskId);
@@ -214,4 +207,3 @@ export const deleteTaskWithSubtasks = async (
   // Delete all subtasks
   await Promise.all(subtaskIds.map((id) => deleteTask(id)));
 };
-

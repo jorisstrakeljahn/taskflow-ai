@@ -45,12 +45,7 @@ interface IconProps {
 // Wrapper component to maintain consistent API
 const createIcon = (IconComponent: ComponentType<LucideProps>) => {
   return ({ className = '', size = 24, style }: IconProps) => (
-    <IconComponent 
-      className={className} 
-      size={size} 
-      style={style}
-      strokeWidth={2}
-    />
+    <IconComponent className={className} size={size} style={style} strokeWidth={2} />
   );
 };
 

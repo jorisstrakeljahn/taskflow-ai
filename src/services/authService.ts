@@ -1,6 +1,6 @@
 /**
  * Authentication Service
- * 
+ *
  * Handles all Firebase Authentication operations:
  * - Sign up
  * - Sign in
@@ -36,12 +36,8 @@ export interface SignInData {
  */
 export const signUp = async (data: SignUpData): Promise<UserCredential> => {
   const { email, password, displayName } = data;
-  
-  const userCredential = await createUserWithEmailAndPassword(
-    auth,
-    email,
-    password
-  );
+
+  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
   // Update display name if provided
   if (displayName && userCredential.user) {
@@ -88,4 +84,3 @@ export const getCurrentUser = (): User | null => {
 export const getCurrentUserId = (): string | null => {
   return auth.currentUser?.uid || null;
 };
-

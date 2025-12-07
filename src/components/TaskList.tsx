@@ -14,10 +14,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import {
-  getRootTasks,
-  getSubtasks,
-} from '../utils/taskUtils';
+import { getRootTasks, getSubtasks } from '../utils/taskUtils';
 import { TaskFilters } from './TaskFilters';
 import { EmptyState } from './ui/EmptyState';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -45,7 +42,7 @@ export const TaskList = ({
 }: TaskListProps) => {
   const { t } = useLanguage();
   const [isDragMode, setIsDragMode] = useState<boolean>(false);
-  
+
   const {
     filterGroup,
     filterStatus,
@@ -107,41 +104,38 @@ export const TaskList = ({
         />
       </div>
 
-            <div className="flex-1 overflow-y-auto">
-              {rootTasks.length === 0 ? (
-                <EmptyState
-                  title={t('task.noTasks')}
-                  description={t('task.noTasksDescription')}
-                />
-              ) : (
-                <DndContext
-                  sensors={sensors}
-                  collisionDetection={closestCenter}
-                  onDragEnd={handleDragEnd}
-                >
-                  <SortableContext
-                    items={rootTasks.map((t) => t.id)}
-                    strategy={verticalListSortingStrategy}
-                  >
-                    {rootTasks.map((task) => {
-                      const subtasks = getSubtasks(filteredTasks, task.id);
-                      return (
-                        <SortableTaskItem
-                          key={task.id}
-                          task={task}
-                          onStatusChange={onStatusChange}
-                          onUpdate={onUpdate}
-                          onDelete={onDelete}
-                          onAddSubtask={handleAddSubtask}
-                          onEdit={onEdit}
-                          subtasks={subtasks}
-                          showDragHandle={isDragMode}
-                        />
-                      );
-                    })}
-                  </SortableContext>
-                </DndContext>
-              )}
+      <div className="flex-1 overflow-y-auto">
+        {rootTasks.length === 0 ? (
+          <EmptyState title={t('task.noTasks')} description={t('task.noTasksDescription')} />
+        ) : (
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={rootTasks.map((t) => t.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              {rootTasks.map((task) => {
+                const subtasks = getSubtasks(filteredTasks, task.id);
+                return (
+                  <SortableTaskItem
+                    key={task.id}
+                    task={task}
+                    onStatusChange={onStatusChange}
+                    onUpdate={onUpdate}
+                    onDelete={onDelete}
+                    onAddSubtask={handleAddSubtask}
+                    onEdit={onEdit}
+                    subtasks={subtasks}
+                    showDragHandle={isDragMode}
+                  />
+                );
+              })}
+            </SortableContext>
+          </DndContext>
+        )}
       </div>
     </div>
   );

@@ -30,13 +30,17 @@ export const CustomGroupCheckbox = ({
           className={`w-5 h-5 rounded border-2 border-gray-400 dark:border-gray-500 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-offset-0 transition-all duration-200 appearance-none cursor-pointer ${
             checked ? 'checked:scale-110' : ''
           }`}
-          style={checked ? {
-            accentColor: accentColor,
-            '--tw-ring-color': accentColor,
-          } as React.CSSProperties & { '--tw-ring-color': string } : {
-            accentColor: 'transparent',
-            '--tw-ring-color': accentColor,
-          } as React.CSSProperties & { '--tw-ring-color': string }}
+          style={
+            checked
+              ? ({
+                  accentColor: accentColor,
+                  '--tw-ring-color': accentColor,
+                } as React.CSSProperties & { '--tw-ring-color': string })
+              : ({
+                  accentColor: 'transparent',
+                  '--tw-ring-color': accentColor,
+                } as React.CSSProperties & { '--tw-ring-color': string })
+          }
         />
         {checked && (
           <svg
@@ -46,11 +50,7 @@ export const CustomGroupCheckbox = ({
             stroke="currentColor"
             strokeWidth="3"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M5 13l4 4L19 7"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
         )}
       </div>
@@ -60,4 +60,3 @@ export const CustomGroupCheckbox = ({
     </label>
   );
 };
-

@@ -1,4 +1,4 @@
-import { CustomSelect } from '../CustomSelect';
+import { CustomSelect } from '../ui/CustomSelect';
 import { ThemeSelector } from './ThemeSelector';
 import { PrimaryColorSelector } from './PrimaryColorSelector';
 import { useLanguage } from '../../contexts/LanguageContext';

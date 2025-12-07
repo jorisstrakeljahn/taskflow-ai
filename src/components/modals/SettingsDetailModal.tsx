@@ -1,6 +1,6 @@
 import React from 'react';
 import { Dashboard } from '../Dashboard';
-import { ResponsiveModal } from '../ResponsiveModal';
+import { ResponsiveModal } from '../ui/ResponsiveModal';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { PrimaryColor } from '../../contexts/ColorContext';
 import {

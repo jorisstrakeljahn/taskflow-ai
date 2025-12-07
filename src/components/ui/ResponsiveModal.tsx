@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState, ReactNode, forwardRef, useImperativeHandle } from 'react';
-import { IconClose } from './Icons';
-import { useModalDrag } from '../hooks/useModalDrag';
+import { IconClose } from '../Icons';
+import { useModalDrag } from '../../hooks/useModalDrag';
 
 interface ResponsiveModalProps {
   isOpen: boolean;

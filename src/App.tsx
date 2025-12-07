@@ -1,8 +1,10 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 import { useTasks } from './hooks/useTasks';
 import { useTheme } from './hooks/useTheme';
 import { useLanguage } from './contexts/LanguageContext';
 import { useColor } from './contexts/ColorContext';
+import { useModalState } from './hooks/useModalState';
+import { useBodyScrollLock } from './hooks/useBodyScrollLock';
 import { TaskList } from './components/TaskList';
 import { CreateTaskModal } from './components/modals/CreateTaskModal';
 import { EditTaskModal } from './components/modals/EditTaskModal';
@@ -13,9 +15,10 @@ import { DeleteTaskConfirmModal } from './components/modals/DeleteTaskConfirmMod
 import { SpeedDial } from './components/SpeedDial';
 import { Header } from './components/Header';
 import { LoadingSpinner } from './components/ui/LoadingSpinner';
-import { TaskPriority, Task, TaskStatus } from './types/task';
+import { Task, TaskStatus, TaskPriority } from './types/task';
 import { parseChatMessage } from './utils/aiParser';
 import { getSubtasks } from './utils/taskUtils';
+import { prepareCreateTaskData, prepareEditTaskData } from './utils/modalHandlers';
 
 function App() {
   const {
@@ -30,63 +33,48 @@ function App() {
   const { theme, setThemePreference } = useTheme();
   const { language, setLanguage } = useLanguage();
   const { primaryColor, setPrimaryColor } = useColor();
-  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
-  const [isEditTaskModalOpen, setIsEditTaskModalOpen] = useState(false);
-  const [editingTask, setEditingTask] = useState<Task | null>(null);
-  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
-  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-  const [isCompletedTasksModalOpen, setIsCompletedTasksModalOpen] = useState(false);
-  const [isSubtaskModalOpen, setIsSubtaskModalOpen] = useState(false);
-  const [subtaskParentId, setSubtaskParentId] = useState<string | null>(null);
-  const [subtaskParentTitle, setSubtaskParentTitle] = useState<string>('');
-  const [isDeleteConfirmModalOpen, setIsDeleteConfirmModalOpen] = useState(false);
-  const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
-  const editTaskModalRef = useRef<HTMLDivElement>(null);
+  
+  // Modal state management
+  const {
+    isTaskModalOpen,
+    setIsTaskModalOpen,
+    isEditTaskModalOpen,
+    editingTask,
+    openEditTaskModal,
+    closeEditTaskModal,
+    editTaskModalRef,
+    isChatModalOpen,
+    setIsChatModalOpen,
+    isSettingsModalOpen,
+    setIsSettingsModalOpen,
+    isCompletedTasksModalOpen,
+    setIsCompletedTasksModalOpen,
+    isSubtaskModalOpen,
+    subtaskParentId,
+    subtaskParentTitle,
+    openSubtaskModal,
+    closeSubtaskModal,
+    isDeleteConfirmModalOpen,
+    taskToDelete,
+    openDeleteConfirmModal,
+    closeDeleteConfirmModal,
+    isAnyModalOpen,
+  } = useModalState();
 
-  // Block body scroll when any modal is open (including settings detail modal)
-  // Note: DeleteConfirmModal handles its own body scroll lock
-  const isAnyModalOpen = isTaskModalOpen || isEditTaskModalOpen || isChatModalOpen || isSettingsModalOpen || isCompletedTasksModalOpen || isSubtaskModalOpen;
+  // Lock body scroll when modals are open
+  useBodyScrollLock(isAnyModalOpen);
 
   // Get all existing groups from tasks
   const existingGroups = useMemo(() => {
     return Array.from(new Set(tasks.map((t) => t.group))).sort();
   }, [tasks]);
 
-  useEffect(() => {
-    if (isAnyModalOpen) {
-      // Save current scroll position
-      const scrollY = window.scrollY;
-      // Block body scroll
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
-      document.body.style.overflow = 'hidden';
-      
-      return () => {
-        // Restore body scroll
-        document.body.style.position = '';
-        document.body.style.top = '';
-        document.body.style.width = '';
-        document.body.style.overflow = '';
-        window.scrollTo(0, scrollY);
-      };
-    }
-  }, [isAnyModalOpen]);
-
   const handleOpenSubtaskModal = (parentId: string) => {
     const parentTask = tasks.find((t) => t.id === parentId);
-    setSubtaskParentId(parentId);
-    setSubtaskParentTitle(parentTask?.title || '');
-    setIsSubtaskModalOpen(true);
+    openSubtaskModal(parentId, parentTask?.title || '');
   };
 
-  const handleCreateSubtask = (data: {
-    title: string;
-    description?: string;
-    group: string;
-    priority?: TaskPriority;
-    parentId?: string;
-  }) => {
+  const handleCreateSubtask = (data: ReturnType<typeof prepareCreateTaskData>) => {
     if (data.parentId) {
       const newTask = addTask(data.title, data.group, data.parentId);
       if (data.description || data.priority) {
@@ -98,13 +86,7 @@ function App() {
     }
   };
 
-  const handleCreateTask = (data: {
-    title: string;
-    description?: string;
-    group: string;
-    priority?: TaskPriority;
-  }) => {
-    // Create task with all data at once
+  const handleCreateTask = (data: ReturnType<typeof prepareCreateTaskData>) => {
     const newTask = addTask(data.title, data.group, undefined);
     if (data.description || data.priority) {
       updateTask(newTask.id, {
@@ -135,19 +117,17 @@ function App() {
   };
 
   const handleEditTask = (task: Task) => {
-    setEditingTask(task);
-    setIsEditTaskModalOpen(true);
+    openEditTaskModal(task);
   };
 
   const handleDeleteTask = (task: Task) => {
-    setTaskToDelete(task);
-    setIsDeleteConfirmModalOpen(true);
+    openDeleteConfirmModal(task);
   };
 
   const handleConfirmDelete = () => {
     if (taskToDelete) {
       deleteTask(taskToDelete.id);
-      setTaskToDelete(null);
+      closeDeleteConfirmModal();
     }
   };
 
@@ -159,21 +139,8 @@ function App() {
     priority?: TaskPriority;
   }) => {
     const currentTask = tasks.find((t) => t.id === id);
-    const statusChangedToDone = data.status === 'done' && currentTask?.status !== 'done';
-    const statusChangedFromDone = data.status !== 'done' && currentTask?.status === 'done';
-
-    updateTask(id, {
-      title: data.title,
-      description: data.description,
-      status: data.status,
-      group: data.group,
-      priority: data.priority,
-      completedAt: statusChangedToDone 
-        ? new Date() 
-        : statusChangedFromDone 
-          ? undefined 
-          : currentTask?.completedAt,
-    });
+    const updateData = prepareEditTaskData(currentTask, data);
+    updateTask(id, updateData);
   };
 
   const completedTasksCount = tasks.filter((t) => t.status === 'done').length;
@@ -205,16 +172,12 @@ function App() {
       <CreateTaskModal
         isOpen={isTaskModalOpen}
         onClose={() => setIsTaskModalOpen(false)}
-        onSubmit={handleCreateTask}
+        onSubmit={(data) => handleCreateTask(prepareCreateTaskData(data))}
       />
       <CreateTaskModal
         isOpen={isSubtaskModalOpen}
-        onClose={() => {
-          setIsSubtaskModalOpen(false);
-          setSubtaskParentId(null);
-          setSubtaskParentTitle('');
-        }}
-        onSubmit={handleCreateSubtask}
+        onClose={closeSubtaskModal}
+        onSubmit={(data) => handleCreateSubtask(prepareCreateTaskData(data))}
         parentId={subtaskParentId || undefined}
         parentTaskTitle={subtaskParentTitle}
         isSubModal={isEditTaskModalOpen}
@@ -225,8 +188,7 @@ function App() {
         onClose={() => {
           // Only close if subtask modal is not open
           if (!isSubtaskModalOpen) {
-            setIsEditTaskModalOpen(false);
-            setEditingTask(null);
+            closeEditTaskModal();
           }
         }}
         task={editingTask}
@@ -275,10 +237,7 @@ function App() {
       />
       <DeleteTaskConfirmModal
         isOpen={isDeleteConfirmModalOpen}
-        onClose={() => {
-          setIsDeleteConfirmModalOpen(false);
-          setTaskToDelete(null);
-        }}
+        onClose={closeDeleteConfirmModal}
         onConfirm={handleConfirmDelete}
         task={taskToDelete}
         subtasksCount={taskToDelete ? getSubtasks(tasks, taskToDelete.id).length : 0}

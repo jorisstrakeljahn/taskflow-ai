@@ -1,30 +1,101 @@
-import { useState, useCallback } from 'react';
+import { useState, useRef } from 'react';
+import { Task } from '../types/task';
 
 /**
- * Custom hook to manage modal open/close state
+ * Custom hook to manage all modal states in the application
  */
-export const useModalState = (initialState = false) => {
-  const [isOpen, setIsOpen] = useState(initialState);
+export const useModalState = () => {
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  const [isEditTaskModalOpen, setIsEditTaskModalOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [isCompletedTasksModalOpen, setIsCompletedTasksModalOpen] = useState(false);
+  const [isSubtaskModalOpen, setIsSubtaskModalOpen] = useState(false);
+  const [subtaskParentId, setSubtaskParentId] = useState<string | null>(null);
+  const [subtaskParentTitle, setSubtaskParentTitle] = useState<string>('');
+  const [isDeleteConfirmModalOpen, setIsDeleteConfirmModalOpen] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
+  const editTaskModalRef = useRef<HTMLDivElement>(null);
 
-  const open = useCallback(() => setIsOpen(true), []);
-  const close = useCallback(() => setIsOpen(false), []);
-  const toggle = useCallback(() => setIsOpen((prev) => !prev), []);
+  const isAnyModalOpen = 
+    isTaskModalOpen || 
+    isEditTaskModalOpen || 
+    isChatModalOpen || 
+    isSettingsModalOpen || 
+    isCompletedTasksModalOpen || 
+    isSubtaskModalOpen;
 
-  return { isOpen, open, close, toggle };
+  const openEditTaskModal = (task: Task) => {
+    setEditingTask(task);
+    setIsEditTaskModalOpen(true);
+  };
+
+  const closeEditTaskModal = () => {
+    setIsEditTaskModalOpen(false);
+    setEditingTask(null);
+  };
+
+  const openDeleteConfirmModal = (task: Task) => {
+    setTaskToDelete(task);
+    setIsDeleteConfirmModalOpen(true);
+  };
+
+  const closeDeleteConfirmModal = () => {
+    setIsDeleteConfirmModalOpen(false);
+    setTaskToDelete(null);
+  };
+
+  const openSubtaskModal = (parentId: string, parentTitle: string) => {
+    setSubtaskParentId(parentId);
+    setSubtaskParentTitle(parentTitle);
+    setIsSubtaskModalOpen(true);
+  };
+
+  const closeSubtaskModal = () => {
+    setIsSubtaskModalOpen(false);
+    setSubtaskParentId(null);
+    setSubtaskParentTitle('');
+  };
+
+  return {
+    // Task Modal
+    isTaskModalOpen,
+    setIsTaskModalOpen,
+    
+    // Edit Task Modal
+    isEditTaskModalOpen,
+    editingTask,
+    openEditTaskModal,
+    closeEditTaskModal,
+    editTaskModalRef,
+    
+    // Chat Modal
+    isChatModalOpen,
+    setIsChatModalOpen,
+    
+    // Settings Modal
+    isSettingsModalOpen,
+    setIsSettingsModalOpen,
+    
+    // Completed Tasks Modal
+    isCompletedTasksModalOpen,
+    setIsCompletedTasksModalOpen,
+    
+    // Subtask Modal
+    isSubtaskModalOpen,
+    subtaskParentId,
+    subtaskParentTitle,
+    openSubtaskModal,
+    closeSubtaskModal,
+    
+    // Delete Confirm Modal
+    isDeleteConfirmModalOpen,
+    taskToDelete,
+    openDeleteConfirmModal,
+    closeDeleteConfirmModal,
+    
+    // Computed
+    isAnyModalOpen,
+  };
 };
-
-/**
- * Hook to manage multiple modals
- */
-export const useModals = <T extends string>(modalNames: T[]) => {
-  const modals = modalNames.reduce(
-    (acc, name) => {
-      acc[name] = useModalState();
-      return acc;
-    },
-    {} as Record<T, ReturnType<typeof useModalState>>
-  );
-
-  return modals;
-};
-

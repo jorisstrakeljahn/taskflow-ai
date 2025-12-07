@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { Task, TaskStatus } from '../types/task';
-import { TaskCheckbox, TaskBadges, TaskActions } from './tasks';
+import { TaskCheckbox, TaskBadges, TaskActions, TaskCard } from './tasks';
 import { useTaskSwipe } from '../hooks/useTaskSwipe';
+import { useIsMobile } from '../hooks/useIsMobile';
 import { TaskQuickActions } from './tasks/TaskQuickActions';
 
 interface TaskItemProps {
@@ -97,37 +98,11 @@ export const TaskItem = ({
   };
 
   // Check if mobile (for swipe gestures and always-visible buttons)
-  // Use state to handle window resize
-  const [isMobile, setIsMobile] = useState(
-    typeof window !== 'undefined' ? window.innerWidth <= 768 : false
-  );
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const isMobile = useIsMobile();
 
   return (
     <div
       ref={taskRef}
-      className={`bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-lg p-3 mb-2 transition-all duration-500 ${
-        task.status === 'done' && !isCompleting
-          ? 'opacity-60 bg-gray-50 dark:bg-gray-900/50'
-          : 'hover:shadow-sm'
-      } ${
-        isCompleting 
-          ? 'scale-95 opacity-0 transform transition-all duration-500 ease-out' 
-          : 'scale-100 opacity-100'
-      } ${isSwiping ? 'transition-none' : ''}`}
-      style={{ 
-        marginLeft: `${level * 20}px`,
-        transform: isSwiping ? `translateX(${swipeOffset}px)` : undefined,
-        opacity: isSwiping && Math.abs(swipeOffset) > 40 ? 0.7 : undefined,
-      }}
       onMouseEnter={() => {
         if (!isMobile) {
           setIsHovered(true);
@@ -148,6 +123,13 @@ export const TaskItem = ({
       onTouchMove={isMobile ? handleTouchMove : undefined}
       onTouchEnd={isMobile ? handleTouchEnd : undefined}
     >
+      <TaskCard
+        level={level}
+        isCompleting={isCompleting}
+        isDone={task.status === 'done'}
+        isSwiping={isSwiping}
+        swipeOffset={swipeOffset}
+      >
       <div className="flex items-start gap-3">
         <TaskCheckbox
           checked={task.status === 'done'}
@@ -245,9 +227,10 @@ export const TaskItem = ({
               level={level + 1}
               disableStatusChange={disableStatusChange}
             />
-          ))}
+          )          )}
         </div>
       )}
+      </TaskCard>
     </div>
   );
 };

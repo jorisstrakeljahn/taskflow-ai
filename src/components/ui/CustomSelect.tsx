@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { IconChevronRight } from './Icons';
-import { useAccentColor } from '../hooks/useAccentColor';
+import { IconChevronRight } from '../Icons';
+import { useAccentColor } from '../../hooks/useAccentColor';
 
 interface CustomSelectOption {
   value: string;

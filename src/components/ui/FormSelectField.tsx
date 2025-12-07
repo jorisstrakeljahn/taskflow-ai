@@ -1,4 +1,4 @@
-import { CustomSelect } from '../CustomSelect';
+import { CustomSelect } from './CustomSelect';
 import { LABEL_CLASSES } from '../../constants/uiConstants';
 
 interface FormSelectFieldProps {

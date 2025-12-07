@@ -1,4 +1,4 @@
-import { CustomSelect } from '../CustomSelect';
+import { CustomSelect } from '../ui/CustomSelect';
 import { ReactNode } from 'react';
 
 interface FilterFieldProps {

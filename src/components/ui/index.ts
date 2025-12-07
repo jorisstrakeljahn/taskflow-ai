@@ -6,4 +6,8 @@ export { TaskFormFields } from './TaskFormFields';
 export { IconButton } from './IconButton';
 export { EmptyState } from './EmptyState';
 export { LoadingSpinner } from './LoadingSpinner';
+export { CustomSelect } from './CustomSelect';
+export { ResponsiveModal } from './ResponsiveModal';
+export { Card } from './Card';
+export { Badge } from './Badge';
 

@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Task, TaskStatus } from '../../types/task';
 import { TaskItem } from '../TaskItem';
 import { getRootTasks, getSubtasks } from '../../utils/taskUtils';
-import { ResponsiveModal } from '../ResponsiveModal';
+import { ResponsiveModal } from '../ui/ResponsiveModal';
 import { Button } from '../ui/Button';
 import { EmptyState } from '../ui/EmptyState';
 import { useLanguage } from '../../contexts/LanguageContext';

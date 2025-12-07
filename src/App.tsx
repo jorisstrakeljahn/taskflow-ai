@@ -1,8 +1,9 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useTasks } from './hooks/useTasks';
 import { useTheme } from './hooks/useTheme';
 import { useLanguage } from './contexts/LanguageContext';
 import { useColor } from './contexts/ColorContext';
+import { useAuth } from './contexts/AuthContext';
 import { useModalState } from './hooks/useModalState';
 import { useBodyScrollLock } from './hooks/useBodyScrollLock';
 import { TaskList } from './components/TaskList';
@@ -12,6 +13,8 @@ import { ChatModal } from './components/modals/ChatModal';
 import { SettingsModal } from './components/modals/SettingsModal';
 import { CompletedTasksModal } from './components/modals/CompletedTasksModal';
 import { DeleteTaskConfirmModal } from './components/modals/DeleteTaskConfirmModal';
+import { LoginModal } from './components/auth/LoginModal';
+import { SignUpModal } from './components/auth/SignUpModal';
 import { SpeedDial } from './components/SpeedDial';
 import { Header } from './components/Header';
 import { LoadingSpinner } from './components/ui/LoadingSpinner';
@@ -21,6 +24,10 @@ import { getSubtasks } from './utils/taskUtils';
 import { prepareCreateTaskData, prepareEditTaskData } from './utils/modalHandlers';
 
 function App() {
+  const { user, loading: authLoading, signOut } = useAuth();
+  const { t } = useLanguage();
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
   const {
     tasks,
     isLoading,
@@ -145,9 +152,67 @@ function App() {
 
   const completedTasksCount = tasks.filter((t) => t.status === 'done').length;
 
+  // Show loading spinner while checking auth state
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-surface-light dark:bg-surface-dark">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  // Show login/signup if not authenticated
+  if (!user) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-surface-light dark:bg-surface-dark p-4">
+        <div className="max-w-md w-full text-center mb-8">
+          <h1 className="text-4xl font-bold text-text-primary-light dark:text-text-primary-dark mb-4">
+            TaskFlow AI
+          </h1>
+          <p className="text-text-secondary-light dark:text-text-secondary-dark mb-8">
+            {t('auth.welcome')}
+          </p>
+        </div>
+        <div className="flex gap-4">
+          <button
+            onClick={() => setIsLoginModalOpen(true)}
+            className="px-6 py-3 rounded-lg bg-accent-light dark:bg-accent-dark text-white font-medium hover:opacity-90 transition-opacity"
+          >
+            {t('auth.login')}
+          </button>
+          <button
+            onClick={() => setIsSignUpModalOpen(true)}
+            className="px-6 py-3 rounded-lg border border-border-light dark:border-border-dark text-text-primary-light dark:text-text-primary-dark font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+          >
+            {t('auth.signUp')}
+          </button>
+        </div>
+        <LoginModal
+          isOpen={isLoginModalOpen}
+          onClose={() => setIsLoginModalOpen(false)}
+          onSwitchToSignUp={() => {
+            setIsLoginModalOpen(false);
+            setIsSignUpModalOpen(true);
+          }}
+        />
+        <SignUpModal
+          isOpen={isSignUpModalOpen}
+          onClose={() => setIsSignUpModalOpen(false)}
+          onSwitchToLogin={() => {
+            setIsSignUpModalOpen(false);
+            setIsLoginModalOpen(true);
+          }}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-surface-light dark:bg-surface-dark transition-colors">
-      <Header onSettingsClick={() => setIsSettingsModalOpen(true)} />
+      <Header 
+        onSettingsClick={() => setIsSettingsModalOpen(true)}
+        user={user}
+      />
 
       <main className="flex-1 flex flex-col max-w-7xl w-full mx-auto px-4 sm:px-6">
         {isLoading ? (
@@ -212,9 +277,8 @@ function App() {
         currentLanguage={language}
         onPrimaryColorChange={setPrimaryColor}
         currentPrimaryColor={primaryColor}
-        onLogout={() => {
-          // TODO: Implement logout logic
-          console.log('Logout clicked');
+        onLogout={async () => {
+          await signOut();
         }}
         onShowCompletedTasks={() => setIsCompletedTasksModalOpen(true)}
         completedTasksCount={completedTasksCount}

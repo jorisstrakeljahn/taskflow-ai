@@ -72,7 +72,21 @@
       "description": "E-Mail, Benutzer-ID, Abmelden",
       "email": "E-Mail",
       "userId": "Benutzer-ID",
-      "logout": "Abmelden"
+      "logout": "Abmelden",
+      "profile": "Profil-Informationen",
+      "profileDescription": "Deine Kontodaten und Informationen",
+      "displayName": "Anzeigename",
+      "emailVerified": "E-Mail verifiziert",
+      "details": "Konto-Details",
+      "created": "Konto erstellt",
+      "lastSignIn": "Letzte Anmeldung",
+      "security": "Sicherheit",
+      "passwordResetDescription": "Passwort vergessen? Wir können dir einen Reset-Link senden.",
+      "resetPassword": "Passwort zurücksetzen",
+      "resetPasswordEmail": "E-Mail-Adresse",
+      "usingAccountEmail": "Verwendet deine Konto-E-Mail-Adresse",
+      "sendResetLink": "Reset-Link senden",
+      "notLoggedIn": "Nicht angemeldet"
     },
     "completedTasks": {
       "title": "Abgeschlossene Aufgaben",
@@ -140,6 +154,45 @@
       "warning": "Diese Aktion kann nicht rückgängig gemacht werden und die Aufgabe wird dauerhaft gelöscht.",
       "confirm": "Löschen"
     }
+  },
+  "auth": {
+    "login": "Anmelden",
+    "signUp": "Registrieren",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "displayName": "Anzeigename",
+    "emailPlaceholder": "deine.email@beispiel.de",
+    "passwordPlaceholder": "Gib dein Passwort ein",
+    "confirmPasswordPlaceholder": "Bestätige dein Passwort",
+    "displayNamePlaceholder": "Dein Name (optional)",
+    "noAccount": "Noch kein Konto?",
+    "haveAccount": "Bereits ein Konto?",
+    "loggingIn": "Wird angemeldet...",
+    "creatingAccount": "Konto wird erstellt...",
+    "loginError": "Anmeldung fehlgeschlagen. Bitte überprüfe deine Zugangsdaten.",
+    "signUpError": "Konto konnte nicht erstellt werden. Bitte versuche es erneut.",
+    "passwordMismatch": "Passwörter stimmen nicht überein.",
+    "passwordTooShort": "Passwort muss mindestens 6 Zeichen lang sein.",
+    "passwordMinLength": "Mindestens 6 Zeichen",
+    "logout": "Abmelden",
+    "welcome": "Willkommen bei TaskFlow AI",
+    "pleaseLogin": "Bitte melde dich an, um fortzufahren",
+    "loadingAuth": "Lädt...",
+    "emailRequired": "E-Mail-Adresse ist erforderlich",
+    "passwordResetSent": "Passwort-Reset-E-Mail gesendet! Bitte überprüfe dein Postfach.",
+    "passwordResetError": "Passwort-Reset-E-Mail konnte nicht gesendet werden. Bitte versuche es erneut."
+  },
+  "common": {
+    "loading": "Lädt...",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "close": "Schließen",
+    "reset": "Zurücksetzen",
+    "active": "Aktiv",
+    "optional": "Optional"
   }
 }
 

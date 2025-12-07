@@ -28,6 +28,10 @@ import {
   Moon,
   Monitor,
   GripVertical,
+  LogOut,
+  Shield,
+  Mail,
+  Key,
   type LucideProps,
 } from 'lucide-react';
 import type { CSSProperties, ComponentType } from 'react';
@@ -76,3 +80,7 @@ export const IconSun = createIcon(Sun);
 export const IconMoon = createIcon(Moon);
 export const IconMonitor = createIcon(Monitor);
 export const IconGripVertical = createIcon(GripVertical);
+export const IconLogOut = createIcon(LogOut);
+export const IconShield = createIcon(Shield);
+export const IconMail = createIcon(Mail);
+export const IconKey = createIcon(Key);

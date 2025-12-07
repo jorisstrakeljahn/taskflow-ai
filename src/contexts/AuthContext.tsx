@@ -38,13 +38,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const signUp = async (data: SignUpData) => {
-    await authService.signUp(data);
-    // User state will be updated via onAuthStateChanged
+    try {
+      await authService.signUp(data);
+      // User state will be updated via onAuthStateChanged
+    } catch (error: any) {
+      throw error; // Re-throw to let the component handle it
+    }
   };
 
   const signIn = async (data: SignInData) => {
-    await authService.signIn(data);
-    // User state will be updated via onAuthStateChanged
+    try {
+      await authService.signIn(data);
+      // User state will be updated via onAuthStateChanged
+    } catch (error: any) {
+      throw error; // Re-throw to let the component handle it
+    }
   };
 
   const signOut = async () => {

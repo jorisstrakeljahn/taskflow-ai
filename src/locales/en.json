@@ -72,7 +72,21 @@
       "description": "Email, User ID, Logout",
       "email": "Email",
       "userId": "User ID",
-      "logout": "Logout"
+      "logout": "Logout",
+      "profile": "Profile Information",
+      "profileDescription": "Your account details and information",
+      "displayName": "Display Name",
+      "emailVerified": "Email verified",
+      "details": "Account Details",
+      "created": "Account created",
+      "lastSignIn": "Last sign in",
+      "security": "Security",
+      "passwordResetDescription": "Forgot your password? We can send you a reset link.",
+      "resetPassword": "Reset Password",
+      "resetPasswordEmail": "Email address",
+      "usingAccountEmail": "Using your account email address",
+      "sendResetLink": "Send Reset Link",
+      "notLoggedIn": "Not logged in"
     },
     "completedTasks": {
       "title": "Completed Tasks",
@@ -140,6 +154,45 @@
       "warning": "This action cannot be undone and the task will be permanently deleted.",
       "confirm": "Delete"
     }
+  },
+  "auth": {
+    "login": "Login",
+    "signUp": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "displayName": "Display Name",
+    "emailPlaceholder": "your.email@example.com",
+    "passwordPlaceholder": "Enter your password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "displayNamePlaceholder": "Your name (optional)",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "loggingIn": "Logging in...",
+    "creatingAccount": "Creating account...",
+    "loginError": "Failed to log in. Please check your credentials.",
+    "signUpError": "Failed to create account. Please try again.",
+    "passwordMismatch": "Passwords do not match.",
+    "passwordTooShort": "Password must be at least 6 characters long.",
+    "passwordMinLength": "At least 6 characters",
+    "logout": "Logout",
+    "welcome": "Welcome to TaskFlow AI",
+    "pleaseLogin": "Please log in to continue",
+    "loadingAuth": "Loading...",
+    "emailRequired": "Email address is required",
+    "passwordResetSent": "Password reset email sent! Please check your inbox.",
+    "passwordResetError": "Failed to send password reset email. Please try again."
+  },
+  "common": {
+    "loading": "Loading...",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "reset": "Reset",
+    "active": "Active",
+    "optional": "Optional"
   }
 }
 

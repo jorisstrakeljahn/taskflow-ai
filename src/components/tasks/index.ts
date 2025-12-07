@@ -5,4 +5,5 @@ export { TaskActions } from './TaskActions';
 export { SortableTaskItem } from './SortableTaskItem';
 export { StatusSelector } from './StatusSelector';
 export { PrioritySelector } from './PrioritySelector';
+export { TaskQuickActions } from './TaskQuickActions';
 

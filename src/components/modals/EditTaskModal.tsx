@@ -38,11 +38,9 @@ export const EditTaskModal = ({
   const modalRef = useRef<HTMLDivElement>(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [status, setStatus] = useState<TaskStatus>('open');
   const [group, setGroup] = useState('General');
   const [customGroup, setCustomGroup] = useState('');
   const [useCustomGroup, setUseCustomGroup] = useState(false);
-  const [priority, setPriority] = useState<TaskPriority | ''>('');
 
   const subtasks = useMemo(() => {
     if (!task) return [];
@@ -53,11 +51,9 @@ export const EditTaskModal = ({
     if (isOpen && task) {
       setTitle(task.title);
       setDescription(task.description || '');
-      setStatus(task.status);
       setGroup(task.group);
       setCustomGroup('');
       setUseCustomGroup(false);
-      setPriority(task.priority || '');
     }
   }, [isOpen, task]);
 
@@ -71,9 +67,9 @@ export const EditTaskModal = ({
       onSubmit(task.id, {
         title: title.trim(),
         description: description.trim() || undefined,
-        status,
+        status: task.status, // Keep current status (changed via StatusSelector)
         group: selectedGroup,
-        priority: priority || undefined,
+        priority: task.priority, // Keep current priority (changed via PrioritySelector)
       });
       onClose();
     }
@@ -101,26 +97,19 @@ export const EditTaskModal = ({
         <TaskFormFields
           title={title}
           description={description}
-          status={status}
           group={group}
-          priority={priority}
           onTitleChange={setTitle}
           onDescriptionChange={setDescription}
-          onStatusChange={setStatus}
           onGroupChange={setGroup}
-          onPriorityChange={(value) => setPriority(value as TaskPriority | '')}
           existingGroups={existingGroups}
           showCustomGroup={true}
           customGroup={customGroup}
           onCustomGroupChange={setCustomGroup}
           useCustomGroup={useCustomGroup}
           onUseCustomGroupChange={setUseCustomGroup}
-          showStatus={true}
           titleId="edit-task-title"
           descriptionId="edit-task-description"
-          statusId="edit-task-status"
           groupId="edit-task-group"
-          priorityId="edit-task-priority"
         />
 
         {/* Subtasks Section */}

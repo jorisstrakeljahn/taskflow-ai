@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TaskPriority } from '../../types/task';
+import { TaskPriority, TaskStatus } from '../../types/task';
 import { ResponsiveModal } from '../ResponsiveModal';
 import { TaskFormFields } from '../ui/TaskFormFields';
 import { Button } from '../ui/Button';
@@ -33,6 +33,7 @@ export const CreateTaskModal = ({
   const { t } = useLanguage();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [status, setStatus] = useState<TaskStatus>('open');
   const [group, setGroup] = useState('General');
   const [priority, setPriority] = useState<TaskPriority | ''>('');
 
@@ -40,6 +41,7 @@ export const CreateTaskModal = ({
     if (isOpen) {
       setTitle('');
       setDescription('');
+      setStatus('open');
       setGroup('General');
       setPriority('');
     }
@@ -80,12 +82,15 @@ export const CreateTaskModal = ({
         <TaskFormFields
           title={title}
           description={description}
+          status={status}
           group={group}
           priority={priority}
           onTitleChange={setTitle}
           onDescriptionChange={setDescription}
+          onStatusChange={setStatus}
           onGroupChange={setGroup}
           onPriorityChange={(value) => setPriority(value as TaskPriority | '')}
+          showStatus={true}
         />
 
         <div className={`flex gap-2 pt-2 mt-4 ${parentId ? 'pb-6' : ''}`}>

@@ -111,11 +111,12 @@ export const TaskItem = ({
               {task.description}
             </span>
           )}
-          <TaskBadges 
-            task={task} 
-            onStatusChange={onStatusChange}
-            disableStatusChange={disableStatusChange}
-          />
+              <TaskBadges 
+                task={task} 
+                onStatusChange={onStatusChange}
+                onUpdate={onUpdate}
+                disableStatusChange={disableStatusChange}
+              />
         </div>
       </div>
       {subtasks.length > 0 && (

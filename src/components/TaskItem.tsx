@@ -1,10 +1,6 @@
 import { useState } from 'react';
 import { Task, TaskStatus } from '../types/task';
-import { IconEdit, IconTrash } from './Icons';
-import { PRIORITY_COLORS } from '../constants/uiConstants';
-import { useLanguage } from '../contexts/LanguageContext';
-import { useColor } from '../contexts/ColorContext';
-import { useTheme } from '../hooks/useTheme';
+import { TaskCheckbox, TaskBadges, TaskActions } from './tasks';
 
 interface TaskItemProps {
   task: Task;
@@ -29,11 +25,6 @@ export const TaskItem = ({
   level = 0,
   disableStatusChange = false,
 }: TaskItemProps) => {
-  const { t } = useLanguage();
-  const { getColorValue } = useColor();
-  const { theme } = useTheme();
-  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  const accentColor = getColorValue(isDark ? 'dark' : 'light');
   const [isExpanded, setIsExpanded] = useState(false);
   const [isCompleting, setIsCompleting] = useState(false);
   const [showCheckmark, setShowCheckmark] = useState(task.status === 'done');
@@ -83,38 +74,12 @@ export const TaskItem = ({
       style={{ marginLeft: `${level * 20}px` }}
     >
       <div className="flex items-start gap-3">
-        <div className="relative mt-0.5 flex-shrink-0">
-          <input
-            type="checkbox"
-            checked={task.status === 'done' || showCheckmark}
-            onChange={handleCheckboxChange}
-            disabled={disableStatusChange}
-            className={`w-5 h-5 rounded border-2 border-gray-400 dark:border-gray-500 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-offset-0 transition-all duration-200 appearance-none checked:scale-110 ${
-              disableStatusChange 
-                ? 'opacity-50 cursor-not-allowed' 
-                : 'cursor-pointer'
-            }`}
-            style={{
-              accentColor: accentColor,
-              '--tw-ring-color': accentColor,
-            } as React.CSSProperties & { '--tw-ring-color': string }}
-          />
-          {(task.status === 'done' || showCheckmark) && (
-            <svg
-              className="absolute top-0 left-0 w-5 h-5 pointer-events-none text-white animate-in fade-in zoom-in duration-200"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth="3"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-          )}
-        </div>
+        <TaskCheckbox
+          checked={task.status === 'done'}
+          onChange={handleCheckboxChange}
+          disabled={disableStatusChange}
+          showCheckmark={showCheckmark}
+        />
         <>
             <div
               className="flex-1 cursor-pointer"
@@ -134,47 +99,14 @@ export const TaskItem = ({
                   {task.description}
                 </span>
               )}
-              <div className="flex flex-wrap gap-2 mt-2">
-                <span className="px-2 py-0.5 text-xs rounded bg-gray-100 dark:bg-gray-800 text-text-secondary-light dark:text-text-secondary-dark">
-                  {task.group}
-                </span>
-                {task.priority && (
-                  <span
-                    className={`px-2 py-0.5 text-xs rounded bg-gray-100 dark:bg-gray-800 font-semibold ${task.priority ? PRIORITY_COLORS[task.priority] : ''}`}
-                  >
-                    {task.priority}
-                  </span>
-                )}
-                <span className="px-2 py-0.5 text-xs rounded bg-gray-100 dark:bg-gray-800 text-text-secondary-light dark:text-text-secondary-dark">
-                  {task.status}
-                </span>
-              </div>
+              <TaskBadges task={task} />
             </div>
-            <div className="flex gap-1 flex-shrink-0">
-              {onAddSubtask && (
-                <button
-                  onClick={() => onAddSubtask(task.id)}
-                  className="p-2 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                  title={t('task.addSubtask')}
-                >
-                  +
-                </button>
-              )}
-              <button
-                onClick={() => onEdit && onEdit(task)}
-                className="p-2 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                title={t('common.edit')}
-              >
-                <IconEdit className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => onDelete(task.id)}
-                className="p-2 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-                title={t('common.delete')}
-              >
-                <IconTrash className="w-4 h-4" />
-              </button>
-            </div>
+            <TaskActions
+              onAddSubtask={onAddSubtask}
+              onEdit={onEdit ? () => onEdit(task) : undefined}
+              onDelete={() => onDelete(task.id)}
+              parentId={task.id}
+            />
         </>
       </div>
       {isExpanded && task.description && (

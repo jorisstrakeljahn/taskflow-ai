@@ -1,8 +1,9 @@
 import { useState, useRef } from 'react';
-import { IconChevronRight, IconUser, IconBarChart, IconCheckCircle, IconPalette } from './Icons';
+import { IconUser, IconBarChart, IconCheckCircle, IconPalette } from './Icons';
 import { SettingsDetailModal, SettingsCategory } from './SettingsDetailModal';
 import { CompletedTasksModal } from './CompletedTasksModal';
 import { ResponsiveModal } from './ResponsiveModal';
+import { SettingsCategoryButton } from './settings/SettingsCategoryButton';
 import { useLanguage } from '../contexts/LanguageContext';
 import { PrimaryColor } from '../contexts/ColorContext';
 
@@ -117,36 +118,21 @@ export const SettingsModal = ({
       >
         <div className="space-y-2">
           {settingsCategories.map((category) => {
-              const isCompletedTasks = category.id === 'completed-tasks';
-              const description = isCompletedTasks
-                ? `${completedTasksCount} completed ${completedTasksCount === 1 ? 'task' : 'tasks'}`
-                : category.description;
+            const isCompletedTasks = category.id === 'completed-tasks';
+            const description = isCompletedTasks
+              ? `${completedTasksCount} completed ${completedTasksCount === 1 ? 'task' : 'tasks'}`
+              : category.description;
 
-              return (
-                <button
-                  key={category.id}
-                  onClick={() => handleCategoryClick(category.id)}
-                  className="w-full px-4 py-4 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center justify-between group"
-                >
-                  <div className="flex items-center gap-3 flex-1 text-left">
-                    {category.icon && (
-                      <div className="text-text-secondary-light dark:text-text-secondary-dark group-hover:text-text-primary-light dark:group-hover:text-text-primary-dark transition-colors">
-                        {category.icon}
-                      </div>
-                    )}
-                    <div className="flex-1">
-                      <div className="text-base font-medium text-text-primary-light dark:text-text-primary-dark">
-                        {category.title}
-                      </div>
-                      <div className="text-sm text-text-secondary-light dark:text-text-secondary-dark mt-0.5">
-                        {description}
-                      </div>
-                    </div>
-                  </div>
-                  <IconChevronRight className="w-5 h-5 text-text-secondary-light dark:text-text-secondary-dark group-hover:text-text-primary-light dark:group-hover:text-text-primary-dark transition-colors flex-shrink-0" />
-                </button>
-              );
-            })}
+            return (
+              <SettingsCategoryButton
+                key={category.id}
+                title={category.title}
+                description={description}
+                icon={category.icon}
+                onClick={() => handleCategoryClick(category.id)}
+              />
+            );
+          })}
         </div>
       </ResponsiveModal>
       <SettingsDetailModal

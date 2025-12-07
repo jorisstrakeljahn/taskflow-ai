@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { CustomSelect } from './CustomSelect';
 import { IconFilter, IconFolder, IconLayers, IconZap, IconChevronDown } from './Icons';
+import { FilterField } from './filters/FilterField';
 import { TASK_STATUSES, TASK_PRIORITIES } from '../constants/taskConstants';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useColor } from '../contexts/ColorContext';
@@ -85,74 +85,42 @@ export const TaskFilters = ({
 
       {isOpen && (
         <div className="px-4 py-4 space-y-4 bg-card-light dark:bg-card-dark border-t border-border-light dark:border-border-dark">
-          {/* Group Filter */}
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2 mb-1">
-              <IconFolder className="w-4 h-4 text-text-secondary-light dark:text-text-secondary-dark" />
-              <label
-                htmlFor="filter-group"
-                className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark"
-              >
-                {t('filters.group')}
-              </label>
-            </div>
-            <CustomSelect
-              id="filter-group"
-              value={filterGroup}
-              onChange={onGroupChange}
-              options={[
-                { value: 'all', label: t('filters.allGroups') },
-                ...groups.map((group) => ({ value: group, label: group })),
-              ]}
-            />
-          </div>
-
-          {/* Status Filter */}
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2 mb-1">
-              <IconLayers className="w-4 h-4 text-text-secondary-light dark:text-text-secondary-dark" />
-              <label
-                htmlFor="filter-status"
-                className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark"
-              >
-                {t('filters.status')}
-              </label>
-            </div>
-            <CustomSelect
-              id="filter-status"
-              value={filterStatus}
-              onChange={onStatusChange}
-              options={[
-                { value: 'all', label: t('status.all') },
-                ...TASK_STATUSES.map((s) => ({ value: s.value, label: t(`status.${s.value}`) })),
-              ]}
-            />
-          </div>
-
-          {/* Priority Filter */}
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2 mb-1">
-              <IconZap className="w-4 h-4 text-text-secondary-light dark:text-text-secondary-dark" />
-              <label
-                htmlFor="filter-priority"
-                className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark"
-              >
-                {t('filters.priority')}
-              </label>
-            </div>
-            <CustomSelect
-              id="filter-priority"
-              value={filterPriority}
-              onChange={onPriorityChange}
-              options={[
-                { value: 'all', label: t('priority.all') },
-                ...TASK_PRIORITIES.filter((p) => p.value !== '').map((p) => ({
-                  value: p.value,
-                  label: t(`priority.${p.value}`),
-                })),
-              ]}
-            />
-          </div>
+          <FilterField
+            id="filter-group"
+            label={t('filters.group')}
+            icon={<IconFolder className="w-4 h-4" />}
+            value={filterGroup}
+            onChange={onGroupChange}
+            options={[
+              { value: 'all', label: t('filters.allGroups') },
+              ...groups.map((group) => ({ value: group, label: group })),
+            ]}
+          />
+          <FilterField
+            id="filter-status"
+            label={t('filters.status')}
+            icon={<IconLayers className="w-4 h-4" />}
+            value={filterStatus}
+            onChange={onStatusChange}
+            options={[
+              { value: 'all', label: t('status.all') },
+              ...TASK_STATUSES.map((s) => ({ value: s.value, label: t(`status.${s.value}`) })),
+            ]}
+          />
+          <FilterField
+            id="filter-priority"
+            label={t('filters.priority')}
+            icon={<IconZap className="w-4 h-4" />}
+            value={filterPriority}
+            onChange={onPriorityChange}
+            options={[
+              { value: 'all', label: t('priority.all') },
+              ...TASK_PRIORITIES.filter((p) => p.value !== '').map((p) => ({
+                value: p.value,
+                label: t(`priority.${p.value}`),
+              })),
+            ]}
+          />
         </div>
       )}
     </div>

@@ -35,7 +35,7 @@
   },
   "status": {
     "open": "Offen",
-    "inProgress": "In Bearbeitung",
+    "inProgress": "In Progress",
     "done": "Erledigt",
     "all": "Alle Status"
   },

@@ -25,7 +25,6 @@ export const TaskItem = ({
   level = 0,
   disableStatusChange = false,
 }: TaskItemProps) => {
-  const [isExpanded, setIsExpanded] = useState(false);
   const [isCompleting, setIsCompleting] = useState(false);
   const [showCheckmark, setShowCheckmark] = useState(task.status === 'done');
 
@@ -87,40 +86,38 @@ export const TaskItem = ({
           disabled={disableStatusChange}
           showCheckmark={showCheckmark}
         />
-        <>
-            <div
-              className="flex-1 cursor-pointer"
-              onClick={() => setIsExpanded(!isExpanded)}
+        <div className="flex-1">
+          {/* Title row with actions */}
+          <div className="flex items-start justify-between gap-2 mb-1">
+            <span
+              className={`flex-1 font-semibold text-base ${
+                task.status === 'done'
+                  ? 'line-through text-text-secondary-light dark:text-text-secondary-dark'
+                  : 'text-text-primary-light dark:text-text-primary-dark'
+              }`}
             >
-              <span
-                className={`block font-semibold text-base mb-1 ${
-                  task.status === 'done'
-                    ? 'line-through text-text-secondary-light dark:text-text-secondary-dark'
-                    : 'text-text-primary-light dark:text-text-primary-dark'
-                }`}
-              >
-                {task.title}
-              </span>
-              {task.description && (
-                <span className="block text-sm text-text-secondary-light dark:text-text-secondary-dark mb-2 line-clamp-2">
-                  {task.description}
-                </span>
-              )}
-              <TaskBadges task={task} />
-            </div>
+              {task.title}
+            </span>
             <TaskActions
               onAddSubtask={onAddSubtask}
               onEdit={onEdit ? () => onEdit(task) : undefined}
               onDelete={() => onDelete(task)}
               parentId={task.id}
             />
-        </>
-      </div>
-      {isExpanded && task.description && (
-        <div className="mt-2 pt-2 border-t border-border-light dark:border-border-dark text-sm text-text-secondary-light dark:text-text-secondary-dark">
-          {task.description}
+          </div>
+          {/* Description and badges - full width */}
+          {task.description && (
+            <span className="block text-sm text-text-secondary-light dark:text-text-secondary-dark mb-2">
+              {task.description}
+            </span>
+          )}
+          <TaskBadges 
+            task={task} 
+            onStatusChange={onStatusChange}
+            disableStatusChange={disableStatusChange}
+          />
         </div>
-      )}
+      </div>
       {subtasks.length > 0 && (
         <div className="mt-3 pl-3 border-l-2 border-border-light dark:border-border-dark">
           {subtasks.map((subtask) => (

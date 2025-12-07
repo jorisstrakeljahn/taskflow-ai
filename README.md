@@ -29,7 +29,7 @@ TaskFlow AI is a personal task manager that combines the simplicity of a to-do l
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/taskflow-ai.git
+git clone https://github.com/jorisstrakeljahn/taskflow-ai
 cd taskflow-ai
 
 # Install dependencies

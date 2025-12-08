@@ -20,9 +20,9 @@ import { SpeedDial } from './components/SpeedDial';
 import { Header } from './components/Header';
 import { LoadingSpinner } from './components/ui/LoadingSpinner';
 import { Task, TaskStatus, TaskPriority } from './types/task';
-import { parseChatMessage } from './utils/aiParser';
 import { getSubtasks } from './utils/taskUtils';
 import { prepareCreateTaskData, prepareEditTaskData } from './utils/modalHandlers';
+import { generateTasksFromMessage, ParsedTask } from './services/openaiService';
 
 function App() {
   const { user, loading: authLoading, signOut } = useAuth();
@@ -131,19 +131,33 @@ function App() {
     }
   };
 
-  const handleChatMessage = async (message: string) => {
-    // Simulate AI processing delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+  const handleChatMessage = async (message: string): Promise<ParsedTask[]> => {
+    // Get existing groups for AI context
+    const groups = Array.from(new Set(tasks.map((t) => t.group))).sort();
 
     try {
-      const parsedTasks = parseChatMessage(message);
+      const parsedTasks = await generateTasksFromMessage(message, groups);
+      return parsedTasks;
+    } catch (error) {
+      logger.error('Error generating tasks from OpenAI:', error);
+      throw error; // Let ChatModal handle the error display
+    }
+  };
+
+  const handleAddTasks = async (parsedTasks: ParsedTask[]) => {
+    try {
       for (const task of parsedTasks) {
-        await addTask(task.title, task.group, task.parentId);
+        await createTaskWithDetails(
+          task.title,
+          task.group,
+          undefined,
+          task.description,
+          task.priority
+        );
       }
     } catch (error) {
-      logger.error('Error parsing message:', error);
-      // Fallback: create a single task from the message
-      await addTask(message, 'General');
+      logger.error('Error adding tasks:', error);
+      throw error;
     }
   };
 
@@ -295,6 +309,8 @@ function App() {
         isOpen={isChatModalOpen}
         onClose={() => setIsChatModalOpen(false)}
         onSendMessage={handleChatMessage}
+        onAddTasks={handleAddTasks}
+        existingGroups={existingGroups}
       />
       <SettingsModal
         isOpen={isSettingsModalOpen}

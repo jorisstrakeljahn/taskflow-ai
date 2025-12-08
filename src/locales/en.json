@@ -66,7 +66,22 @@
     "example": "Example: \"I need to finish the presentation tomorrow, then go grocery shopping and schedule the doctor appointment\"",
     "placeholder": "Write your thoughts here...",
     "createTasks": "Create Tasks",
-    "processing": "Processing..."
+    "processing": "Processing...",
+    "suggestions": "Task Suggestions",
+    "suggestionsDescription": "Review and edit the suggested tasks before adding them:",
+    "noSuggestions": "No tasks generated. Try rephrasing your message.",
+    "addTask": "Add Task",
+    "addAll": "Add All Tasks",
+    "regenerate": "Regenerate",
+    "editTask": "Edit Task",
+    "removeTask": "Remove",
+    "error": "Error generating tasks",
+    "errorDescription": "Failed to generate tasks. Please check your API key and try again.",
+    "apiKeyMissing": "OpenAI API key is not configured",
+    "apiKeyMissingDescription": "Please set VITE_OPENAI_API_KEY in your .env file.",
+    "retry": "Retry",
+    "editingTask": "Editing Task",
+    "saveTask": "Save Task"
   },
   "settings": {
     "title": "Settings",

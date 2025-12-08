@@ -1,0 +1,138 @@
+/**
+ * OpenAI Service
+ * Handles communication with OpenAI API for task generation
+ */
+
+import {
+  AI_MODEL,
+  AI_MAX_TOKENS,
+  AI_TEMPERATURE,
+  loadSystemPrompt,
+} from '../constants/aiConstants';
+import { logger } from '../utils/logger';
+
+export interface ParsedTask {
+  title: string;
+  group: string;
+  priority?: 'low' | 'medium' | 'high';
+  description?: string;
+}
+
+export interface OpenAIResponse {
+  tasks: ParsedTask[];
+}
+
+/**
+ * Generate tasks from user message using OpenAI API
+ */
+export const generateTasksFromMessage = async (
+  message: string,
+  existingGroups: string[] = []
+): Promise<ParsedTask[]> => {
+  const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+
+  if (!apiKey) {
+    throw new Error(
+      'OpenAI API key is not configured. Please set VITE_OPENAI_API_KEY in your .env file.'
+    );
+  }
+
+  try {
+    // Load system prompt
+    let systemPrompt = await loadSystemPrompt();
+
+    // Enhance system prompt with existing groups if available
+    if (existingGroups.length > 0) {
+      const groupsList = existingGroups.join(', ');
+      systemPrompt += `\n\n## Existing Groups\n\nYou have access to these existing groups: ${groupsList}\n\nPrefer using these groups when appropriate. Only create new groups if the task doesn't fit any existing category.`;
+    }
+
+    // Call OpenAI API
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: AI_MODEL,
+        messages: [
+          {
+            role: 'system',
+            content: systemPrompt,
+          },
+          {
+            role: 'user',
+            content: message,
+          },
+        ],
+        temperature: AI_TEMPERATURE,
+        max_tokens: AI_MAX_TOKENS,
+        response_format: { type: 'json_object' },
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      const errorMessage =
+        errorData.error?.message || `OpenAI API error: ${response.status} ${response.statusText}`;
+      logger.error('OpenAI API error:', errorMessage);
+      throw new Error(errorMessage);
+    }
+
+    const data = await response.json();
+    const content = data.choices[0]?.message?.content;
+
+    if (!content) {
+      throw new Error('No response content from OpenAI API');
+    }
+
+    // Parse JSON response
+    let parsedResponse: OpenAIResponse;
+    try {
+      parsedResponse = JSON.parse(content);
+    } catch (parseError) {
+      logger.error('Failed to parse OpenAI response:', parseError);
+      throw new Error('Invalid JSON response from OpenAI API');
+    }
+
+    // Validate response structure
+    if (!parsedResponse.tasks || !Array.isArray(parsedResponse.tasks)) {
+      throw new Error('Invalid response format: missing tasks array');
+    }
+
+    // Validate and clean tasks
+    const validTasks = parsedResponse.tasks
+      .filter((task) => {
+        if (!task.title || typeof task.title !== 'string' || task.title.trim().length === 0) {
+          return false;
+        }
+        if (!task.group || typeof task.group !== 'string' || task.group.trim().length === 0) {
+          return false;
+        }
+        if (task.priority && !['low', 'medium', 'high'].includes(task.priority)) {
+          return false;
+        }
+        return true;
+      })
+      .map((task) => ({
+        title: task.title.trim(),
+        group: task.group.trim(),
+        priority: task.priority,
+        description: task.description?.trim() || undefined,
+      }));
+
+    if (validTasks.length === 0) {
+      throw new Error('No valid tasks found in AI response');
+    }
+
+    logger.log('Successfully generated tasks from OpenAI:', validTasks.length);
+    return validTasks;
+  } catch (error) {
+    logger.error('Error generating tasks from OpenAI:', error);
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error('Unknown error occurred while generating tasks');
+  }
+};

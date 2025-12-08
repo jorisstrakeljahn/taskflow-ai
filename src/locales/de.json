@@ -66,7 +66,22 @@
     "example": "Beispiel: \"Ich muss morgen die Präsentation fertigstellen, dann einkaufen gehen und den Arzttermin vereinbaren\"",
     "placeholder": "Schreibe deine Gedanken hier...",
     "createTasks": "Aufgaben erstellen",
-    "processing": "Verarbeitet..."
+    "processing": "Verarbeitet...",
+    "suggestions": "Aufgaben-Vorschläge",
+    "suggestionsDescription": "Überprüfe und bearbeite die vorgeschlagenen Aufgaben, bevor du sie hinzufügst:",
+    "noSuggestions": "Keine Aufgaben generiert. Versuche deine Nachricht umzuformulieren.",
+    "addTask": "Aufgabe hinzufügen",
+    "addAll": "Alle Aufgaben hinzufügen",
+    "regenerate": "Neu generieren",
+    "editTask": "Aufgabe bearbeiten",
+    "removeTask": "Entfernen",
+    "error": "Fehler beim Generieren der Aufgaben",
+    "errorDescription": "Aufgaben konnten nicht generiert werden. Bitte überprüfe deinen API-Schlüssel und versuche es erneut.",
+    "apiKeyMissing": "OpenAI API-Schlüssel ist nicht konfiguriert",
+    "apiKeyMissingDescription": "Bitte setze VITE_OPENAI_API_KEY in deiner .env Datei.",
+    "retry": "Erneut versuchen",
+    "editingTask": "Aufgabe bearbeiten",
+    "saveTask": "Aufgabe speichern"
   },
   "settings": {
     "title": "Einstellungen",

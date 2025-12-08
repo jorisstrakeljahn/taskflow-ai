@@ -8,11 +8,13 @@ import {
   PlusCircle,
   X,
   Edit,
+  Edit2,
   Trash2,
   FileText,
   MessageSquare,
   Cog,
   RotateCcw,
+  RefreshCw,
   ChevronRight,
   ChevronDown,
   User,
@@ -32,6 +34,7 @@ import {
   Shield,
   Mail,
   Key,
+  AlertCircle,
   type LucideProps,
 } from 'lucide-react';
 import type { CSSProperties, ComponentType } from 'react';
@@ -52,8 +55,11 @@ const createIcon = (IconComponent: ComponentType<LucideProps>) => {
 // Export all icons with consistent naming
 export const IconPlus = createIcon(Plus);
 export const IconClose = createIcon(X);
+export const IconX = createIcon(X); // Alias
 export const IconEdit = createIcon(Edit);
+export const IconEdit2 = createIcon(Edit2); // Alternative edit icon
 export const IconTrash = createIcon(Trash2);
+export const IconTrash2 = createIcon(Trash2); // Alias
 export const IconTask = createIcon(FileText);
 export const IconChat = createIcon(MessageSquare);
 export const IconSettings = createIcon(Cog); // Using Cog (gear) icon for settings
@@ -79,3 +85,5 @@ export const IconLogOut = createIcon(LogOut);
 export const IconShield = createIcon(Shield);
 export const IconMail = createIcon(Mail);
 export const IconKey = createIcon(Key);
+export const IconRefreshCw = createIcon(RefreshCw);
+export const IconAlertCircle = createIcon(AlertCircle);

@@ -9,6 +9,7 @@ Development setup, best practices, and workflow for TaskFlow AI.
 - Node.js 18+ and npm
 - Git
 - Firebase account (for production)
+- OpenAI API key (for AI task generation)
 
 ### Initial Setup
 
@@ -20,7 +21,7 @@ npm install
 
 # Setup environment variables
 cp .env.example .env
-# Edit .env with your Firebase config
+# Edit .env with your Firebase and OpenAI config
 
 # Start development server
 npm run dev

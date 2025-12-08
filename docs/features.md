@@ -6,12 +6,14 @@ Complete overview of TaskFlow AI features and functionality.
 
 ### AI-Powered Task Creation
 
-Convert unstructured thoughts into clean, organized tasks through natural language chat.
+Convert unstructured thoughts into clean, organized tasks through natural language chat using OpenAI GPT-4o-mini.
 
-- Natural language processing
-- Automatic task parsing
-- Group assignment
-- Priority detection
+- **Natural Language Processing**: Understands conversational input
+- **Automatic Task Parsing**: Extracts multiple tasks from single message
+- **Smart Group Assignment**: Uses existing groups or creates new ones
+- **Priority Detection**: Identifies urgent, important, or optional tasks
+- **Task Suggestions**: Review and edit before adding
+- **Regenerate**: Get new suggestions with different wording
 
 ### Task Management
 

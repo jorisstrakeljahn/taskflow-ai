@@ -6,7 +6,7 @@ TaskFlow AI is a personal task manager that combines the simplicity of a to-do l
 
 ## ✨ Features
 
-- **🤖 AI-Powered Task Creation**: Convert unstructured thoughts into clean, organized tasks
+- **🤖 AI-Powered Task Creation**: Convert unstructured thoughts into clean, organized tasks using OpenAI GPT-4o-mini
 - **📋 Full Task Management**: Create, edit, delete, and organize tasks with full CRUD operations
 - **🌳 Subtask Support**: Hierarchical task structure with unlimited nesting
 - **🏷️ Smart Organization**: Group tasks by category
@@ -84,6 +84,7 @@ taskflow-ai/
 Comprehensive documentation is available in the `docs/` directory:
 
 - **[Firebase Setup](docs/firebase-setup.md)** - Complete Firebase configuration guide
+- **[AI Integration](docs/ai-integration.md)** - OpenAI integration and configuration
 - **[Features](docs/features.md)** - Detailed feature documentation
 - **[Development](docs/development.md)** - Development guide and best practices
 - **[Code Quality](docs/code-quality.md)** - ESLint, Prettier, and guidelines
@@ -108,6 +109,7 @@ Comprehensive documentation is available in the `docs/` directory:
 - **Vite** - Build tool
 - **Tailwind CSS** - Styling
 - **Firebase** - Backend (Auth, Firestore, Hosting)
+- **OpenAI API** - AI-powered task generation
 - **Lucide React** - Icons
 
 ## 🔐 Environment Variables
@@ -115,6 +117,7 @@ Comprehensive documentation is available in the `docs/` directory:
 Create a `.env` file in the root directory:
 
 ```env
+# Firebase Configuration
 VITE_FIREBASE_API_KEY=your_api_key
 VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
 VITE_FIREBASE_PROJECT_ID=your_project_id
@@ -122,6 +125,11 @@ VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
 VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
 VITE_FIREBASE_APP_ID=your_app_id
 VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
+
+# OpenAI Configuration (for AI task generation)
+VITE_OPENAI_API_KEY=your_openai_api_key
 ```
+
+**⚠️ Important**: Never commit your `.env` file. It's already in `.gitignore`.
 
 **Built with ❤️ using React, TypeScript, and Firebase**

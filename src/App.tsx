@@ -23,6 +23,7 @@ import { Task, TaskStatus, TaskPriority } from './types/task';
 import { getSubtasks } from './utils/taskUtils';
 import { prepareCreateTaskData, prepareEditTaskData } from './utils/modalHandlers';
 import { generateTasksFromMessage, ParsedTask } from './services/openaiService';
+import { useTaskHandlers } from './hooks/useTaskHandlers';
 
 function App() {
   const { user, loading: authLoading, signOut } = useAuth();
@@ -70,64 +71,39 @@ function App() {
     return Array.from(new Set(tasks.map((t) => t.group))).sort();
   }, [tasks]);
 
+  // Task handlers hook - separates business logic from UI
+  const {
+    handleCreateSubtask: handleCreateSubtaskBase,
+    handleCreateTask: handleCreateTaskBase,
+    handleAddTasks,
+    handleReactivateTask,
+  } = useTaskHandlers({
+    addTask,
+    updateTask,
+    changeTaskStatus,
+  });
+
   const handleOpenSubtaskModal = (parentId: string) => {
     const parentTask = tasks.find((t) => t.id === parentId);
     openSubtaskModal(parentId, parentTask?.title || '');
   };
 
-  /**
-   * Create a task with optional description and priority
-   */
-  const createTaskWithDetails = async (
-    title: string,
-    group: string,
-    parentId: string | undefined,
-    description?: string,
-    priority?: TaskPriority
-  ) => {
-    const newTask = await addTask(title, group, parentId);
-    if (description || priority) {
-      await updateTask(newTask.id, {
-        description,
-        priority,
-      });
-    }
-    return newTask;
-  };
-
+  // Wrap handlers to catch errors and show user-friendly messages
   const handleCreateSubtask = async (data: ReturnType<typeof prepareCreateTaskData>) => {
     try {
-      if (data.parentId) {
-        await createTaskWithDetails(
-          data.title,
-          data.group,
-          data.parentId,
-          data.description,
-          data.priority
-        );
-      }
+      await handleCreateSubtaskBase(data);
     } catch (error) {
-      logger.error('Error creating subtask:', error);
-      alert(
-        `Fehler beim Erstellen der Unteraufgabe: ${error instanceof Error ? error.message : 'Unbekannter Fehler'}`
-      );
+      // Error is already logged in useTaskHandlers
+      // Could add toast notification here in the future
     }
   };
 
   const handleCreateTask = async (data: ReturnType<typeof prepareCreateTaskData>) => {
     try {
-      await createTaskWithDetails(
-        data.title,
-        data.group,
-        undefined,
-        data.description,
-        data.priority
-      );
+      await handleCreateTaskBase(data);
     } catch (error) {
-      logger.error('Error creating task:', error);
-      alert(
-        `Fehler beim Erstellen der Aufgabe: ${error instanceof Error ? error.message : 'Unbekannter Fehler'}`
-      );
+      // Error is already logged in useTaskHandlers
+      // Could add toast notification here in the future
     }
   };
 
@@ -142,27 +118,6 @@ function App() {
       logger.error('Error generating tasks from OpenAI:', error);
       throw error; // Let ChatModal handle the error display
     }
-  };
-
-  const handleAddTasks = async (parsedTasks: ParsedTask[]) => {
-    try {
-      for (const task of parsedTasks) {
-        await createTaskWithDetails(
-          task.title,
-          task.group,
-          undefined,
-          task.description,
-          task.priority
-        );
-      }
-    } catch (error) {
-      logger.error('Error adding tasks:', error);
-      throw error;
-    }
-  };
-
-  const handleReactivateTask = (id: string) => {
-    changeTaskStatus(id, 'open');
   };
 
   const handleEditTask = (task: Task) => {

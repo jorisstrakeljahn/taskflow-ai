@@ -34,7 +34,8 @@
     "subtaskTitle": "Subtask title:",
     "useCustomGroup": "Use custom group",
     "createNewGroup": "Create new group",
-    "customGroupPlaceholder": "Enter new group name"
+    "customGroupPlaceholder": "Enter new group name",
+    "createError": "Failed to create task. Please try again."
   },
   "status": {
     "open": "Open",

@@ -34,7 +34,8 @@
     "subtaskTitle": "Unteraufgabe Titel:",
     "useCustomGroup": "Eigene Gruppe verwenden",
     "createNewGroup": "Neue Gruppe anlegen",
-    "customGroupPlaceholder": "Neuen Gruppennamen eingeben"
+    "customGroupPlaceholder": "Neuen Gruppennamen eingeben",
+    "createError": "Aufgabe konnte nicht erstellt werden. Bitte versuche es erneut."
   },
   "status": {
     "open": "Offen",

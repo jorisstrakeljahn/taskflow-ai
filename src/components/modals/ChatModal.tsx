@@ -1,23 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ResponsiveModal } from '../ui/ResponsiveModal';
 import { Button } from '../ui/Button';
-import { Input } from '../ui/Input';
 import { Textarea } from '../ui/Textarea';
-import { CustomSelect } from '../ui/CustomSelect';
-import { Badge } from '../ui/Badge';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { logger } from '../../utils/logger';
 import { ParsedTask } from '../../services/openaiService';
-import {
-  IconEdit2,
-  IconTrash2,
-  IconRefreshCw,
-  IconPlus,
-  IconCheck,
-  IconX,
-  IconAlertCircle,
-} from '../Icons';
-import { TaskPriority } from '../../types/task';
+import { IconRefreshCw, IconPlus, IconAlertCircle } from '../Icons';
+import { TaskSuggestionItem } from './ChatModal/TaskSuggestionItem';
+import { TaskSuggestionEditForm } from './ChatModal/TaskSuggestionEditForm';
 
 interface ChatModalProps {
   isOpen: boolean;
@@ -126,6 +116,12 @@ export const ChatModal = ({
     setEditedTask(null);
   };
 
+  const handleUpdateEditedTask = (updates: Partial<ParsedTask>) => {
+    if (editedTask) {
+      setEditedTask({ ...editedTask, ...updates });
+    }
+  };
+
   const handleRemoveTask = (taskId: string) => {
     setSuggestions((prev) => prev.filter((task) => task.id !== taskId));
   };
@@ -149,18 +145,6 @@ export const ChatModal = ({
       logger.error('Error adding tasks:', err);
     }
   };
-
-  const priorityOptions: { value: TaskPriority | ''; label: string }[] = [
-    { value: '', label: t('priority.none') },
-    { value: 'low', label: t('priority.low') },
-    { value: 'medium', label: t('priority.medium') },
-    { value: 'high', label: t('priority.high') },
-  ];
-
-  const groupOptions = [
-    { value: '', label: t('filters.allGroups') },
-    ...existingGroups.map((group) => ({ value: group, label: group })),
-  ];
 
   return (
     <ResponsiveModal isOpen={isOpen} onClose={onClose} title={t('chat.title')}>
@@ -267,123 +251,25 @@ export const ChatModal = ({
 
                   if (isEditing && editedTask) {
                     return (
-                      <div
+                      <TaskSuggestionEditForm
                         key={task.id}
-                        className="bg-card-light dark:bg-card-dark border-2 border-accent-light dark:border-accent-dark rounded-lg p-4 space-y-3"
-                      >
-                        <div className="space-y-2">
-                          <Input
-                            value={editedTask.title}
-                            onChange={(e) =>
-                              setEditedTask({ ...editedTask, title: e.target.value })
-                            }
-                            placeholder={t('task.title')}
-                            className="font-semibold"
-                          />
-                          <Textarea
-                            value={editedTask.description || ''}
-                            onChange={(e) =>
-                              setEditedTask({
-                                ...editedTask,
-                                description: e.target.value || undefined,
-                              })
-                            }
-                            placeholder={t('task.description')}
-                            rows={2}
-                          />
-                          <div className="grid grid-cols-2 gap-2">
-                            <CustomSelect
-                              value={editedTask.group}
-                              onChange={(value) => setEditedTask({ ...editedTask, group: value })}
-                              options={groupOptions}
-                              placeholder={t('task.group')}
-                            />
-                            <CustomSelect
-                              value={editedTask.priority || ''}
-                              onChange={(value) =>
-                                setEditedTask({
-                                  ...editedTask,
-                                  priority: value ? (value as TaskPriority) : undefined,
-                                })
-                              }
-                              options={priorityOptions}
-                              placeholder={t('task.priority')}
-                            />
-                          </div>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button variant="primary" onClick={handleSaveEdit} className="flex-1">
-                            <IconCheck className="w-4 h-4 mr-1.5" />
-                            {t('chat.saveTask')}
-                          </Button>
-                          <Button variant="secondary" onClick={handleCancelEdit}>
-                            <IconX className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </div>
+                        task={editedTask}
+                        existingGroups={existingGroups}
+                        onSave={handleSaveEdit}
+                        onCancel={handleCancelEdit}
+                        onUpdate={handleUpdateEditedTask}
+                      />
                     );
                   }
 
                   return (
-                    <div
+                    <TaskSuggestionItem
                       key={task.id}
-                      className="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-lg p-4"
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex-1 space-y-2">
-                          <h4 className="font-semibold text-text-primary-light dark:text-text-primary-dark">
-                            {task.title}
-                          </h4>
-                          {task.description && (
-                            <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark">
-                              {task.description}
-                            </p>
-                          )}
-                          <div className="flex flex-wrap gap-2">
-                            <Badge variant="default">{task.group}</Badge>
-                            {task.priority && (
-                              <Badge
-                                variant={
-                                  task.priority === 'high'
-                                    ? 'danger'
-                                    : task.priority === 'medium'
-                                      ? 'warning'
-                                      : 'default'
-                                }
-                              >
-                                {t(`priority.${task.priority}`)}
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
-                        <div className="flex gap-1 flex-shrink-0">
-                          <Button
-                            variant="secondary"
-                            onClick={() => handleEditTask(task.id)}
-                            className="p-1.5"
-                            title={t('chat.editTask')}
-                          >
-                            <IconEdit2 className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            variant="secondary"
-                            onClick={() => handleRemoveTask(task.id)}
-                            className="p-1.5"
-                            title={t('chat.removeTask')}
-                          >
-                            <IconTrash2 className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            variant="primary"
-                            onClick={() => handleAddTask(task)}
-                            className="p-1.5"
-                            title={t('chat.addTask')}
-                          >
-                            <IconPlus className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
+                      task={task}
+                      onEdit={handleEditTask}
+                      onRemove={handleRemoveTask}
+                      onAdd={handleAddTask}
+                    />
                   );
                 })}
               </div>

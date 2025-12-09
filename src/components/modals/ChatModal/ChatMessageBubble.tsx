@@ -114,6 +114,7 @@ export const ChatMessageBubble = ({
                           <div className="flex gap-2 pt-2 border-t border-border-light dark:border-border-dark">
                             <button
                               onClick={() => onTaskAction({ ...task, id: taskId }, 'add')}
+                              aria-label={`${t('chat.addTask')}: ${task.title}`}
                               className="text-xs px-3 py-1.5 bg-accent-light dark:bg-accent-dark text-white rounded hover:opacity-90 transition-opacity"
                             >
                               {t('chat.addTask')}
@@ -121,6 +122,7 @@ export const ChatMessageBubble = ({
                             {onEditTask && (
                               <button
                                 onClick={() => onEditTask(taskId, task)}
+                                aria-label={`${t('chat.editTask')}: ${task.title}`}
                                 className="text-xs px-3 py-1.5 bg-gray-200 dark:bg-gray-700 text-text-primary-light dark:text-text-primary-dark rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                               >
                                 {t('chat.editTask')}
@@ -128,6 +130,7 @@ export const ChatMessageBubble = ({
                             )}
                             <button
                               onClick={() => onTaskAction({ ...task, id: taskId }, 'remove')}
+                              aria-label={`${t('chat.removeTask')}: ${task.title}`}
                               className="text-xs px-3 py-1.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
                             >
                               {t('chat.removeTask')}
@@ -184,6 +187,7 @@ export const ChatMessageBubble = ({
                                       onClick={() =>
                                         onTaskAction({ ...subtask, id: subtaskId }, 'add')
                                       }
+                                      aria-label={`${t('chat.addTask')}: ${subtask.title}`}
                                       className="text-xs px-2 py-1 bg-accent-light dark:bg-accent-dark text-white rounded hover:opacity-90 transition-opacity"
                                     >
                                       {t('chat.addTask')}
@@ -191,6 +195,7 @@ export const ChatMessageBubble = ({
                                     {onEditTask && (
                                       <button
                                         onClick={() => onEditTask(subtaskId, subtask)}
+                                        aria-label={`${t('chat.editTask')}: ${subtask.title}`}
                                         className="text-xs px-2 py-1 bg-gray-200 dark:bg-gray-700 text-text-primary-light dark:text-text-primary-dark rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                                       >
                                         {t('chat.editTask')}
@@ -200,6 +205,7 @@ export const ChatMessageBubble = ({
                                       onClick={() =>
                                         onTaskAction({ ...subtask, id: subtaskId }, 'remove')
                                       }
+                                      aria-label={`${t('chat.removeTask')}: ${subtask.title}`}
                                       className="text-xs px-2 py-1 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
                                     >
                                       {t('chat.removeTask')}

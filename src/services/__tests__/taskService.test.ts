@@ -431,10 +431,14 @@ describe('taskService', () => {
       vi.mocked(firestoreModule.collection).mockReturnValue(mockCollection as never);
       vi.mocked(firestoreModule.where).mockReturnValue(mockWhere as never);
       vi.mocked(firestoreModule.query).mockReturnValue(mockQuery as never);
-      vi.mocked(firestoreModule.onSnapshot).mockImplementation((_query, onNext) => {
-        onNext(mockSnapshot as never);
-        return mockUnsubscribe;
-      });
+      vi.mocked(firestoreModule.onSnapshot).mockImplementation(
+        (_query, onNext, _onError, _options) => {
+          if (typeof onNext === 'function') {
+            onNext(mockSnapshot as never);
+          }
+          return mockUnsubscribe;
+        }
+      );
 
       const unsubscribe = subscribeToTasks(mockUserId, callback);
 

@@ -70,6 +70,7 @@ export const ChatInput = ({
               disabled={isProcessing || !value.trim() || disabled}
               className="absolute bottom-2 right-2 px-2 py-1 text-xs"
               title={t('chat.regenerate')}
+              aria-label={t('chat.regenerate')}
             >
               <IconRefreshCw className="w-3 h-3" />
             </Button>
@@ -80,6 +81,7 @@ export const ChatInput = ({
           variant="primary"
           disabled={!value.trim() || isProcessing || disabled}
           className="self-end"
+          aria-label={isProcessing ? t('chat.processing') : t('chat.send')}
         >
           {isProcessing ? t('chat.processing') : t('chat.send')}
         </Button>

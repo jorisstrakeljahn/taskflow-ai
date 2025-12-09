@@ -140,6 +140,7 @@ const TaskItemComponent = ({
             onChange={handleCheckboxChange}
             disabled={disableStatusChange}
             showCheckmark={showCheckmark}
+            aria-label={`${task.status === 'done' ? 'Mark as open' : 'Mark as done'}: ${task.title}`}
           />
           <div className="flex-1 min-w-0">
             {/* Title row with actions - aligned to first line */}

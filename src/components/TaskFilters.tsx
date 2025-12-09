@@ -81,6 +81,9 @@ const TaskFiltersComponent = ({
     <div className="bg-card-light dark:bg-card-dark border-b border-border-light dark:border-border-dark shadow-sm">
       <button
         onClick={() => setIsOpen(!isOpen)}
+        aria-label={t('filters.title')}
+        aria-expanded={isOpen}
+        aria-controls="filter-content"
         className={`w-full px-4 py-3 flex items-center justify-between text-left transition-colors ${
           hasActiveFilters
             ? 'bg-accent-light/10 dark:bg-accent-dark/10'
@@ -108,6 +111,7 @@ const TaskFiltersComponent = ({
                 e.stopPropagation();
                 onReset();
               }}
+              aria-label={t('filters.reset')}
               className="px-2 py-1 text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors"
             >
               {t('filters.reset')}
@@ -122,7 +126,12 @@ const TaskFiltersComponent = ({
       </button>
 
       {isOpen && (
-        <div className="px-4 py-3 space-y-3 bg-card-light dark:bg-card-dark border-t border-border-light dark:border-border-dark">
+        <div
+          id="filter-content"
+          role="region"
+          aria-label={t('filters.title')}
+          className="px-4 py-3 space-y-3 bg-card-light dark:bg-card-dark border-t border-border-light dark:border-border-dark"
+        >
           {onDragModeToggle && (
             <div className="pb-2 border-b border-border-light dark:border-border-dark">
               <Toggle

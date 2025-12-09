@@ -5,6 +5,7 @@ interface TaskCheckboxProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   disabled?: boolean;
   showCheckmark?: boolean;
+  'aria-label'?: string;
 }
 
 export const TaskCheckbox = ({
@@ -12,6 +13,7 @@ export const TaskCheckbox = ({
   onChange,
   disabled = false,
   showCheckmark = false,
+  'aria-label': ariaLabel,
 }: TaskCheckboxProps) => {
   const { accentColor } = useAccentColor();
 
@@ -22,6 +24,8 @@ export const TaskCheckbox = ({
         checked={checked || showCheckmark}
         onChange={onChange}
         disabled={disabled}
+        aria-label={ariaLabel}
+        aria-checked={checked || showCheckmark}
         className={`w-5 h-5 rounded border-2 border-gray-400 dark:border-gray-500 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-offset-0 transition-all duration-200 appearance-none checked:scale-110 ${
           disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
         }`}

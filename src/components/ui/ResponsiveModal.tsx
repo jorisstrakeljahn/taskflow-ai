@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState, forwardRef, useImperativeHandle } f
 import type { ReactNode, RefObject } from 'react';
 import { IconClose } from '../Icons';
 import { useModalDrag } from '../../hooks/useModalDrag';
+import { useFocusTrap } from '../../hooks/useFocusTrap';
 
 interface ResponsiveModalProps {
   isOpen: boolean;
@@ -35,6 +36,13 @@ export const ResponsiveModal = forwardRef<HTMLDivElement, ResponsiveModalProps>(
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     const [isInitialMount, setIsInitialMount] = useState(true);
     const modalRef = useRef<HTMLDivElement>(null);
+    const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+    // Focus trap for accessibility
+    const focusTrapRef = useFocusTrap({
+      isActive: isOpen,
+      initialFocusRef: closeButtonRef,
+    });
 
     const {
       currentY,
@@ -54,6 +62,20 @@ export const ResponsiveModal = forwardRef<HTMLDivElement, ResponsiveModalProps>(
 
     // Expose modal ref to parent component
     useImperativeHandle(ref, () => modalRef.current!);
+
+    // Handle Escape key to close modal
+    useEffect(() => {
+      if (!isOpen) return;
+
+      const handleEscape = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          onClose();
+        }
+      };
+
+      window.addEventListener('keydown', handleEscape);
+      return () => window.removeEventListener('keydown', handleEscape);
+    }, [isOpen, onClose]);
 
     useEffect(() => {
       const handleResize = () => {
@@ -130,7 +152,15 @@ export const ResponsiveModal = forwardRef<HTMLDivElement, ResponsiveModalProps>(
             style={{ pointerEvents: level === 2 ? 'none' : 'auto' }}
           />
           <div
-            ref={modalRef}
+            ref={(node) => {
+              modalRef.current = node;
+              if (node && focusTrapRef) {
+                focusTrapRef.current = node;
+              }
+            }}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
             className={`fixed bottom-0 left-0 right-0 rounded-t-3xl ${mobileHeight} bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark shadow-2xl flex flex-col touch-pan-y`}
             style={{
               zIndex,
@@ -144,7 +174,10 @@ export const ResponsiveModal = forwardRef<HTMLDivElement, ResponsiveModalProps>(
             <div className="w-10 h-1 bg-gray-300 dark:bg-gray-600 rounded-full mx-auto mt-3 mb-2 cursor-grab active:cursor-grabbing" />
             <div className="flex items-center justify-between px-5 pb-4 border-b border-border-light dark:border-border-dark">
               <div>
-                <h2 className="text-xl font-semibold text-text-primary-light dark:text-text-primary-dark">
+                <h2
+                  id="modal-title"
+                  className="text-xl font-semibold text-text-primary-light dark:text-text-primary-dark"
+                >
                   {title}
                 </h2>
                 {subtitle && (
@@ -156,7 +189,9 @@ export const ResponsiveModal = forwardRef<HTMLDivElement, ResponsiveModalProps>(
               <div className="flex items-center gap-2">
                 {headerActions}
                 <button
+                  ref={closeButtonRef}
                   onClick={onClose}
+                  aria-label="Close modal"
                   className="p-2 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 >
                   <IconClose className="w-5 h-5" />
@@ -196,7 +231,15 @@ export const ResponsiveModal = forwardRef<HTMLDivElement, ResponsiveModalProps>(
           style={{ pointerEvents: level === 2 ? 'none' : 'auto' }}
         />
         <div
-          ref={modalRef}
+          ref={(node) => {
+            modalRef.current = node;
+            if (node && focusTrapRef) {
+              focusTrapRef.current = node;
+            }
+          }}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-title-desktop"
           className="fixed top-0 h-full w-[500px] bg-card-light dark:bg-card-dark border-l border-border-light dark:border-border-dark shadow-2xl flex flex-col"
           style={{
             right: `${rightOffset}px`,
@@ -214,7 +257,10 @@ export const ResponsiveModal = forwardRef<HTMLDivElement, ResponsiveModalProps>(
         >
           <div className="flex items-center justify-between px-6 py-4 border-b border-border-light dark:border-border-dark">
             <div>
-              <h2 className="text-xl font-semibold text-text-primary-light dark:text-text-primary-dark">
+              <h2
+                id="modal-title-desktop"
+                className="text-xl font-semibold text-text-primary-light dark:text-text-primary-dark"
+              >
                 {title}
               </h2>
               {subtitle && (
@@ -226,7 +272,9 @@ export const ResponsiveModal = forwardRef<HTMLDivElement, ResponsiveModalProps>(
             <div className="flex items-center gap-2">
               {headerActions}
               <button
+                ref={closeButtonRef}
                 onClick={onClose}
+                aria-label="Close modal"
                 className="p-2 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               >
                 <IconClose className="w-5 h-5" />

@@ -7,6 +7,7 @@ import { useColor } from './contexts/ColorContext';
 import { useAuth } from './contexts/AuthContext';
 import { useModalState } from './hooks/useModalState';
 import { useBodyScrollLock } from './hooks/useBodyScrollLock';
+import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { TaskList } from './components/TaskList';
 import { CreateTaskModal } from './components/modals/CreateTaskModal';
 import { EditTaskModal } from './components/modals/EditTaskModal';
@@ -183,6 +184,25 @@ function App() {
   const handleSettingsClick = useCallback(() => {
     setIsSettingsModalOpen(true);
   }, [setIsSettingsModalOpen]);
+
+  // Keyboard shortcuts
+  useKeyboardShortcuts({
+    onChatOpen: () => setIsChatModalOpen(true),
+    onTaskCreate: () => setIsTaskModalOpen(true),
+    onModalClose: () => {
+      if (isAnyModalOpen) {
+        // Close the most recently opened modal
+        if (isSubtaskModalOpen) closeSubtaskModal();
+        else if (isEditTaskModalOpen) closeEditTaskModal();
+        else if (isChatModalOpen) setIsChatModalOpen(false);
+        else if (isTaskModalOpen) setIsTaskModalOpen(false);
+        else if (isSettingsModalOpen) setIsSettingsModalOpen(false);
+        else if (isCompletedTasksModalOpen) setIsCompletedTasksModalOpen(false);
+        else if (isDeleteConfirmModalOpen) closeDeleteConfirmModal();
+      }
+    },
+    isModalOpen: isAnyModalOpen,
+  });
 
   // Show loading spinner while checking auth state
   if (authLoading) {

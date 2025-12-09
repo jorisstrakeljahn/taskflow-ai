@@ -153,9 +153,13 @@ export const ResponsiveModal = forwardRef<HTMLDivElement, ResponsiveModalProps>(
           />
           <div
             ref={(node) => {
-              modalRef.current = node;
+              // Use type assertion to allow assignment to ref.current
+              const mutableRef = modalRef as React.MutableRefObject<HTMLDivElement | null>;
+              mutableRef.current = node;
               if (node && focusTrapRef) {
-                focusTrapRef.current = node;
+                const mutableFocusRef =
+                  focusTrapRef as React.MutableRefObject<HTMLDivElement | null>;
+                mutableFocusRef.current = node;
               }
             }}
             role="dialog"
@@ -232,9 +236,12 @@ export const ResponsiveModal = forwardRef<HTMLDivElement, ResponsiveModalProps>(
         />
         <div
           ref={(node) => {
-            modalRef.current = node;
+            // Use type assertion to allow assignment to ref.current
+            const mutableRef = modalRef as React.MutableRefObject<HTMLDivElement | null>;
+            mutableRef.current = node;
             if (node && focusTrapRef) {
-              focusTrapRef.current = node;
+              const mutableFocusRef = focusTrapRef as React.MutableRefObject<HTMLDivElement | null>;
+              mutableFocusRef.current = node;
             }
           }}
           role="dialog"

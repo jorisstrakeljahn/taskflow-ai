@@ -432,9 +432,24 @@ describe('taskService', () => {
       vi.mocked(firestoreModule.where).mockReturnValue(mockWhere as never);
       vi.mocked(firestoreModule.query).mockReturnValue(mockQuery as never);
       vi.mocked(firestoreModule.onSnapshot).mockImplementation(
-        (_query, onNext, _onError, _options) => {
-          if (typeof onNext === 'function') {
-            onNext(mockSnapshot as never);
+        (
+          _query: unknown,
+          onNextOrOptions: unknown,
+          _onErrorOrOnNext?: unknown,
+          _onError?: unknown
+        ) => {
+          // Handle both signatures: onSnapshot(query, onNext) and onSnapshot(query, options, onNext)
+          let onNext: ((snapshot: unknown) => void) | undefined;
+          if (typeof onNextOrOptions === 'function') {
+            // First signature: onSnapshot(query, onNext)
+            onNext = onNextOrOptions as (snapshot: unknown) => void;
+          } else if (typeof _onErrorOrOnNext === 'function') {
+            // Second signature: onSnapshot(query, options, onNext)
+            onNext = _onErrorOrOnNext as (snapshot: unknown) => void;
+          }
+
+          if (onNext) {
+            onNext(mockSnapshot);
           }
           return mockUnsubscribe;
         }

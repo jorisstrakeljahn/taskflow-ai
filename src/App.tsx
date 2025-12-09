@@ -25,10 +25,12 @@ import { getSubtasks } from './utils/taskUtils';
 import { prepareCreateTaskData, prepareEditTaskData } from './utils/modalHandlers';
 import { generateTasksFromMessage, ParsedTask } from './services/openaiService';
 import { useTaskHandlers } from './hooks/useTaskHandlers';
+import { useToast } from './hooks/useToast';
 
 function App() {
   const { user, loading: authLoading, signOut } = useAuth();
   const { t } = useLanguage();
+  const toast = useToast();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
   const { tasks, isLoading, addTask, updateTask, changeTaskStatus, deleteTask, reorderTasks } =
@@ -93,8 +95,7 @@ function App() {
       try {
         await handleCreateSubtaskBase(data);
       } catch (error) {
-        // Error is already logged in useTaskHandlers
-        // Could add toast notification here in the future
+        // Error is already handled in useTaskHandlers with toast
       }
     },
     [handleCreateSubtaskBase]
@@ -105,8 +106,7 @@ function App() {
       try {
         await handleCreateTaskBase(data);
       } catch (error) {
-        // Error is already logged in useTaskHandlers
-        // Could add toast notification here in the future
+        // Error is already handled in useTaskHandlers with toast
       }
     },
     [handleCreateTaskBase]
@@ -152,10 +152,15 @@ function App() {
 
   const handleConfirmDelete = useCallback(() => {
     if (taskToDelete) {
-      deleteTask(taskToDelete.id);
-      closeDeleteConfirmModal();
+      try {
+        deleteTask(taskToDelete.id);
+        toast.success(t('toast.taskDeleted'));
+        closeDeleteConfirmModal();
+      } catch (error) {
+        toast.error(t('toast.errorDeletingTask'));
+      }
     }
-  }, [taskToDelete, deleteTask, closeDeleteConfirmModal]);
+  }, [taskToDelete, deleteTask, closeDeleteConfirmModal, toast, t]);
 
   const handleSaveTaskEdit = useCallback(
     (
@@ -169,11 +174,16 @@ function App() {
         dueDate?: Date;
       }
     ) => {
-      const currentTask = tasks.find((t) => t.id === id);
-      const updateData = prepareEditTaskData(currentTask, data);
-      updateTask(id, updateData);
+      try {
+        const currentTask = tasks.find((t) => t.id === id);
+        const updateData = prepareEditTaskData(currentTask, data);
+        updateTask(id, updateData);
+        toast.success(t('toast.taskUpdated'));
+      } catch (error) {
+        toast.error(t('toast.errorUpdatingTask'));
+      }
     },
-    [tasks, updateTask]
+    [tasks, updateTask, toast, t]
   );
 
   const completedTasksCount = useMemo(
@@ -270,7 +280,14 @@ function App() {
         ) : (
           <TaskList
             tasks={tasks}
-            onStatusChange={changeTaskStatus}
+            onStatusChange={(id, status) => {
+              changeTaskStatus(id, status);
+              if (status === 'done') {
+                toast.success(t('toast.taskCompleted'));
+              } else if (status === 'open') {
+                toast.info(t('toast.taskStatusChanged'));
+              }
+            }}
             onUpdate={updateTask}
             onDelete={handleDeleteTask}
             onAddSubtask={handleOpenSubtaskModal}

@@ -7,7 +7,27 @@
     "edit": "Bearbeiten",
     "close": "Schließen",
     "reset": "Zurücksetzen",
-    "active": "Aktiv"
+    "active": "Aktiv",
+    "optional": "Optional"
+  },
+  "toast": {
+    "taskCreated": "Aufgabe erfolgreich erstellt",
+    "taskUpdated": "Aufgabe erfolgreich aktualisiert",
+    "taskDeleted": "Aufgabe erfolgreich gelöscht",
+    "taskCompleted": "Aufgabe abgeschlossen",
+    "taskReactivated": "Aufgabe reaktiviert",
+    "subtaskCreated": "Teilaufgabe erfolgreich erstellt",
+    "tasksAdded": "{count} Aufgabe(n) erfolgreich hinzugefügt",
+    "errorCreatingTask": "Fehler beim Erstellen der Aufgabe",
+    "errorUpdatingTask": "Fehler beim Aktualisieren der Aufgabe",
+    "errorDeletingTask": "Fehler beim Löschen der Aufgabe",
+    "errorLoadingTasks": "Fehler beim Laden der Aufgaben",
+    "errorGeneratingTasks": "Fehler beim Generieren der Aufgaben",
+    "errorSavingSettings": "Fehler beim Speichern der Einstellungen",
+    "settingsSaved": "Einstellungen erfolgreich gespeichert",
+    "loggedOut": "Erfolgreich abgemeldet",
+    "errorLoggingOut": "Fehler beim Abmelden",
+    "taskStatusChanged": "Aufgabenstatus aktualisiert"
   },
   "app": {
     "title": "TaskFlow AI"
@@ -222,16 +242,5 @@
     "emailRequired": "E-Mail-Adresse ist erforderlich",
     "passwordResetSent": "Passwort-Reset-E-Mail gesendet! Bitte überprüfe dein Postfach.",
     "passwordResetError": "Passwort-Reset-E-Mail konnte nicht gesendet werden. Bitte versuche es erneut."
-  },
-  "common": {
-    "loading": "Lädt...",
-    "cancel": "Abbrechen",
-    "save": "Speichern",
-    "delete": "Löschen",
-    "edit": "Bearbeiten",
-    "close": "Schließen",
-    "reset": "Zurücksetzen",
-    "active": "Aktiv",
-    "optional": "Optional"
   }
 }

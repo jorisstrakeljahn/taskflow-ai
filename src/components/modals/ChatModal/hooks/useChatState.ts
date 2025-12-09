@@ -25,6 +25,7 @@ import { logger } from '../../../../utils/logger';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { validateChatMessage } from '../../../../utils/inputValidation';
 import { useRateLimit } from '../../../../hooks/useRateLimit';
+import { useToast } from '../../../../hooks/useToast';
 
 interface EditableTask extends ParsedTask {
   id: string;
@@ -40,6 +41,7 @@ interface UseChatStateProps {
 
 export const useChatState = ({ onSendMessage, onAddTasks }: UseChatStateProps) => {
   const { t } = useLanguage();
+  const toast = useToast();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentMessage, setCurrentMessage] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -74,7 +76,9 @@ export const useChatState = ({ onSendMessage, onAddTasks }: UseChatStateProps) =
     // Validate input
     const validation = validateChatMessage(currentMessage.trim());
     if (!validation.isValid) {
-      setError(validation.error || t('chat.error'));
+      const errorMsg = validation.error || t('chat.error');
+      setError(errorMsg);
+      toast.error(errorMsg);
       return;
     }
 
@@ -82,10 +86,11 @@ export const useChatState = ({ onSendMessage, onAddTasks }: UseChatStateProps) =
     const rateLimitResult = checkRateLimit();
     if (!rateLimitResult.allowed) {
       const retrySeconds = Math.ceil((rateLimitResult.retryAfter || 0) / 1000);
-      setError(
+      const errorMsg =
         t('chat.rateLimitError', { seconds: retrySeconds }) ||
-          `Too many requests. Please wait ${retrySeconds} seconds.`
-      );
+        `Too many requests. Please wait ${retrySeconds} seconds.`;
+      setError(errorMsg);
+      toast.error(errorMsg);
       return;
     }
 
@@ -140,8 +145,9 @@ export const useChatState = ({ onSendMessage, onAddTasks }: UseChatStateProps) =
       }
     } catch (err) {
       logger.error('Error generating tasks:', err);
-      const errorMessage = err instanceof Error ? err.message : t('chat.error');
+      const errorMessage = err instanceof Error ? err.message : t('toast.errorGeneratingTasks');
       setError(errorMessage);
+      toast.error(errorMessage);
 
       // Add error message
       const errorMessageObj: ChatMessage = {
@@ -154,7 +160,16 @@ export const useChatState = ({ onSendMessage, onAddTasks }: UseChatStateProps) =
     } finally {
       setIsProcessing(false);
     }
-  }, [currentMessage, isProcessing, messages, onSendMessage, generateMessageId, t, checkRateLimit]);
+  }, [
+    currentMessage,
+    isProcessing,
+    messages,
+    onSendMessage,
+    generateMessageId,
+    t,
+    checkRateLimit,
+    toast,
+  ]);
 
   const handleRegenerate = useCallback(async () => {
     if (messages.length === 0 || isProcessing) return;
@@ -230,6 +245,7 @@ export const useChatState = ({ onSendMessage, onAddTasks }: UseChatStateProps) =
           );
         } catch (err) {
           logger.error('Error adding task:', err);
+          toast.error(t('toast.errorGeneratingTasks'));
         }
       } else if (action === 'edit') {
         setEditingTaskId(task.id);
@@ -263,7 +279,7 @@ export const useChatState = ({ onSendMessage, onAddTasks }: UseChatStateProps) =
         );
       }
     },
-    [messages, onAddTasks]
+    [messages, onAddTasks, toast, t]
   );
 
   const handleEditTask = useCallback((taskId: string, task: ParsedTask) => {

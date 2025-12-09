@@ -4,6 +4,7 @@ import { Input } from '../ui/Input';
 import { Button } from '../ui/Button';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { useToast } from '../../hooks/useToast';
 
 interface SignUpModalProps {
   isOpen: boolean;
@@ -14,6 +15,7 @@ interface SignUpModalProps {
 export const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }: SignUpModalProps) => {
   const { t } = useLanguage();
   const { signUp } = useAuth();
+  const toast = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -26,12 +28,16 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }: SignUpModalPro
     setError(null);
 
     if (password !== confirmPassword) {
-      setError(t('auth.passwordMismatch'));
+      const errorMsg = t('auth.passwordMismatch');
+      setError(errorMsg);
+      toast.error(errorMsg);
       return;
     }
 
     if (password.length < 6) {
-      setError(t('auth.passwordTooShort'));
+      const errorMsg = t('auth.passwordTooShort');
+      setError(errorMsg);
+      toast.error(errorMsg);
       return;
     }
 
@@ -43,6 +49,7 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }: SignUpModalPro
         password,
         displayName: displayName || undefined,
       });
+      toast.success(t('auth.signUpSuccess') || 'Account created successfully');
       onClose();
       setEmail('');
       setPassword('');
@@ -51,6 +58,7 @@ export const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }: SignUpModalPro
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : t('auth.signUpError');
       setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

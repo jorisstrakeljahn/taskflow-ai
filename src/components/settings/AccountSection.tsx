@@ -4,6 +4,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { Button } from '../ui/Button';
 import { IconUser, IconMail, IconLogOut, IconShield } from '../Icons';
 import { logger } from '../../utils/logger';
+import { useToast } from '../../hooks/useToast';
 
 interface AccountSectionProps {
   onLogout?: () => void;
@@ -12,6 +13,7 @@ interface AccountSectionProps {
 export const AccountSection = ({ onLogout }: AccountSectionProps) => {
   const { t } = useLanguage();
   const { user, signOut, resetPassword } = useAuth();
+  const toast = useToast();
   const [isResettingPassword, setIsResettingPassword] = useState(false);
   const [resetPasswordEmail, setResetPasswordEmail] = useState('');
   const [resetPasswordMessage, setResetPasswordMessage] = useState<string | null>(null);
@@ -20,11 +22,13 @@ export const AccountSection = ({ onLogout }: AccountSectionProps) => {
   const handleLogout = async () => {
     try {
       await signOut();
+      toast.success(t('toast.loggedOut'));
       if (onLogout) {
         onLogout();
       }
     } catch (error) {
       logger.error('Logout error:', error);
+      toast.error(t('toast.errorLoggingOut'));
     }
   };
 
@@ -41,11 +45,14 @@ export const AccountSection = ({ onLogout }: AccountSectionProps) => {
 
     try {
       await resetPassword(email);
-      setResetPasswordMessage(t('auth.passwordResetSent'));
+      const successMsg = t('auth.passwordResetSent');
+      setResetPasswordMessage(successMsg);
+      toast.success(successMsg);
       setResetPasswordEmail('');
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : t('auth.passwordResetError');
       setResetPasswordError(errorMessage);
+      toast.error(errorMessage);
     }
   };
 

@@ -4,6 +4,7 @@ import { Input } from '../ui/Input';
 import { Button } from '../ui/Button';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { useToast } from '../../hooks/useToast';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -14,6 +15,7 @@ interface LoginModalProps {
 export const LoginModal = ({ isOpen, onClose, onSwitchToSignUp }: LoginModalProps) => {
   const { t } = useLanguage();
   const { signIn } = useAuth();
+  const toast = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -26,12 +28,14 @@ export const LoginModal = ({ isOpen, onClose, onSwitchToSignUp }: LoginModalProp
 
     try {
       await signIn({ email, password });
+      toast.success(t('auth.loginSuccess') || 'Logged in successfully');
       onClose();
       setEmail('');
       setPassword('');
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : t('auth.loginError');
       setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

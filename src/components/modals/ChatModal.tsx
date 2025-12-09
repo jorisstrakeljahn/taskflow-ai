@@ -28,7 +28,6 @@ import { ResponsiveModal } from '../ui/ResponsiveModal';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { ParsedTask } from '../../services/openaiService';
 import { ChatInput } from './ChatModal/ChatInput';
-import { ChatErrorBanner } from './ChatModal/ChatErrorBanner';
 import { ChatMessagesContainer } from './ChatModal/ChatMessagesContainer';
 import { IconRefreshCw } from '../Icons';
 import { useChatState } from './ChatModal/hooks/useChatState';
@@ -94,15 +93,6 @@ export const ChatModal = ({
       }
     >
       <div className="flex flex-col h-full overflow-hidden">
-        {/* Error Banner */}
-        {error && (
-          <ChatErrorBanner
-            error={error}
-            onRetry={showRegenerate ? handleRegenerate : undefined}
-            onDismiss={() => setError(null)}
-          />
-        )}
-
         {/* Messages Container */}
         <ChatMessagesContainer
           messages={messages}

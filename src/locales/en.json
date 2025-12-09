@@ -9,6 +9,25 @@
     "reset": "Reset",
     "active": "Active"
   },
+  "toast": {
+    "taskCreated": "Task created successfully",
+    "taskUpdated": "Task updated successfully",
+    "taskDeleted": "Task deleted successfully",
+    "taskCompleted": "Task completed",
+    "taskReactivated": "Task reactivated",
+    "subtaskCreated": "Subtask created successfully",
+    "tasksAdded": "Tasks added successfully",
+    "errorCreatingTask": "Failed to create task",
+    "errorUpdatingTask": "Failed to update task",
+    "errorDeletingTask": "Failed to delete task",
+    "errorLoadingTasks": "Failed to load tasks",
+    "errorGeneratingTasks": "Failed to generate tasks",
+    "errorSavingSettings": "Failed to save settings",
+    "settingsSaved": "Settings saved successfully",
+    "loggedOut": "Logged out successfully",
+    "errorLoggingOut": "Failed to log out",
+    "taskStatusChanged": "Task status updated"
+  },
   "app": {
     "title": "TaskFlow AI"
   },

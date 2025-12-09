@@ -25,6 +25,7 @@ import { Task as TaskType, TaskPriority } from '../types/task';
 import { ParsedTask } from '../services/openaiService';
 import { logger } from '../utils/logger';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useToast } from './useToast';
 
 interface UseTaskHandlersProps {
   addTask: (title: string, group: string, parentId?: string) => Promise<TaskType>;
@@ -50,6 +51,7 @@ export const useTaskHandlers = ({
   changeTaskStatus,
 }: UseTaskHandlersProps) => {
   const { t } = useLanguage();
+  const toast = useToast();
 
   /**
    * Create a task with optional description, priority, and due date
@@ -102,14 +104,16 @@ export const useTaskHandlers = ({
             data.priority,
             data.dueDate
           );
+          toast.success(t('toast.subtaskCreated'));
         }
       } catch (error) {
         logger.error('Error creating subtask:', error);
-        const errorMessage = error instanceof Error ? error.message : t('task.createError');
+        const errorMessage = error instanceof Error ? error.message : t('toast.errorCreatingTask');
+        toast.error(errorMessage);
         throw new Error(errorMessage);
       }
     },
-    [createTaskWithDetails, t]
+    [createTaskWithDetails, t, toast]
   );
 
   /**
@@ -129,13 +133,15 @@ export const useTaskHandlers = ({
           data.priority,
           data.dueDate
         );
+        toast.success(t('toast.taskCreated'));
       } catch (error) {
         logger.error('Error creating task:', error);
-        const errorMessage = error instanceof Error ? error.message : t('task.createError');
+        const errorMessage = error instanceof Error ? error.message : t('toast.errorCreatingTask');
+        toast.error(errorMessage);
         throw new Error(errorMessage);
       }
     },
-    [createTaskWithDetails, t]
+    [createTaskWithDetails, t, toast]
   );
 
   /**
@@ -209,12 +215,15 @@ export const useTaskHandlers = ({
             }
           }
         }
+        const count = parsedTasks.length;
+        toast.success(t('toast.tasksAdded', { count }));
       } catch (error) {
         logger.error('Error adding tasks:', error);
+        toast.error(t('toast.errorGeneratingTasks'));
         throw error;
       }
     },
-    [createTaskWithDetails]
+    [createTaskWithDetails, t, toast]
   );
 
   /**
@@ -227,8 +236,9 @@ export const useTaskHandlers = ({
   const handleReactivateTask = useCallback(
     (id: string) => {
       changeTaskStatus(id, 'open');
+      toast.success(t('toast.taskReactivated'));
     },
-    [changeTaskStatus]
+    [changeTaskStatus, toast, t]
   );
 
   return {

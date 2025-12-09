@@ -13,6 +13,7 @@ interface ResponsiveModalProps {
   offsetRight?: number; // For stacking on desktop (offset in pixels)
   level?: number; // 1 = main modal, 2 = submodal (affects height on mobile and parent modal behavior)
   parentModalRef?: RefObject<HTMLDivElement>; // Reference to parent modal for scaling/opacity
+  headerActions?: ReactNode; // Optional actions/buttons in the header
 }
 
 export const ResponsiveModal = forwardRef<HTMLDivElement, ResponsiveModalProps>(
@@ -27,6 +28,7 @@ export const ResponsiveModal = forwardRef<HTMLDivElement, ResponsiveModalProps>(
       offsetRight = 0,
       level = 1,
       parentModalRef,
+      headerActions,
     },
     ref
   ) => {
@@ -151,12 +153,15 @@ export const ResponsiveModal = forwardRef<HTMLDivElement, ResponsiveModalProps>(
                   </p>
                 )}
               </div>
-              <button
-                onClick={onClose}
-                className="p-2 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              >
-                <IconClose className="w-5 h-5" />
-              </button>
+              <div className="flex items-center gap-2">
+                {headerActions}
+                <button
+                  onClick={onClose}
+                  className="p-2 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                >
+                  <IconClose className="w-5 h-5" />
+                </button>
+              </div>
             </div>
             <div className="flex-1 overflow-y-auto px-5 py-5">{children}</div>
           </div>
@@ -218,12 +223,15 @@ export const ResponsiveModal = forwardRef<HTMLDivElement, ResponsiveModalProps>(
                 </p>
               )}
             </div>
-            <button
-              onClick={onClose}
-              className="p-2 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            >
-              <IconClose className="w-5 h-5" />
-            </button>
+            <div className="flex items-center gap-2">
+              {headerActions}
+              <button
+                onClick={onClose}
+                className="p-2 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              >
+                <IconClose className="w-5 h-5" />
+              </button>
+            </div>
           </div>
           <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
         </div>

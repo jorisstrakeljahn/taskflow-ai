@@ -87,7 +87,8 @@
     "saveTask": "Save Task",
     "send": "Send",
     "thinking": "Thinking...",
-    "noMessages": "Start a conversation to create tasks!"
+    "noMessages": "Start a conversation to create tasks!",
+    "resetChat": "Reset chat"
   },
   "settings": {
     "title": "Settings",

@@ -12,7 +12,7 @@ import { ChatMessage } from '../../types/chat';
 import { ChatMessageBubble } from './ChatModal/ChatMessageBubble';
 import { ChatInput } from './ChatModal/ChatInput';
 import { TaskSuggestionEditForm } from './ChatModal/TaskSuggestionEditForm';
-import { IconAlertCircle } from '../Icons';
+import { IconAlertCircle, IconRefreshCw } from '../Icons';
 import { Button } from '../ui/Button';
 
 interface ChatModalProps {
@@ -114,7 +114,13 @@ export const ChatModal = ({
         timestamp: Date.now(),
       };
 
-      setMessages((prev) => [...prev, assistantMessage]);
+      // Only add message if it has content or tasks
+      if (
+        assistantMessage.content ||
+        (assistantMessage.tasks && assistantMessage.tasks.length > 0)
+      ) {
+        setMessages((prev) => [...prev, assistantMessage]);
+      }
     } catch (err) {
       logger.error('Error generating tasks:', err);
       const errorMessage = err instanceof Error ? err.message : t('chat.error');
@@ -161,6 +167,7 @@ export const ChatModal = ({
       try {
         // If this is a subtask, we need to include its parent in the batch
         const tasksToAdd: ParsedTask[] = [task];
+        const taskTitlesToRemove = new Set<string>([task.title]);
 
         // If task has parentId, find parent task in the same message
         if (task.parentId) {
@@ -171,17 +178,35 @@ export const ChatModal = ({
             const parentTask = parentMessage.tasks?.find((t) => t.title === task.parentId);
             if (parentTask && !tasksToAdd.some((t) => t.title === parentTask.title)) {
               tasksToAdd.unshift(parentTask); // Add parent first
+              taskTitlesToRemove.add(parentTask.title);
             }
           }
         }
 
+        // Also collect all subtasks of this task if it's a parent
+        messages.forEach((msg) => {
+          if (msg.tasks) {
+            msg.tasks.forEach((t) => {
+              if (t.parentId === task.title) {
+                tasksToAdd.push(t);
+                taskTitlesToRemove.add(t.title);
+              }
+            });
+          }
+        });
+
         await onAddTasks(tasksToAdd);
-        // Update message to show task was added
+
+        // Remove tasks from messages after successful addition
         setMessages((prev) =>
           prev.map((msg) => {
-            if (msg.tasks && msg.tasks.some((t) => t.title === task.title)) {
-              // Mark task as added (could add visual feedback)
-              return msg;
+            if (msg.tasks && msg.tasks.some((t) => taskTitlesToRemove.has(t.title))) {
+              const filteredTasks = msg.tasks.filter((t) => !taskTitlesToRemove.has(t.title));
+              // If no tasks left, keep the message but remove tasks array
+              return {
+                ...msg,
+                tasks: filteredTasks.length > 0 ? filteredTasks : undefined,
+              };
             }
             return msg;
           })
@@ -193,11 +218,24 @@ export const ChatModal = ({
       setEditingTaskId(task.id);
       setEditedTask(task);
     } else if (action === 'remove') {
-      // Remove task from message
+      // Remove task from message (and its subtasks if it's a parent)
+      const taskTitlesToRemove = new Set<string>([task.title]);
+
+      // Find all subtasks of this task
+      messages.forEach((msg) => {
+        if (msg.tasks) {
+          msg.tasks.forEach((t) => {
+            if (t.parentId === task.title) {
+              taskTitlesToRemove.add(t.title);
+            }
+          });
+        }
+      });
+
       setMessages((prev) =>
         prev.map((msg) => {
-          if (msg.tasks) {
-            const updatedTasks = msg.tasks.filter((t) => t.title !== task.title);
+          if (msg.tasks && msg.tasks.some((t) => taskTitlesToRemove.has(t.title))) {
+            const updatedTasks = msg.tasks.filter((t) => !taskTitlesToRemove.has(t.title));
             return {
               ...msg,
               tasks: updatedTasks.length > 0 ? updatedTasks : undefined,
@@ -248,12 +286,34 @@ export const ChatModal = ({
     }
   };
 
+  const handleResetChat = () => {
+    setMessages([]);
+    setCurrentMessage('');
+    setError(null);
+    setEditingTaskId(null);
+    setEditedTask(null);
+  };
+
   // Get last message with tasks for regenerate button
   const lastMessageWithTasks = messages.filter((msg) => msg.tasks && msg.tasks.length > 0).pop();
   const showRegenerate = !!lastMessageWithTasks && !isProcessing;
 
   return (
-    <ResponsiveModal isOpen={isOpen} onClose={onClose} title={t('chat.title')}>
+    <ResponsiveModal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={t('chat.title')}
+      headerActions={
+        <button
+          onClick={handleResetChat}
+          className="p-2 rounded-lg text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          title={t('chat.resetChat')}
+          aria-label={t('chat.resetChat')}
+        >
+          <IconRefreshCw className="w-5 h-5" />
+        </button>
+      }
+    >
       <div className="flex flex-col h-full overflow-hidden">
         {/* Error Banner */}
         {error && (
@@ -300,6 +360,11 @@ export const ChatModal = ({
             const editingTaskIndex = editingTaskId
               ? parseInt(editingTaskId.split('-task-')[1] || '-1')
               : -1;
+
+            // Skip messages with no tasks and no content (empty assistant messages)
+            if (!message.content && (!message.tasks || message.tasks.length === 0)) {
+              return null;
+            }
 
             return (
               <div key={message.id}>

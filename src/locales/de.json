@@ -87,7 +87,8 @@
     "saveTask": "Aufgabe speichern",
     "send": "Senden",
     "thinking": "Denke nach...",
-    "noMessages": "Starte eine Unterhaltung, um Aufgaben zu erstellen!"
+    "noMessages": "Starte eine Unterhaltung, um Aufgaben zu erstellen!",
+    "resetChat": "Chat zurücksetzen"
   },
   "settings": {
     "title": "Einstellungen",

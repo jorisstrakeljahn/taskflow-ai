@@ -87,6 +87,7 @@
     "saveTask": "Save Task",
     "send": "Send",
     "thinking": "Thinking...",
+    "rateLimitError": "Too many requests. Please wait {seconds} seconds before sending another message.",
     "noMessages": "Start a conversation to create tasks!",
     "resetChat": "Reset chat"
   },

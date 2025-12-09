@@ -87,6 +87,7 @@
     "saveTask": "Aufgabe speichern",
     "send": "Senden",
     "thinking": "Denke nach...",
+    "rateLimitError": "Zu viele Anfragen. Bitte warte {seconds} Sekunden, bevor du eine weitere Nachricht sendest.",
     "noMessages": "Starte eine Unterhaltung, um Aufgaben zu erstellen!",
     "resetChat": "Chat zurücksetzen"
   },

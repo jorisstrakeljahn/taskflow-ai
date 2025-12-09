@@ -23,6 +23,8 @@ import { ChatMessage } from '../../../../types/chat';
 import { ParsedTask } from '../../../../services/openaiService';
 import { logger } from '../../../../utils/logger';
 import { useLanguage } from '../../../../contexts/LanguageContext';
+import { validateChatMessage } from '../../../../utils/inputValidation';
+import { useRateLimit } from '../../../../hooks/useRateLimit';
 
 interface EditableTask extends ParsedTask {
   id: string;
@@ -46,6 +48,12 @@ export const useChatState = ({ onSendMessage, onAddTasks }: UseChatStateProps) =
   const [editedTask, setEditedTask] = useState<EditableTask | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Rate limiting: max 20 requests per minute
+  const checkRateLimit = useRateLimit({
+    maxRequests: 20,
+    windowMs: 60000, // 1 minute
+  });
+
   // Scroll to bottom when new messages arrive
   useEffect(() => {
     scrollToBottom();
@@ -62,6 +70,24 @@ export const useChatState = ({ onSendMessage, onAddTasks }: UseChatStateProps) =
 
   const handleSendMessage = useCallback(async () => {
     if (!currentMessage.trim() || isProcessing) return;
+
+    // Validate input
+    const validation = validateChatMessage(currentMessage.trim());
+    if (!validation.isValid) {
+      setError(validation.error || t('chat.error'));
+      return;
+    }
+
+    // Check rate limit
+    const rateLimitResult = checkRateLimit();
+    if (!rateLimitResult.allowed) {
+      const retrySeconds = Math.ceil((rateLimitResult.retryAfter || 0) / 1000);
+      setError(
+        t('chat.rateLimitError', { seconds: retrySeconds }) ||
+          `Too many requests. Please wait ${retrySeconds} seconds.`
+      );
+      return;
+    }
 
     const userMessageText = currentMessage.trim();
     setCurrentMessage('');
@@ -128,7 +154,7 @@ export const useChatState = ({ onSendMessage, onAddTasks }: UseChatStateProps) =
     } finally {
       setIsProcessing(false);
     }
-  }, [currentMessage, isProcessing, messages, onSendMessage, generateMessageId, t]);
+  }, [currentMessage, isProcessing, messages, onSendMessage, generateMessageId, t, checkRateLimit]);
 
   const handleRegenerate = useCallback(async () => {
     if (messages.length === 0 || isProcessing) return;

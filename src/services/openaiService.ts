@@ -12,6 +12,7 @@ import {
   loadSystemPrompt,
 } from '../constants/aiConstants';
 import { logger } from '../utils/logger';
+import { validateChatMessage, sanitizeString } from '../utils/inputValidation';
 
 /**
  * Parsed task structure returned by OpenAI API
@@ -71,13 +72,32 @@ export const generateTasksFromMessage = async (
     );
   }
 
+  // Validate and sanitize input
+  const validation = validateChatMessage(message);
+  if (!validation.isValid) {
+    throw new Error(validation.error || 'Invalid message');
+  }
+
+  const sanitizedMessage = sanitizeString(message, 5000);
+
+  // Sanitize existing groups
+  const sanitizedGroups = existingGroups.map((group) => sanitizeString(group, 50));
+
+  // Sanitize conversation history
+  const sanitizedHistory = conversationHistory
+    .slice(-10) // Limit to last 10 messages
+    .map((msg) => ({
+      role: msg.role,
+      content: sanitizeString(msg.content, 5000),
+    }));
+
   try {
     // Load system prompt
     let systemPrompt = await loadSystemPrompt();
 
     // Enhance system prompt with existing groups if available
-    if (existingGroups.length > 0) {
-      const groupsList = existingGroups.join(', ');
+    if (sanitizedGroups.length > 0) {
+      const groupsList = sanitizedGroups.join(', ');
       systemPrompt += `\n\n## Existing Groups\n\nYou have access to these existing groups: ${groupsList}\n\nPrefer using these groups when appropriate. Only create new groups if the task doesn't fit any existing category.`;
     }
 
@@ -87,15 +107,15 @@ export const generateTasksFromMessage = async (
         role: 'system',
         content: systemPrompt,
       },
-      // Add conversation history (last 10 messages to avoid token limits)
-      ...conversationHistory.slice(-10).map((msg) => ({
+      // Add sanitized conversation history
+      ...sanitizedHistory.map((msg) => ({
         role: msg.role,
         content: msg.content,
       })),
-      // Add current user message
+      // Add current user message (sanitized)
       {
         role: 'user',
-        content: message,
+        content: sanitizedMessage,
       },
     ];
 

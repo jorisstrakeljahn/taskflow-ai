@@ -100,6 +100,7 @@ Comprehensive documentation is available in the `docs/` directory:
 - **[Testing](docs/testing.md)** - Testing setup and best practices
 - **[API Documentation](docs/api.md)** - API reference for hooks, services, and types
 - **[Accessibility](docs/accessibility.md)** - Accessibility features and keyboard shortcuts
+- **[Security](docs/security.md)** - Security measures, input validation, and best practices
 
 ## 🔧 Available Scripts
 

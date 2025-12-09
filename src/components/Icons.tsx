@@ -35,6 +35,7 @@ import {
   Mail,
   Key,
   AlertCircle,
+  Bot,
   type LucideProps,
 } from 'lucide-react';
 import type { CSSProperties, ComponentType } from 'react';
@@ -87,3 +88,4 @@ export const IconMail = createIcon(Mail);
 export const IconKey = createIcon(Key);
 export const IconRefreshCw = createIcon(RefreshCw);
 export const IconAlertCircle = createIcon(AlertCircle);
+export const IconBot = createIcon(Bot);

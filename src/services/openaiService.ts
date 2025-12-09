@@ -24,10 +24,14 @@ export interface OpenAIResponse {
 
 /**
  * Generate tasks from user message using OpenAI API
+ * @param message - User message
+ * @param existingGroups - List of existing task groups
+ * @param conversationHistory - Previous messages in the conversation (optional)
  */
 export const generateTasksFromMessage = async (
   message: string,
-  existingGroups: string[] = []
+  existingGroups: string[] = [],
+  conversationHistory: Array<{ role: 'user' | 'assistant'; content: string }> = []
 ): Promise<ParsedTask[]> => {
   const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
 
@@ -47,6 +51,24 @@ export const generateTasksFromMessage = async (
       systemPrompt += `\n\n## Existing Groups\n\nYou have access to these existing groups: ${groupsList}\n\nPrefer using these groups when appropriate. Only create new groups if the task doesn't fit any existing category.`;
     }
 
+    // Build messages array with conversation history
+    const messages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> = [
+      {
+        role: 'system',
+        content: systemPrompt,
+      },
+      // Add conversation history (last 10 messages to avoid token limits)
+      ...conversationHistory.slice(-10).map((msg) => ({
+        role: msg.role,
+        content: msg.content,
+      })),
+      // Add current user message
+      {
+        role: 'user',
+        content: message,
+      },
+    ];
+
     // Call OpenAI API
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -56,16 +78,7 @@ export const generateTasksFromMessage = async (
       },
       body: JSON.stringify({
         model: AI_MODEL,
-        messages: [
-          {
-            role: 'system',
-            content: systemPrompt,
-          },
-          {
-            role: 'user',
-            content: message,
-          },
-        ],
+        messages,
         temperature: AI_TEMPERATURE,
         max_tokens: AI_MAX_TOKENS,
         response_format: { type: 'json_object' },

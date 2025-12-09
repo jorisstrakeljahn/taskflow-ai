@@ -107,12 +107,15 @@ function App() {
     }
   };
 
-  const handleChatMessage = async (message: string): Promise<ParsedTask[]> => {
+  const handleChatMessage = async (
+    message: string,
+    conversationHistory: Array<{ role: 'user' | 'assistant'; content: string }> = []
+  ): Promise<ParsedTask[]> => {
     // Get existing groups for AI context
     const groups = Array.from(new Set(tasks.map((t) => t.group))).sort();
 
     try {
-      const parsedTasks = await generateTasksFromMessage(message, groups);
+      const parsedTasks = await generateTasksFromMessage(message, groups, conversationHistory);
       return parsedTasks;
     } catch (error) {
       logger.error('Error generating tasks from OpenAI:', error);

@@ -82,7 +82,10 @@
     "apiKeyMissingDescription": "Please set VITE_OPENAI_API_KEY in your .env file.",
     "retry": "Retry",
     "editingTask": "Editing Task",
-    "saveTask": "Save Task"
+    "saveTask": "Save Task",
+    "send": "Send",
+    "thinking": "Thinking...",
+    "noMessages": "Start a conversation to create tasks!"
   },
   "settings": {
     "title": "Settings",

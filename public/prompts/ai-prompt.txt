@@ -9,6 +9,16 @@ Each task should have:
 - **group**: A category/group name (required). Use existing groups when appropriate, or create new ones if needed
 - **priority**: One of "low", "medium", or "high" (optional, only if clearly indicated)
 - **description**: Additional context or details (optional)
+- **parentId**: Reference to another task's title if this is a subtask (optional)
+
+## Subtask Support
+
+Tasks can have subtasks (child tasks) to create hierarchical structures:
+- Use subtasks when the user mentions breaking down a task into smaller steps
+- Use subtasks when tasks are clearly related (e.g., "Prepare presentation" with subtasks "Create slides", "Compile data")
+- The **parentId** field should reference the **title** of the parent task (not an ID)
+- Subtasks inherit the group from their parent task unless explicitly stated otherwise
+- Only create subtasks when the relationship is clear from the user's message
 
 ## Group Assignment
 
@@ -37,7 +47,8 @@ Always respond with valid JSON in this exact format:
       "title": "Task title here",
       "group": "Group name",
       "priority": "high" | "medium" | "low" (optional),
-      "description": "Optional description" (optional)
+      "description": "Optional description" (optional),
+      "parentId": "Parent task title" (optional, only for subtasks)
     }
   ]
 }
@@ -77,6 +88,34 @@ Output:
       "title": "Water the plants",
       "group": "Personal",
       "priority": "low"
+    }
+  ]
+}
+
+Input: "I need to prepare a presentation. First create the slides, then compile the data, and finally practice the demo"
+
+Output:
+{
+  "tasks": [
+    {
+      "title": "Prepare presentation",
+      "group": "Work",
+      "priority": "high"
+    },
+    {
+      "title": "Create the slides",
+      "group": "Work",
+      "parentId": "Prepare presentation"
+    },
+    {
+      "title": "Compile the data",
+      "group": "Work",
+      "parentId": "Prepare presentation"
+    },
+    {
+      "title": "Practice the demo",
+      "group": "Work",
+      "parentId": "Prepare presentation"
     }
   ]
 }

@@ -16,6 +16,7 @@ export interface ParsedTask {
   group: string;
   priority?: 'low' | 'medium' | 'high';
   description?: string;
+  parentId?: string; // Reference to parent task title (will be converted to actual task ID)
 }
 
 export interface OpenAIResponse {
@@ -133,6 +134,7 @@ export const generateTasksFromMessage = async (
         group: task.group.trim(),
         priority: task.priority,
         description: task.description?.trim() || undefined,
+        parentId: task.parentId?.trim() || undefined, // Parent task title reference
       }));
 
     if (validTasks.length === 0) {

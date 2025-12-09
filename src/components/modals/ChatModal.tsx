@@ -159,7 +159,23 @@ export const ChatModal = ({
   const handleTaskAction = async (task: EditableTask, action: 'add' | 'edit' | 'remove') => {
     if (action === 'add') {
       try {
-        await onAddTasks([task]);
+        // If this is a subtask, we need to include its parent in the batch
+        const tasksToAdd: ParsedTask[] = [task];
+
+        // If task has parentId, find parent task in the same message
+        if (task.parentId) {
+          const parentMessage = messages.find((msg) =>
+            msg.tasks?.some((t) => t.title === task.parentId)
+          );
+          if (parentMessage) {
+            const parentTask = parentMessage.tasks?.find((t) => t.title === task.parentId);
+            if (parentTask && !tasksToAdd.some((t) => t.title === parentTask.title)) {
+              tasksToAdd.unshift(parentTask); // Add parent first
+            }
+          }
+        }
+
+        await onAddTasks(tasksToAdd);
         // Update message to show task was added
         setMessages((prev) =>
           prev.map((msg) => {

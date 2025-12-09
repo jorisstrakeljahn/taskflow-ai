@@ -267,7 +267,7 @@ function App() {
         isOpen={isChatModalOpen}
         onClose={() => setIsChatModalOpen(false)}
         onSendMessage={handleChatMessage}
-        onAddTasks={handleAddTasks}
+        onAddTasks={(parsedTasks) => handleAddTasks(parsedTasks, tasks)}
         existingGroups={existingGroups}
       />
       <SettingsModal

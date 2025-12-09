@@ -32,6 +32,8 @@
     "noCompletedTasksDescription": "Abgeschlossene Aufgaben erscheinen hier, sobald du sie abhakst.",
     "loadingTasks": "Lädt Aufgaben...",
     "subtaskTitle": "Unteraufgabe Titel:",
+    "subtask": "Unteraufgabe",
+    "subtasks": "Unteraufgaben",
     "useCustomGroup": "Eigene Gruppe verwenden",
     "createNewGroup": "Neue Gruppe anlegen",
     "customGroupPlaceholder": "Neuen Gruppennamen eingeben",

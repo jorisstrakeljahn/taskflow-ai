@@ -4,15 +4,15 @@
  */
 
 import { useCallback } from 'react';
-import { Task, TaskPriority } from '../types/task';
+import { Task as TaskType, TaskPriority } from '../types/task';
 import { ParsedTask } from '../services/openaiService';
 import { logger } from '../utils/logger';
 import { useLanguage } from '../contexts/LanguageContext';
 
 interface UseTaskHandlersProps {
-  addTask: (title: string, group: string, parentId?: string) => Promise<Task>;
-  updateTask: (id: string, updates: Partial<Task>) => Promise<void>;
-  changeTaskStatus: (id: string, status: Task['status']) => Promise<void>;
+  addTask: (title: string, group: string, parentId?: string) => Promise<TaskType>;
+  updateTask: (id: string, updates: Partial<TaskType>) => Promise<void>;
+  changeTaskStatus: (id: string, status: TaskType['status']) => Promise<void>;
 }
 
 interface CreateTaskData {
@@ -51,7 +51,7 @@ export const useTaskHandlers = ({
           priority,
         });
       }
-      return newTask;
+      return newTask as TaskType;
     },
     [addTask, updateTask]
   );
@@ -104,18 +104,62 @@ export const useTaskHandlers = ({
 
   /**
    * Handle adding multiple tasks from AI suggestions
+   * Supports parent-child relationships via parentId (task title reference)
    */
   const handleAddTasks = useCallback(
-    async (parsedTasks: ParsedTask[]) => {
+    async (parsedTasks: ParsedTask[], existingTasks: TaskType[] = []) => {
       try {
-        for (const task of parsedTasks) {
-          await createTaskWithDetails(
+        // First, create all parent tasks and store their IDs
+        const taskTitleToId = new Map<string, string>();
+        const tasksToCreate: Array<{ task: ParsedTask; parentId?: string }> = [];
+
+        // Separate parent tasks and subtasks
+        const parentTasks = parsedTasks.filter((task) => !task.parentId);
+        const subtasks = parsedTasks.filter((task) => task.parentId);
+
+        // Create parent tasks first
+        for (const task of parentTasks) {
+          const newTask = await createTaskWithDetails(
             task.title,
             task.group,
             undefined,
             task.description,
             task.priority
           );
+          taskTitleToId.set(task.title, newTask.id);
+          tasksToCreate.push({ task, parentId: undefined });
+        }
+
+        // Create subtasks with parent ID mapping
+        for (const subtask of subtasks) {
+          const parentId = taskTitleToId.get(subtask.parentId!);
+          if (parentId) {
+            const newSubtask = await createTaskWithDetails(
+              subtask.title,
+              subtask.group,
+              parentId,
+              subtask.description,
+              subtask.priority
+            );
+            taskTitleToId.set(subtask.title, newSubtask.id);
+            tasksToCreate.push({ task: subtask, parentId });
+          } else {
+            // Parent not found in this batch, try to find in existing tasks
+            const existingParent = existingTasks.find((t) => t.title === subtask.parentId);
+            if (existingParent) {
+              await createTaskWithDetails(
+                subtask.title,
+                subtask.group,
+                existingParent.id,
+                subtask.description,
+                subtask.priority
+              );
+            } else {
+              logger.warn(
+                `Parent task "${subtask.parentId}" not found for subtask "${subtask.title}"`
+              );
+            }
+          }
         }
       } catch (error) {
         logger.error('Error adding tasks:', error);

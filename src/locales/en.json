@@ -32,6 +32,8 @@
     "noCompletedTasksDescription": "Completed tasks will appear here once you check them off.",
     "loadingTasks": "Loading tasks...",
     "subtaskTitle": "Subtask title:",
+    "subtask": "subtask",
+    "subtasks": "subtasks",
     "useCustomGroup": "Use custom group",
     "createNewGroup": "Create new group",
     "customGroupPlaceholder": "Enter new group name",

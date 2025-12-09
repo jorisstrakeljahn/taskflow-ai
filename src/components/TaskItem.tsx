@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, memo } from 'react';
 import type { MouseEvent, ChangeEvent } from 'react';
 import { Task, TaskStatus } from '../types/task';
 import { TaskCheckbox, TaskBadges, TaskActions, TaskCard } from './tasks';
@@ -18,7 +18,7 @@ interface TaskItemProps {
   disableStatusChange?: boolean;
 }
 
-export const TaskItem = ({
+const TaskItemComponent = ({
   task,
   onStatusChange,
   onUpdate,
@@ -238,3 +238,42 @@ export const TaskItem = ({
     </div>
   );
 };
+
+// Custom comparison function for React.memo
+const areEqual = (prevProps: TaskItemProps, nextProps: TaskItemProps): boolean => {
+  // Compare task properties that affect rendering
+  if (
+    prevProps.task.id !== nextProps.task.id ||
+    prevProps.task.title !== nextProps.task.title ||
+    prevProps.task.status !== nextProps.task.status ||
+    prevProps.task.description !== nextProps.task.description ||
+    prevProps.task.priority !== nextProps.task.priority ||
+    prevProps.task.group !== nextProps.task.group ||
+    prevProps.task.parentId !== nextProps.task.parentId ||
+    prevProps.task.order !== nextProps.task.order ||
+    prevProps.level !== nextProps.level ||
+    prevProps.disableStatusChange !== nextProps.disableStatusChange
+  ) {
+    return false;
+  }
+
+  // Compare subtasks array length and IDs
+  const prevSubtasks = prevProps.subtasks || [];
+  const nextSubtasks = nextProps.subtasks || [];
+  if (prevSubtasks.length !== nextSubtasks.length) {
+    return false;
+  }
+
+  // Check if subtask IDs match (shallow comparison)
+  for (let i = 0; i < prevSubtasks.length; i++) {
+    if (prevSubtasks[i].id !== nextSubtasks[i].id) {
+      return false;
+    }
+  }
+
+  // Function references are compared by React.memo automatically
+  // If they change, the component will re-render
+  return true;
+};
+
+export const TaskItem = memo(TaskItemComponent, areEqual);

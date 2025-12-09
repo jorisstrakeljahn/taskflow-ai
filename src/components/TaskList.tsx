@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, memo, useCallback } from 'react';
 import { Task } from '../types/task';
 import {
   DndContext,
@@ -31,7 +31,7 @@ interface TaskListProps {
   onReorder?: (activeId: string, overId: string) => void;
 }
 
-export const TaskList = ({
+const TaskListComponent = ({
   tasks,
   onStatusChange,
   onUpdate,
@@ -66,13 +66,16 @@ export const TaskList = ({
     })
   );
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event;
 
-    if (over && active.id !== over.id && onReorder) {
-      onReorder(active.id as string, over.id as string);
-    }
-  };
+      if (over && active.id !== over.id && onReorder) {
+        onReorder(active.id as string, over.id as string);
+      }
+    },
+    [onReorder]
+  );
 
   const groups = useMemo(() => {
     const uniqueGroups = Array.from(new Set(tasks.map((t) => t.group)));
@@ -83,9 +86,12 @@ export const TaskList = ({
     return getRootTasks(filteredTasks);
   }, [filteredTasks]);
 
-  const handleAddSubtask = (parentId: string) => {
-    onAddSubtask(parentId);
-  };
+  const handleAddSubtask = useCallback(
+    (parentId: string) => {
+      onAddSubtask(parentId);
+    },
+    [onAddSubtask]
+  );
 
   return (
     <div className="flex flex-col h-full">
@@ -140,3 +146,5 @@ export const TaskList = ({
     </div>
   );
 };
+
+export const TaskList = memo(TaskListComponent);

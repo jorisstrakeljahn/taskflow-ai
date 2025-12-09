@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { useTasksFirebase as useTasks } from './hooks/useTasksFirebase';
 import { logger } from './utils/logger';
 import { useTheme } from './hooks/useTheme';
@@ -66,11 +66,6 @@ function App() {
   // Lock body scroll when modals are open
   useBodyScrollLock(isAnyModalOpen);
 
-  // Get all existing groups from tasks
-  const existingGroups = useMemo(() => {
-    return Array.from(new Set(tasks.map((t) => t.group))).sort();
-  }, [tasks]);
-
   // Task handlers hook - separates business logic from UI
   const {
     handleCreateSubtask: handleCreateSubtaskBase,
@@ -83,77 +78,111 @@ function App() {
     changeTaskStatus,
   });
 
-  const handleOpenSubtaskModal = (parentId: string) => {
-    const parentTask = tasks.find((t) => t.id === parentId);
-    openSubtaskModal(parentId, parentTask?.title || '');
-  };
+  const handleOpenSubtaskModal = useCallback(
+    (parentId: string) => {
+      const parentTask = tasks.find((t) => t.id === parentId);
+      openSubtaskModal(parentId, parentTask?.title || '');
+    },
+    [tasks, openSubtaskModal]
+  );
 
   // Wrap handlers to catch errors and show user-friendly messages
-  const handleCreateSubtask = async (data: ReturnType<typeof prepareCreateTaskData>) => {
-    try {
-      await handleCreateSubtaskBase(data);
-    } catch (error) {
-      // Error is already logged in useTaskHandlers
-      // Could add toast notification here in the future
-    }
-  };
+  const handleCreateSubtask = useCallback(
+    async (data: ReturnType<typeof prepareCreateTaskData>) => {
+      try {
+        await handleCreateSubtaskBase(data);
+      } catch (error) {
+        // Error is already logged in useTaskHandlers
+        // Could add toast notification here in the future
+      }
+    },
+    [handleCreateSubtaskBase]
+  );
 
-  const handleCreateTask = async (data: ReturnType<typeof prepareCreateTaskData>) => {
-    try {
-      await handleCreateTaskBase(data);
-    } catch (error) {
-      // Error is already logged in useTaskHandlers
-      // Could add toast notification here in the future
-    }
-  };
+  const handleCreateTask = useCallback(
+    async (data: ReturnType<typeof prepareCreateTaskData>) => {
+      try {
+        await handleCreateTaskBase(data);
+      } catch (error) {
+        // Error is already logged in useTaskHandlers
+        // Could add toast notification here in the future
+      }
+    },
+    [handleCreateTaskBase]
+  );
 
-  const handleChatMessage = async (
-    message: string,
-    conversationHistory: Array<{ role: 'user' | 'assistant'; content: string }> = []
-  ): Promise<ParsedTask[]> => {
-    // Get existing groups for AI context
-    const groups = Array.from(new Set(tasks.map((t) => t.group))).sort();
+  const existingGroups = useMemo(() => {
+    return Array.from(new Set(tasks.map((t) => t.group))).sort();
+  }, [tasks]);
 
-    try {
-      const parsedTasks = await generateTasksFromMessage(message, groups, conversationHistory);
-      return parsedTasks;
-    } catch (error) {
-      logger.error('Error generating tasks from OpenAI:', error);
-      throw error; // Let ChatModal handle the error display
-    }
-  };
+  const handleChatMessage = useCallback(
+    async (
+      message: string,
+      conversationHistory: Array<{ role: 'user' | 'assistant'; content: string }> = []
+    ): Promise<ParsedTask[]> => {
+      try {
+        const parsedTasks = await generateTasksFromMessage(
+          message,
+          existingGroups,
+          conversationHistory
+        );
+        return parsedTasks;
+      } catch (error) {
+        logger.error('Error generating tasks from OpenAI:', error);
+        throw error; // Let ChatModal handle the error display
+      }
+    },
+    [existingGroups]
+  );
 
-  const handleEditTask = (task: Task) => {
-    openEditTaskModal(task);
-  };
+  const handleEditTask = useCallback(
+    (task: Task) => {
+      openEditTaskModal(task);
+    },
+    [openEditTaskModal]
+  );
 
-  const handleDeleteTask = (task: Task) => {
-    openDeleteConfirmModal(task);
-  };
+  const handleDeleteTask = useCallback(
+    (task: Task) => {
+      openDeleteConfirmModal(task);
+    },
+    [openDeleteConfirmModal]
+  );
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = useCallback(() => {
     if (taskToDelete) {
       deleteTask(taskToDelete.id);
       closeDeleteConfirmModal();
     }
-  };
+  }, [taskToDelete, deleteTask, closeDeleteConfirmModal]);
 
-  const handleSaveTaskEdit = (
-    id: string,
-    data: {
-      title: string;
-      description?: string;
-      status: TaskStatus;
-      group: string;
-      priority?: TaskPriority;
-    }
-  ) => {
-    const currentTask = tasks.find((t) => t.id === id);
-    const updateData = prepareEditTaskData(currentTask, data);
-    updateTask(id, updateData);
-  };
+  const handleSaveTaskEdit = useCallback(
+    (
+      id: string,
+      data: {
+        title: string;
+        description?: string;
+        status: TaskStatus;
+        group: string;
+        priority?: TaskPriority;
+      }
+    ) => {
+      const currentTask = tasks.find((t) => t.id === id);
+      const updateData = prepareEditTaskData(currentTask, data);
+      updateTask(id, updateData);
+    },
+    [tasks, updateTask]
+  );
 
-  const completedTasksCount = tasks.filter((t) => t.status === 'done').length;
+  const completedTasksCount = useMemo(
+    () => tasks.filter((t) => t.status === 'done').length,
+    [tasks]
+  );
+
+  // Handler for settings modal - must be defined before early returns
+  const handleSettingsClick = useCallback(() => {
+    setIsSettingsModalOpen(true);
+  }, [setIsSettingsModalOpen]);
 
   // Show loading spinner while checking auth state
   if (authLoading) {
@@ -212,7 +241,7 @@ function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-surface-light dark:bg-surface-dark transition-colors">
-      <Header onSettingsClick={() => setIsSettingsModalOpen(true)} />
+      <Header onSettingsClick={handleSettingsClick} />
 
       <main className="flex-1 flex flex-col max-w-7xl w-full mx-auto px-4 sm:px-6">
         {isLoading ? (

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { IconSettings } from './Icons';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -6,7 +6,7 @@ interface HeaderProps {
   onSettingsClick: () => void;
 }
 
-export const Header = ({ onSettingsClick }: HeaderProps) => {
+const HeaderComponent = ({ onSettingsClick }: HeaderProps) => {
   const { t } = useLanguage();
 
   return (
@@ -30,3 +30,5 @@ export const Header = ({ onSettingsClick }: HeaderProps) => {
     </header>
   );
 };
+
+export const Header = memo(HeaderComponent);

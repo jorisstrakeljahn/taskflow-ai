@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo, useCallback } from 'react';
 import { IconTask, IconChat, IconPlus, IconClose } from './Icons';
 import { useAccentColor } from '../hooks/useAccentColor';
 
@@ -7,27 +7,27 @@ interface SpeedDialProps {
   onChatClick: () => void;
 }
 
-export const SpeedDial = ({ onTaskClick, onChatClick }: SpeedDialProps) => {
+const SpeedDialComponent = ({ onTaskClick, onChatClick }: SpeedDialProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const { accentColor } = useAccentColor();
 
-  const handleMainClick = () => {
-    setIsOpen(!isOpen);
-  };
+  const handleMainClick = useCallback(() => {
+    setIsOpen((prev) => !prev);
+  }, []);
 
-  const handleTaskClick = () => {
+  const handleTaskClick = useCallback(() => {
     setIsOpen(false);
     onTaskClick();
-  };
+  }, [onTaskClick]);
 
-  const handleChatClick = () => {
+  const handleChatClick = useCallback(() => {
     setIsOpen(false);
     onChatClick();
-  };
+  }, [onChatClick]);
 
-  const handleOverlayClick = () => {
+  const handleOverlayClick = useCallback(() => {
     setIsOpen(false);
-  };
+  }, []);
 
   return (
     <>
@@ -81,3 +81,5 @@ export const SpeedDial = ({ onTaskClick, onChatClick }: SpeedDialProps) => {
     </>
   );
 };
+
+export const SpeedDial = memo(SpeedDialComponent);

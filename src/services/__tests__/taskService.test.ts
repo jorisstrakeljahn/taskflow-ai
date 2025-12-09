@@ -278,7 +278,7 @@ describe('taskService', () => {
 
       expect(firestoreModule.updateDoc).toHaveBeenCalled();
       const updateCall = vi.mocked(firestoreModule.updateDoc).mock.calls[0];
-      const updateData = updateCall[1] as Record<string, unknown>;
+      const updateData = updateCall[1] as unknown as Record<string, unknown>;
 
       expect(updateData.title).toBe('Updated Title');
       expect(updateData.status).toBe('in_progress');
@@ -297,7 +297,7 @@ describe('taskService', () => {
       await updateTask(mockTaskId, updates);
 
       const updateCall = vi.mocked(firestoreModule.updateDoc).mock.calls[0];
-      const updateData = updateCall[1] as Record<string, unknown>;
+      const updateData = updateCall[1] as unknown as Record<string, unknown>;
 
       expect(updateData.completedAt).toBeDefined();
     });
@@ -313,7 +313,7 @@ describe('taskService', () => {
       await updateTask(mockTaskId, updates);
 
       const updateCall = vi.mocked(firestoreModule.updateDoc).mock.calls[0];
-      const updateData = updateCall[1] as Record<string, unknown>;
+      const updateData = updateCall[1] as unknown as Record<string, unknown>;
 
       expect(updateData.description).toBe(null);
     });

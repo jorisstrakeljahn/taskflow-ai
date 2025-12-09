@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo, useMemo } from 'react';
 import {
   IconFilter,
   IconFolder,
@@ -26,7 +26,7 @@ interface TaskFiltersProps {
   onDragModeToggle?: (enabled: boolean) => void;
 }
 
-export const TaskFilters = ({
+const TaskFiltersComponent = ({
   filterGroup,
   filterStatus,
   filterPriority,
@@ -42,8 +42,40 @@ export const TaskFilters = ({
   const { accentColor } = useAccentColor();
   const [isOpen, setIsOpen] = useState(false);
 
-  const hasActiveFilters =
-    filterGroup !== 'all' || filterStatus !== 'all' || filterPriority !== 'all';
+  const hasActiveFilters = useMemo(
+    () => filterGroup !== 'all' || filterStatus !== 'all' || filterPriority !== 'all',
+    [filterGroup, filterStatus, filterPriority]
+  );
+
+  const groupOptions = useMemo(
+    () => [
+      { value: 'all', label: t('filters.allGroups') },
+      ...groups.map((group) => ({ value: group, label: group })),
+    ],
+    [groups, t]
+  );
+
+  const statusOptions = useMemo(
+    () => [
+      { value: 'all', label: t('status.all') },
+      ...TASK_STATUSES.map((s) => {
+        const statusKey = s.value === 'in_progress' ? 'inProgress' : s.value;
+        return { value: s.value, label: t(`status.${statusKey}`) };
+      }),
+    ],
+    [t]
+  );
+
+  const priorityOptions = useMemo(
+    () => [
+      { value: 'all', label: t('priority.all') },
+      ...TASK_PRIORITIES.filter((p) => p.value !== '').map((p) => ({
+        value: p.value,
+        label: t(`priority.${p.value}`),
+      })),
+    ],
+    [t]
+  );
 
   return (
     <div className="bg-card-light dark:bg-card-dark border-b border-border-light dark:border-border-dark shadow-sm">
@@ -107,10 +139,7 @@ export const TaskFilters = ({
             icon={<IconFolder className="w-4 h-4" />}
             value={filterGroup}
             onChange={onGroupChange}
-            options={[
-              { value: 'all', label: t('filters.allGroups') },
-              ...groups.map((group) => ({ value: group, label: group })),
-            ]}
+            options={groupOptions}
           />
           <FilterField
             id="filter-status"
@@ -118,13 +147,7 @@ export const TaskFilters = ({
             icon={<IconLayers className="w-4 h-4" />}
             value={filterStatus}
             onChange={onStatusChange}
-            options={[
-              { value: 'all', label: t('status.all') },
-              ...TASK_STATUSES.map((s) => {
-                const statusKey = s.value === 'in_progress' ? 'inProgress' : s.value;
-                return { value: s.value, label: t(`status.${statusKey}`) };
-              }),
-            ]}
+            options={statusOptions}
           />
           <FilterField
             id="filter-priority"
@@ -132,16 +155,12 @@ export const TaskFilters = ({
             icon={<IconZap className="w-4 h-4" />}
             value={filterPriority}
             onChange={onPriorityChange}
-            options={[
-              { value: 'all', label: t('priority.all') },
-              ...TASK_PRIORITIES.filter((p) => p.value !== '').map((p) => ({
-                value: p.value,
-                label: t(`priority.${p.value}`),
-              })),
-            ]}
+            options={priorityOptions}
           />
         </div>
       )}
     </div>
   );
 };
+
+export const TaskFilters = memo(TaskFiltersComponent);

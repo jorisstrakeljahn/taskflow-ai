@@ -1,6 +1,10 @@
 // Export all UI components from a single entry point
 export { Input } from './Input';
 export { Textarea } from './Textarea';
+export { StatCard } from './StatCard';
+export { ChartCard } from './ChartCard';
+export { ProgressBar } from './ProgressBar';
+export { CustomChartTooltip } from './CustomChartTooltip';
 export { Button } from './Button';
 export { TaskFormFields } from './TaskFormFields';
 export { IconButton } from './IconButton';

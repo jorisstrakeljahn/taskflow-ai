@@ -49,6 +49,15 @@ cp .env.example .env
 npm run dev
 
 # The app will be available at http://localhost:5173
+
+# Run tests
+npm run test
+
+# Run tests with coverage
+npm run test:coverage
+
+# Run tests in UI mode
+npm run test:ui
 ```
 
 ### Build & Deploy
@@ -88,6 +97,7 @@ Comprehensive documentation is available in the `docs/` directory:
 - **[Features](docs/features.md)** - Detailed feature documentation
 - **[Development](docs/development.md)** - Development guide and best practices
 - **[Code Quality](docs/code-quality.md)** - ESLint, Prettier, and guidelines
+- **[Testing](docs/testing.md)** - Testing setup and best practices
 
 ## 🔧 Available Scripts
 

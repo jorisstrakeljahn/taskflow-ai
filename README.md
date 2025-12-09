@@ -1,5 +1,9 @@
 # TaskFlow AI
 
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.2-blue.svg)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-18.2-blue.svg)](https://reactjs.org/)
+[![Firebase](https://img.shields.io/badge/Firebase-12.6-orange.svg)](https://firebase.google.com/)
+
 > A modern, AI-powered task management application with real-time synchronization across devices.
 
 TaskFlow AI is a personal task manager that combines the simplicity of a to-do list with the power of AI. Dump your thoughts into a chat interface, and watch them transform into structured, actionable tasks.
@@ -74,17 +78,32 @@ npm run deploy
 
 ```
 taskflow-ai/
+├── .github/                   # GitHub configuration
+│   ├── workflows/            # CI/CD workflows
+│   ├── ISSUE_TEMPLATE/       # Issue templates
+│   └── PULL_REQUEST_TEMPLATE.md
 ├── docs/                      # Documentation
+│   ├── accessibility.md      # Accessibility features
+│   ├── ai-integration.md     # AI integration guide
+│   ├── api.md                # API documentation
 │   ├── code-quality.md       # Code quality guidelines
-│   ├── firebase-setup.md     # Firebase setup instructions
+│   ├── development.md        # Development guide
 │   ├── features.md           # Feature documentation
-│   └── development.md        # Development guide
+│   ├── firebase-setup.md     # Firebase setup
+│   ├── security.md           # Security documentation
+│   └── testing.md           # Testing guide
 ├── src/
 │   ├── components/           # React components
 │   ├── contexts/            # React contexts
 │   ├── hooks/               # Custom hooks
-│   ├── services/            # Firebase services
-│   └── utils/               # Utility functions
+│   ├── services/            # API services
+│   ├── types/               # TypeScript types
+│   ├── utils/               # Utility functions
+│   └── locales/            # i18n translations
+├── .env.example              # Environment variables template
+├── CONTRIBUTING.md          # Contribution guidelines
+├── LICENSE                  # MIT License
+├── CHANGELOG.md            # Version history
 └── package.json
 ```
 
@@ -125,9 +144,18 @@ Comprehensive documentation is available in the `docs/` directory:
 - **OpenAI API** - AI-powered task generation
 - **Lucide React** - Icons
 
+## 📊 Project Status
+
+- ✅ Core features implemented
+- ✅ Comprehensive test coverage
+- ✅ Full documentation
+- ✅ Security measures in place
+- ✅ Accessibility compliant
+- 🚧 Additional features in development
+
 ## 🔐 Environment Variables
 
-Create a `.env` file in the root directory:
+Create a `.env` file in the root directory (use `.env.example` as a template):
 
 ```env
 # Firebase Configuration
@@ -142,7 +170,5 @@ VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
 # OpenAI Configuration (for AI task generation)
 VITE_OPENAI_API_KEY=your_openai_api_key
 ```
-
-**⚠️ Important**: Never commit your `.env` file. It's already in `.gitignore`.
 
 **Built with ❤️ using React, TypeScript, and Firebase**

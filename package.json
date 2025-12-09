@@ -1,7 +1,33 @@
 {
   "name": "taskflow-ai",
   "version": "0.1.0",
+  "description": "A modern, AI-powered task management application with real-time synchronization",
   "type": "module",
+  "author": {
+    "name": "Joris Strakeljahn",
+    "url": "https://github.com/jorisstrakeljahn"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jorisstrakeljahn/taskflow-ai.git"
+  },
+  "homepage": "https://github.com/jorisstrakeljahn/taskflow-ai#readme",
+  "bugs": {
+    "url": "https://github.com/jorisstrakeljahn/taskflow-ai/issues"
+  },
+  "keywords": [
+    "task-management",
+    "todo",
+    "ai",
+    "openai",
+    "firebase",
+    "react",
+    "typescript",
+    "productivity",
+    "task-manager",
+    "ai-powered"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

@@ -3,7 +3,7 @@
  * Input field for chat messages with send button
  */
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { Button } from '../../ui/Button';
 import { Textarea } from '../../ui/Textarea';
 import { IconRefreshCw } from '../../Icons';

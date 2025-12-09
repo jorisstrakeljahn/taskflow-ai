@@ -5,6 +5,7 @@ import { CustomGroupCheckbox } from './CustomGroupCheckbox';
 import { FormSelectField } from './FormSelectField';
 import { DEFAULT_GROUPS, TASK_PRIORITIES, TASK_STATUSES } from '../../constants/taskConstants';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useAccentColor } from '../../hooks/useAccentColor';
 
 interface TaskFormFieldsProps {
   title: string;
@@ -25,11 +26,15 @@ interface TaskFormFieldsProps {
   onStatusChange?: (value: TaskStatus) => void;
   onPriorityChange?: (value: TaskPriority | '') => void;
   showStatus?: boolean;
+  // Due date field
+  dueDate?: string; // ISO date string (YYYY-MM-DD)
+  onDueDateChange?: (value: string) => void;
   titleId?: string;
   descriptionId?: string;
   groupId?: string;
   statusId?: string;
   priorityId?: string;
+  dueDateId?: string;
 }
 
 export const TaskFormFields = ({
@@ -50,13 +55,17 @@ export const TaskFormFields = ({
   onStatusChange,
   onPriorityChange,
   showStatus = false,
+  dueDate,
+  onDueDateChange,
   titleId = 'task-title',
   descriptionId = 'task-description',
   groupId = 'task-group',
   statusId = 'task-status',
   priorityId = 'task-priority',
+  dueDateId = 'task-due-date',
 }: TaskFormFieldsProps) => {
   const { t } = useLanguage();
+  const { accentColor } = useAccentColor();
   // Combine existing groups with default groups
   const allGroups = Array.from(new Set([...existingGroups, ...DEFAULT_GROUPS])).sort();
 
@@ -125,6 +134,30 @@ export const TaskFormFields = ({
         options={allGroups.map((g) => ({ value: g, label: g }))}
         disabled={useCustomGroup}
       />
+
+      {/* Due Date Field */}
+      {onDueDateChange && (
+        <div className="flex flex-col gap-2">
+          <label
+            htmlFor={dueDateId}
+            className="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark"
+          >
+            {t('task.dueDate')}
+          </label>
+          <input
+            id={dueDateId}
+            type="date"
+            value={dueDate || ''}
+            onChange={(e) => onDueDateChange(e.target.value)}
+            className="px-3 py-2.5 border border-border-light dark:border-border-dark rounded-lg bg-card-light dark:bg-card-dark text-text-primary-light dark:text-text-primary-dark text-base focus:outline-none focus:ring-2 focus:border-transparent transition-all"
+            style={
+              {
+                '--tw-ring-color': accentColor,
+              } as React.CSSProperties & { '--tw-ring-color': string }
+            }
+          />
+        </div>
+      )}
       <div className="flex flex-col gap-2">
         {showCustomGroup && onUseCustomGroupChange && onCustomGroupChange && (
           <>

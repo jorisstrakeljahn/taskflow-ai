@@ -80,6 +80,10 @@ const taskToFirestore = (task: Task): DocumentData => {
     data.completedAt = Timestamp.fromDate(task.completedAt);
   }
 
+  if (task.dueDate !== undefined && task.dueDate !== null) {
+    data.dueDate = Timestamp.fromDate(task.dueDate);
+  }
+
   return data;
 };
 
@@ -104,6 +108,7 @@ const firestoreToTask = (docData: DocumentData, id: string): Task => {
     createdAt: timestampToDate(docData.createdAt) || new Date(),
     updatedAt: timestampToDate(docData.updatedAt) || new Date(),
     completedAt: timestampToDate(docData.completedAt),
+    dueDate: timestampToDate(docData.dueDate),
   } as Task;
 };
 
@@ -220,6 +225,10 @@ export const updateTask = async (taskId: string, updates: Partial<Task>): Promis
   // Handle date fields
   if (updates.completedAt !== undefined) {
     updateData.completedAt = updates.completedAt ? Timestamp.fromDate(updates.completedAt) : null;
+  }
+
+  if (updates.dueDate !== undefined) {
+    updateData.dueDate = updates.dueDate ? Timestamp.fromDate(updates.dueDate) : null;
   }
 
   await updateDoc(taskRef, updateData);

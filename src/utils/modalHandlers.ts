@@ -17,6 +17,7 @@ export interface CreateTaskData {
   priority?: TaskPriority;
   parentId?: string;
   status?: TaskStatus;
+  dueDate?: Date;
 }
 
 export interface EditTaskData {
@@ -25,6 +26,7 @@ export interface EditTaskData {
   status: TaskStatus;
   group: string;
   priority?: TaskPriority;
+  dueDate?: Date;
 }
 
 /**
@@ -61,6 +63,7 @@ export const prepareCreateTaskData = (data: CreateTaskData) => {
     group: sanitizeString(data.group.trim(), 50),
     priority: data.priority,
     parentId: data.parentId,
+    dueDate: data.dueDate,
   };
 };
 
@@ -102,6 +105,7 @@ export const prepareEditTaskData = (currentTask: Task | undefined, data: EditTas
     status: data.status,
     group: sanitizeString(data.group.trim(), 50),
     priority: data.priority,
+    dueDate: data.dueDate,
     completedAt: statusChangedToDone
       ? new Date()
       : statusChangedFromDone

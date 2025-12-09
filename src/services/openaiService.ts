@@ -28,6 +28,8 @@ export interface ParsedTask {
   description?: string;
   /** Optional reference to parent task title (will be converted to actual task ID) */
   parentId?: string;
+  /** Optional due date in ISO format (YYYY-MM-DD) */
+  dueDate?: string;
 }
 
 /**
@@ -184,6 +186,7 @@ export const generateTasksFromMessage = async (
         priority: task.priority,
         description: task.description?.trim() || undefined,
         parentId: task.parentId?.trim() || undefined, // Parent task title reference
+        dueDate: task.dueDate?.trim() || undefined, // Due date in ISO format (YYYY-MM-DD)
       }));
 
     if (validTasks.length === 0) {

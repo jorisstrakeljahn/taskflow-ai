@@ -21,6 +21,7 @@ interface EditTaskModalProps {
       status: TaskStatus;
       group: string;
       priority?: TaskPriority;
+      dueDate?: Date;
     }
   ) => void;
   onAddSubtask?: (parentId: string) => void;
@@ -44,6 +45,7 @@ export const EditTaskModal = ({
   const [group, setGroup] = useState('General');
   const [customGroup, setCustomGroup] = useState('');
   const [useCustomGroup, setUseCustomGroup] = useState(false);
+  const [dueDate, setDueDate] = useState<string>('');
 
   const subtasks = useMemo(() => {
     if (!task) return [];
@@ -57,6 +59,7 @@ export const EditTaskModal = ({
       setGroup(task.group);
       setCustomGroup('');
       setUseCustomGroup(false);
+      setDueDate(task.dueDate ? task.dueDate.toISOString().split('T')[0] : '');
     }
   }, [isOpen, task]);
 
@@ -71,6 +74,7 @@ export const EditTaskModal = ({
         status: task.status, // Keep current status (changed via StatusSelector)
         group: selectedGroup,
         priority: task.priority, // Keep current priority (changed via PrioritySelector)
+        dueDate: dueDate ? new Date(dueDate) : undefined,
       });
       onClose();
     }
@@ -105,6 +109,8 @@ export const EditTaskModal = ({
           onCustomGroupChange={setCustomGroup}
           useCustomGroup={useCustomGroup}
           onUseCustomGroupChange={setUseCustomGroup}
+          dueDate={dueDate}
+          onDueDateChange={setDueDate}
           titleId="edit-task-title"
           descriptionId="edit-task-description"
           groupId="edit-task-group"

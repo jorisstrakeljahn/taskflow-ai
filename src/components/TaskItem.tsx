@@ -276,6 +276,25 @@ const areEqual = (prevProps: TaskItemProps, nextProps: TaskItemProps): boolean =
     return false;
   }
 
+  // Compare date fields
+  const prevDueDate = prevProps.task.dueDate?.getTime();
+  const nextDueDate = nextProps.task.dueDate?.getTime();
+  if (prevDueDate !== nextDueDate) {
+    return false;
+  }
+
+  const prevCreatedAt = prevProps.task.createdAt?.getTime();
+  const nextCreatedAt = nextProps.task.createdAt?.getTime();
+  if (prevCreatedAt !== nextCreatedAt) {
+    return false;
+  }
+
+  const prevCompletedAt = prevProps.task.completedAt?.getTime();
+  const nextCompletedAt = nextProps.task.completedAt?.getTime();
+  if (prevCompletedAt !== nextCompletedAt) {
+    return false;
+  }
+
   // Compare subtasks array length and IDs
   const prevSubtasks = prevProps.subtasks || [];
   const nextSubtasks = nextProps.subtasks || [];

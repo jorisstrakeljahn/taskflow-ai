@@ -10,6 +10,7 @@ Each task should have:
 - **priority**: One of "low", "medium", or "high" (optional, only if clearly indicated)
 - **description**: Additional context or details (optional)
 - **parentId**: Reference to another task's title if this is a subtask (optional)
+- **dueDate**: Due date in ISO format (YYYY-MM-DD) if mentioned (optional, e.g., "by Friday", "tomorrow", "next week")
 
 ## Subtask Support
 
@@ -37,6 +38,15 @@ Assign priority only when clearly indicated:
 
 If priority is not clear, omit the priority field.
 
+## Due Date Detection
+
+Extract due dates when mentioned:
+- Specific dates: "by December 31", "on Friday", "next Monday"
+- Relative dates: "tomorrow", "next week", "in 3 days"
+- Convert to ISO format (YYYY-MM-DD)
+- Only include if a deadline is clearly mentioned
+- If no deadline is mentioned, omit the dueDate field
+
 ## Response Format
 
 Always respond with valid JSON in this exact format:
@@ -48,7 +58,8 @@ Always respond with valid JSON in this exact format:
       "group": "Group name",
       "priority": "high" | "medium" | "low" (optional),
       "description": "Optional description" (optional),
-      "parentId": "Parent task title" (optional, only for subtasks)
+      "parentId": "Parent task title" (optional, only for subtasks),
+      "dueDate": "2024-12-31" (optional, ISO format YYYY-MM-DD)
     }
   ]
 }
@@ -74,7 +85,8 @@ Output:
       "title": "Finish project report",
       "group": "Work",
       "priority": "high",
-      "description": "Deadline: Friday"
+      "description": "Deadline: Friday",
+      "dueDate": "2024-12-13"
     }
   ]
 }

@@ -37,7 +37,12 @@
     "useCustomGroup": "Eigene Gruppe verwenden",
     "createNewGroup": "Neue Gruppe anlegen",
     "customGroupPlaceholder": "Neuen Gruppennamen eingeben",
-    "createError": "Aufgabe konnte nicht erstellt werden. Bitte versuche es erneut."
+    "createError": "Aufgabe konnte nicht erstellt werden. Bitte versuche es erneut.",
+    "dueDate": "Fälligkeitsdatum",
+    "dueDatePlaceholder": "Fälligkeitsdatum auswählen",
+    "createdAt": "Erstellt",
+    "completedAt": "Abgeschlossen",
+    "noDueDate": "Kein Fälligkeitsdatum"
   },
   "status": {
     "open": "Offen",
@@ -128,7 +133,8 @@
       "description": "Statistiken und Übersicht",
       "doneToday": "Heute erledigt",
       "doneThisWeek": "Diese Woche erledigt",
-      "total": "Gesamt"
+      "total": "Gesamt",
+      "overdueTasks": "Überfällige Aufgaben"
     },
     "appearance": {
       "title": "Erscheinungsbild",

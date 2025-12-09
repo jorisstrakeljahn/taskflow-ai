@@ -37,7 +37,12 @@
     "useCustomGroup": "Use custom group",
     "createNewGroup": "Create new group",
     "customGroupPlaceholder": "Enter new group name",
-    "createError": "Failed to create task. Please try again."
+    "createError": "Failed to create task. Please try again.",
+    "dueDate": "Due Date",
+    "dueDatePlaceholder": "Select due date",
+    "createdAt": "Created",
+    "completedAt": "Completed",
+    "noDueDate": "No due date"
   },
   "status": {
     "open": "Open",
@@ -128,7 +133,8 @@
       "description": "Statistics and overview",
       "doneToday": "Done Today",
       "doneThisWeek": "Done This Week",
-      "total": "Total"
+      "total": "Total",
+      "overdueTasks": "Overdue Tasks"
     },
     "appearance": {
       "title": "Appearance",

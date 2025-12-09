@@ -12,6 +12,7 @@ export interface Task {
   createdAt: Date;
   updatedAt: Date;
   completedAt?: Date;
+  dueDate?: Date; // Optional deadline/due date
   userId: string;
   order?: number; // Order for drag & drop sorting
 }

@@ -15,6 +15,7 @@ interface CreateTaskModalProps {
     group: string;
     priority?: TaskPriority;
     parentId?: string;
+    dueDate?: Date;
   }) => Promise<void> | void;
   parentId?: string;
   parentTaskTitle?: string;
@@ -37,6 +38,7 @@ export const CreateTaskModal = ({
   const [status, setStatus] = useState<TaskStatus>('open');
   const [group, setGroup] = useState('General');
   const [priority, setPriority] = useState<TaskPriority | ''>('');
+  const [dueDate, setDueDate] = useState<string>('');
 
   useEffect(() => {
     if (isOpen) {
@@ -45,6 +47,7 @@ export const CreateTaskModal = ({
       setStatus('open');
       setGroup('General');
       setPriority('');
+      setDueDate('');
     }
   }, [isOpen]);
 
@@ -58,6 +61,7 @@ export const CreateTaskModal = ({
           group,
           priority: priority || undefined,
           parentId,
+          dueDate: dueDate ? new Date(dueDate) : undefined,
         });
         onClose();
       } catch (error) {
@@ -94,6 +98,8 @@ export const CreateTaskModal = ({
           onGroupChange={setGroup}
           onPriorityChange={(value) => setPriority(value as TaskPriority | '')}
           showStatus={true}
+          dueDate={dueDate}
+          onDueDateChange={setDueDate}
         />
 
         <div className={`flex gap-2 pt-2 mt-4 ${parentId ? 'pb-6' : ''}`}>

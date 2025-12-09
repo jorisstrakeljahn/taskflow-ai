@@ -38,6 +38,7 @@ interface CreateTaskData {
   parentId?: string;
   description?: string;
   priority?: TaskPriority;
+  dueDate?: Date;
 }
 
 /**
@@ -51,13 +52,14 @@ export const useTaskHandlers = ({
   const { t } = useLanguage();
 
   /**
-   * Create a task with optional description and priority
+   * Create a task with optional description, priority, and due date
    *
    * @param title - Task title
    * @param group - Task group/category
    * @param parentId - Optional parent task ID for subtasks
    * @param description - Optional task description
    * @param priority - Optional task priority (low, medium, high)
+   * @param dueDate - Optional due date
    * @returns The created task
    */
   const createTaskWithDetails = useCallback(
@@ -66,13 +68,15 @@ export const useTaskHandlers = ({
       group: string,
       parentId: string | undefined,
       description?: string,
-      priority?: TaskPriority
+      priority?: TaskPriority,
+      dueDate?: Date
     ) => {
       const newTask = await addTask(title, group, parentId);
-      if (description || priority) {
+      if (description || priority || dueDate) {
         await updateTask(newTask.id, {
           description,
           priority,
+          dueDate,
         });
       }
       return newTask as TaskType;
@@ -95,7 +99,8 @@ export const useTaskHandlers = ({
             data.group,
             data.parentId,
             data.description,
-            data.priority
+            data.priority,
+            data.dueDate
           );
         }
       } catch (error) {
@@ -121,7 +126,8 @@ export const useTaskHandlers = ({
           data.group,
           undefined,
           data.description,
-          data.priority
+          data.priority,
+          data.dueDate
         );
       } catch (error) {
         logger.error('Error creating task:', error);
@@ -156,12 +162,14 @@ export const useTaskHandlers = ({
 
         // Create parent tasks first
         for (const task of parentTasks) {
+          const taskDueDate = task.dueDate ? new Date(task.dueDate) : undefined;
           const newTask = await createTaskWithDetails(
             task.title,
             task.group,
             undefined,
             task.description,
-            task.priority
+            task.priority,
+            taskDueDate
           );
           taskTitleToId.set(task.title, newTask.id);
           tasksToCreate.push({ task, parentId: undefined });
@@ -170,13 +178,15 @@ export const useTaskHandlers = ({
         // Create subtasks with parent ID mapping
         for (const subtask of subtasks) {
           const parentId = taskTitleToId.get(subtask.parentId!);
+          const subtaskDueDate = subtask.dueDate ? new Date(subtask.dueDate) : undefined;
           if (parentId) {
             const newSubtask = await createTaskWithDetails(
               subtask.title,
               subtask.group,
               parentId,
               subtask.description,
-              subtask.priority
+              subtask.priority,
+              subtaskDueDate
             );
             taskTitleToId.set(subtask.title, newSubtask.id);
             tasksToCreate.push({ task: subtask, parentId });
@@ -189,7 +199,8 @@ export const useTaskHandlers = ({
                 subtask.group,
                 existingParent.id,
                 subtask.description,
-                subtask.priority
+                subtask.priority,
+                subtaskDueDate
               );
             } else {
               logger.warn(

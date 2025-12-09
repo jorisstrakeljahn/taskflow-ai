@@ -166,6 +166,7 @@ function App() {
         status: TaskStatus;
         group: string;
         priority?: TaskPriority;
+        dueDate?: Date;
       }
     ) => {
       const currentTask = tasks.find((t) => t.id === id);

@@ -54,14 +54,14 @@ export const useChatState = ({ onSendMessage, onAddTasks }: UseChatStateProps) =
     windowMs: 60000, // 1 minute
   });
 
-  // Scroll to bottom when new messages arrive
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, isProcessing]);
-
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
+
+  // Scroll to bottom when new messages arrive
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isProcessing, scrollToBottom]);
 
   const generateMessageId = useCallback(
     () => `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,

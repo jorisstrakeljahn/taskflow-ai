@@ -10,7 +10,6 @@ import { ChatMessageBubble } from './ChatMessageBubble';
 import { TaskSuggestionEditForm } from './TaskSuggestionEditForm';
 import { ChatEmptyState } from './ChatEmptyState';
 import { ChatProcessingIndicator } from './ChatProcessingIndicator';
-import { useLanguage } from '../../../contexts/LanguageContext';
 
 interface EditableTask extends ParsedTask {
   id: string;
@@ -43,8 +42,6 @@ export const ChatMessagesContainer = ({
   onUpdateEditedTask,
   messagesEndRef,
 }: ChatMessagesContainerProps) => {
-  const { t } = useLanguage();
-
   return (
     <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
       {messages.length === 0 && !isProcessing && <ChatEmptyState />}

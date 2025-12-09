@@ -1,3 +1,21 @@
+/**
+ * TaskItem Component
+ *
+ * Displays a single task with checkbox, badges, actions, and optional subtasks.
+ * Supports mobile swipe gestures and desktop hover interactions.
+ * Optimized with React.memo for performance.
+ *
+ * @param task - Task object to display
+ * @param onStatusChange - Handler for status changes (checkbox)
+ * @param onUpdate - Handler for task updates
+ * @param onDelete - Handler for task deletion
+ * @param onAddSubtask - Optional handler for adding subtasks
+ * @param onEdit - Optional handler for editing tasks
+ * @param subtasks - Optional array of subtasks to display
+ * @param level - Nesting level for visual hierarchy (0 = root)
+ * @param disableStatusChange - Whether to disable status changes
+ */
+
 import { useState, useRef, useEffect, memo } from 'react';
 import type { MouseEvent, ChangeEvent } from 'react';
 import { Task, TaskStatus } from '../types/task';

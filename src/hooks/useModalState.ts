@@ -3,6 +3,22 @@ import { Task } from '../types/task';
 
 /**
  * Custom hook to manage all modal states in the application
+ *
+ * Centralizes modal state management including task modals, chat modal,
+ * settings modal, and subtask modals. Provides helper functions for
+ * opening/closing modals and tracking which modal is currently open.
+ *
+ * @returns Object containing all modal states and control functions
+ *
+ * @example
+ * ```tsx
+ * const {
+ *   isTaskModalOpen,
+ *   setIsTaskModalOpen,
+ *   openEditTaskModal,
+ *   closeEditTaskModal
+ * } = useModalState();
+ * ```
  */
 export const useModalState = () => {
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);

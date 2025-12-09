@@ -98,6 +98,8 @@ Comprehensive documentation is available in the `docs/` directory:
 - **[Development](docs/development.md)** - Development guide and best practices
 - **[Code Quality](docs/code-quality.md)** - ESLint, Prettier, and guidelines
 - **[Testing](docs/testing.md)** - Testing setup and best practices
+- **[API Documentation](docs/api.md)** - API reference for hooks, services, and types
+- **[Accessibility](docs/accessibility.md)** - Accessibility features and keyboard shortcuts
 
 ## 🔧 Available Scripts
 

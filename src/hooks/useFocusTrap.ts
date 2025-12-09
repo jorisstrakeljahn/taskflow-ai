@@ -3,6 +3,22 @@
  *
  * Traps focus within a modal or dialog to improve accessibility.
  * Ensures keyboard navigation stays within the modal boundaries.
+ * Automatically focuses the initial element when activated.
+ *
+ * @param isActive - Whether the focus trap should be active
+ * @param initialFocusRef - Optional ref to element that should receive initial focus
+ * @returns Ref to attach to the container element
+ *
+ * @example
+ * ```tsx
+ * const closeButtonRef = useRef<HTMLButtonElement>(null);
+ * const containerRef = useFocusTrap({
+ *   isActive: isOpen,
+ *   initialFocusRef: closeButtonRef
+ * });
+ *
+ * return <div ref={containerRef}>...</div>;
+ * ```
  */
 
 import { useEffect, useRef } from 'react';

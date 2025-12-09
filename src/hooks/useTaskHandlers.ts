@@ -1,6 +1,23 @@
 /**
  * Custom hook for task-related business logic
- * Separates business logic from UI components
+ *
+ * Separates business logic from UI components. Provides handlers for creating tasks,
+ * subtasks, adding multiple tasks from AI suggestions, and reactivating completed tasks.
+ * Handles parent-child relationships and task creation with optional metadata.
+ *
+ * @param addTask - Function to create a new task in Firestore
+ * @param updateTask - Function to update an existing task
+ * @param changeTaskStatus - Function to change a task's status
+ * @returns Object containing task creation and management handlers
+ *
+ * @example
+ * ```tsx
+ * const { handleCreateTask, handleAddTasks } = useTaskHandlers({
+ *   addTask: createTaskInFirestore,
+ *   updateTask: updateTaskInFirestore,
+ *   changeTaskStatus: changeStatusInFirestore
+ * });
+ * ```
  */
 
 import { useCallback } from 'react';
@@ -35,6 +52,13 @@ export const useTaskHandlers = ({
 
   /**
    * Create a task with optional description and priority
+   *
+   * @param title - Task title
+   * @param group - Task group/category
+   * @param parentId - Optional parent task ID for subtasks
+   * @param description - Optional task description
+   * @param priority - Optional task priority (low, medium, high)
+   * @returns The created task
    */
   const createTaskWithDetails = useCallback(
     async (
@@ -58,6 +82,9 @@ export const useTaskHandlers = ({
 
   /**
    * Handle creating a subtask
+   *
+   * @param data - Task data including title, group, parentId, description, and priority
+   * @throws Error if task creation fails
    */
   const handleCreateSubtask = useCallback(
     async (data: CreateTaskData) => {
@@ -81,7 +108,10 @@ export const useTaskHandlers = ({
   );
 
   /**
-   * Handle creating a root task
+   * Handle creating a root task (not a subtask)
+   *
+   * @param data - Task data including title, group, description, and priority
+   * @throws Error if task creation fails
    */
   const handleCreateTask = useCallback(
     async (data: CreateTaskData) => {
@@ -104,7 +134,14 @@ export const useTaskHandlers = ({
 
   /**
    * Handle adding multiple tasks from AI suggestions
-   * Supports parent-child relationships via parentId (task title reference)
+   *
+   * Supports parent-child relationships via parentId (task title reference).
+   * Creates parent tasks first, then maps parent titles to IDs for subtasks.
+   * Falls back to finding existing parent tasks if not in the current batch.
+   *
+   * @param parsedTasks - Array of parsed tasks from AI, may include parent-child relationships
+   * @param existingTasks - Optional array of existing tasks for parent lookup
+   * @throws Error if task creation fails
    */
   const handleAddTasks = useCallback(
     async (parsedTasks: ParsedTask[], existingTasks: TaskType[] = []) => {
@@ -171,6 +208,10 @@ export const useTaskHandlers = ({
 
   /**
    * Handle reactivating a completed task
+   *
+   * Changes task status from 'done' to 'open' to make it active again.
+   *
+   * @param id - Task ID to reactivate
    */
   const handleReactivateTask = useCallback(
     (id: string) => {

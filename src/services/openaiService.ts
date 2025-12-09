@@ -1,6 +1,8 @@
 /**
  * OpenAI Service
- * Handles communication with OpenAI API for task generation
+ *
+ * Handles communication with OpenAI API for task generation.
+ * Converts natural language input into structured task objects.
  */
 
 import {
@@ -11,23 +13,50 @@ import {
 } from '../constants/aiConstants';
 import { logger } from '../utils/logger';
 
+/**
+ * Parsed task structure returned by OpenAI API
+ */
 export interface ParsedTask {
+  /** Task title */
   title: string;
+  /** Task group/category */
   group: string;
+  /** Optional priority level */
   priority?: 'low' | 'medium' | 'high';
+  /** Optional task description */
   description?: string;
-  parentId?: string; // Reference to parent task title (will be converted to actual task ID)
+  /** Optional reference to parent task title (will be converted to actual task ID) */
+  parentId?: string;
 }
 
+/**
+ * OpenAI API response structure
+ */
 export interface OpenAIResponse {
+  /** Array of parsed tasks */
   tasks: ParsedTask[];
 }
 
 /**
  * Generate tasks from user message using OpenAI API
- * @param message - User message
- * @param existingGroups - List of existing task groups
- * @param conversationHistory - Previous messages in the conversation (optional)
+ *
+ * Sends a user message to OpenAI GPT-4o-mini and receives structured task suggestions.
+ * Supports conversation history for context and existing groups for better categorization.
+ *
+ * @param message - User's natural language message describing tasks
+ * @param existingGroups - List of existing task groups to help AI categorize tasks
+ * @param conversationHistory - Previous messages in the conversation (max 10 messages)
+ * @returns Array of parsed tasks ready to be added to the task list
+ * @throws Error if API key is missing, API call fails, or response is invalid
+ *
+ * @example
+ * ```ts
+ * const tasks = await generateTasksFromMessage(
+ *   'I need to buy groceries and finish the presentation',
+ *   ['Work', 'Personal'],
+ *   [{ role: 'user', content: 'Previous message' }]
+ * );
+ * ```
  */
 export const generateTasksFromMessage = async (
   message: string,

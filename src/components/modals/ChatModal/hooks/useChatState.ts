@@ -1,5 +1,21 @@
 /**
  * Custom hook for managing chat state and operations
+ *
+ * Manages the chat interface state including messages, task suggestions,
+ * editing, and error handling. Provides handlers for sending messages,
+ * adding tasks, and managing the conversation flow.
+ *
+ * @param onSendMessage - Function to send messages to OpenAI API and generate tasks
+ * @param onAddTasks - Function to add parsed tasks to the task list
+ * @returns Chat state and handlers including messages, current input, processing state, and action handlers
+ *
+ * @example
+ * ```tsx
+ * const { messages, handleSendMessage, handleAddTasks } = useChatState({
+ *   onSendMessage: generateTasksFromMessage,
+ *   onAddTasks: addTasksToFirebase
+ * });
+ * ```
  */
 
 import { useState, useRef, useEffect, useCallback } from 'react';

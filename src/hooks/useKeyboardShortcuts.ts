@@ -1,10 +1,23 @@
 /**
  * Keyboard Shortcuts Hook
  *
- * Provides keyboard shortcuts for common actions:
- * - Ctrl/Cmd + K: Open chat
- * - Ctrl/Cmd + N: Create new task
- * - Escape: Close modals
+ * Provides global keyboard shortcuts for common actions.
+ * Shortcuts are disabled when user is typing in input fields.
+ *
+ * @param onChatOpen - Function to open chat modal (Ctrl/Cmd + K)
+ * @param onTaskCreate - Function to create new task (Ctrl/Cmd + N)
+ * @param onModalClose - Function to close current modal (Escape)
+ * @param isModalOpen - Whether a modal is currently open
+ *
+ * @example
+ * ```tsx
+ * useKeyboardShortcuts({
+ *   onChatOpen: () => setIsChatModalOpen(true),
+ *   onTaskCreate: () => setIsTaskModalOpen(true),
+ *   onModalClose: closeCurrentModal,
+ *   isModalOpen: isAnyModalOpen
+ * });
+ * ```
  */
 
 import { useEffect, useCallback } from 'react';

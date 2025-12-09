@@ -1,6 +1,26 @@
 /**
  * ChatModal Component
- * Full chat interface with conversation history and task suggestions
+ *
+ * Full chat interface with conversation history and AI-powered task suggestions.
+ * Allows users to interact with AI to generate tasks from natural language.
+ * Displays conversation history, task suggestions, and provides editing capabilities.
+ *
+ * @param isOpen - Whether the modal is open
+ * @param onClose - Handler to close the modal
+ * @param onSendMessage - Function to send messages to OpenAI API
+ * @param onAddTasks - Function to add parsed tasks to the task list
+ * @param existingGroups - Array of existing task groups for AI context
+ *
+ * @example
+ * ```tsx
+ * <ChatModal
+ *   isOpen={isChatOpen}
+ *   onClose={() => setIsChatOpen(false)}
+ *   onSendMessage={generateTasksFromMessage}
+ *   onAddTasks={addTasksToFirebase}
+ *   existingGroups={['Work', 'Personal']}
+ * />
+ * ```
  */
 
 import React from 'react';

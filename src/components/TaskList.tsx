@@ -1,3 +1,18 @@
+/**
+ * TaskList Component
+ *
+ * Displays a list of tasks with filtering, drag-and-drop reordering, and hierarchical subtask display.
+ * Supports both mobile and desktop interactions with touch and mouse drag support.
+ *
+ * @param tasks - Array of all tasks to display
+ * @param onStatusChange - Handler for task status changes
+ * @param onUpdate - Handler for task updates
+ * @param onDelete - Handler for task deletion
+ * @param onAddSubtask - Handler for adding subtasks
+ * @param onEdit - Optional handler for editing tasks
+ * @param onReorder - Optional handler for drag-and-drop reordering
+ */
+
 import { useMemo, useState, memo, useCallback } from 'react';
 import { Task } from '../types/task';
 import {

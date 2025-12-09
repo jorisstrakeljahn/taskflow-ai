@@ -2,7 +2,24 @@
  * useTasks Hook with Firebase Integration
  *
  * Manages task state and operations using Firestore for persistence
- * and real-time synchronization across devices.
+ * and real-time synchronization across devices. Provides CRUD operations
+ * for tasks with optimistic updates and automatic error recovery.
+ *
+ * @returns Object containing tasks array, loading state, and CRUD operation handlers
+ *
+ * @example
+ * ```tsx
+ * const { tasks, isLoading, addTask, updateTask, deleteTask } = useTasksFirebase();
+ *
+ * // Create a new task
+ * await addTask('Buy groceries', 'Shopping');
+ *
+ * // Update a task
+ * await updateTask(taskId, { title: 'Updated title' });
+ *
+ * // Delete a task
+ * await deleteTask(taskId);
+ * ```
  */
 
 import { useState, useCallback, useEffect } from 'react';
@@ -14,6 +31,9 @@ import { logger } from '../utils/logger';
 
 /**
  * Calculate the next order value for a new root task
+ *
+ * @param tasks - Current array of tasks
+ * @returns Next order value (max + 1, or 0 if no root tasks exist)
  */
 const calculateNextOrder = (tasks: Task[]): number => {
   const rootTasks = tasks.filter((t) => !t.parentId);
@@ -24,6 +44,12 @@ const calculateNextOrder = (tasks: Task[]): number => {
 
 /**
  * Reload tasks from Firestore on error
+ *
+ * Used for error recovery when an operation fails. Reloads all tasks
+ * to ensure UI state matches Firestore state.
+ *
+ * @param userId - Current user ID
+ * @param setTasks - State setter for tasks
  */
 const reloadTasksOnError = async (
   userId: string,
@@ -37,6 +63,12 @@ const reloadTasksOnError = async (
   }
 };
 
+/**
+ * Main hook for task management with Firebase
+ *
+ * Subscribes to real-time Firestore updates and provides task operations.
+ * Automatically handles authentication state and cleans up subscriptions.
+ */
 export const useTasksFirebase = () => {
   const { userId, loading: authLoading } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -66,6 +98,15 @@ export const useTasksFirebase = () => {
     };
   }, [userId, authLoading]);
 
+  /**
+   * Create a new task
+   *
+   * @param title - Task title
+   * @param group - Task group/category (defaults to 'General')
+   * @param parentId - Optional parent task ID for subtasks
+   * @returns The created task with Firestore ID
+   * @throws Error if user is not authenticated
+   */
   const addTask = useCallback(
     async (title: string, group: string = 'General', parentId?: string) => {
       if (!userId) {
@@ -110,6 +151,13 @@ export const useTasksFirebase = () => {
     [tasks, userId]
   );
 
+  /**
+   * Update an existing task
+   *
+   * @param id - Task ID to update
+   * @param updates - Partial task object with fields to update
+   * @throws Error if user is not authenticated
+   */
   const updateTask = useCallback(
     async (id: string, updates: Partial<Task>) => {
       if (!userId) throw new Error('User must be authenticated');
@@ -129,6 +177,14 @@ export const useTasksFirebase = () => {
     [userId]
   );
 
+  /**
+   * Change a task's status
+   *
+   * Updates task status and sets completedAt timestamp if status is 'done'.
+   *
+   * @param id - Task ID
+   * @param status - New status (open, in_progress, done)
+   */
   const changeTaskStatus = useCallback(
     async (id: string, status: TaskStatus) => {
       const task = tasks.find((t) => t.id === id);
@@ -140,6 +196,12 @@ export const useTasksFirebase = () => {
     [tasks, updateTask]
   );
 
+  /**
+   * Delete a task and all its subtasks
+   *
+   * @param id - Task ID to delete
+   * @throws Error if user is not authenticated
+   */
   const deleteTask = useCallback(
     async (id: string) => {
       if (!userId) throw new Error('User must be authenticated');
@@ -157,6 +219,16 @@ export const useTasksFirebase = () => {
     [tasks, userId]
   );
 
+  /**
+   * Reorder tasks using drag and drop
+   *
+   * Only works for root tasks (not subtasks). Updates order values
+   * for all affected tasks.
+   *
+   * @param activeId - ID of the task being dragged
+   * @param overId - ID of the task being dropped onto
+   * @throws Error if user is not authenticated or tasks are invalid
+   */
   const reorderTasks = useCallback(
     async (activeId: string, overId: string) => {
       if (!userId) throw new Error('User must be authenticated');

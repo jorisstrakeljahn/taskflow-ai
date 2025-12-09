@@ -134,7 +134,15 @@
       "doneToday": "Heute erledigt",
       "doneThisWeek": "Diese Woche erledigt",
       "total": "Gesamt",
-      "overdueTasks": "Überfällige Aufgaben"
+      "overdueTasks": "Überfällige Aufgaben",
+      "statusDistribution": "Status-Verteilung",
+      "priorityDistribution": "Prioritäts-Verteilung",
+      "completionTrend": "Erledigungs-Trend (7 Tage)",
+      "creationTrend": "Aufgaben-Erstellung (7 Tage)",
+      "completionRate": "Erledigungsrate",
+      "upcomingDueDates": "Bevorstehende Fälligkeiten",
+      "noData": "Keine Daten verfügbar",
+      "tasks": "Aufgaben"
     },
     "appearance": {
       "title": "Erscheinungsbild",

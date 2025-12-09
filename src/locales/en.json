@@ -134,7 +134,15 @@
       "doneToday": "Done Today",
       "doneThisWeek": "Done This Week",
       "total": "Total",
-      "overdueTasks": "Overdue Tasks"
+      "overdueTasks": "Overdue Tasks",
+      "statusDistribution": "Status Distribution",
+      "priorityDistribution": "Priority Distribution",
+      "completionTrend": "Completion Trend (7 days)",
+      "creationTrend": "Task Creation (7 days)",
+      "completionRate": "Completion Rate",
+      "upcomingDueDates": "Upcoming Due Dates",
+      "noData": "No data available",
+      "tasks": "tasks"
     },
     "appearance": {
       "title": "Appearance",
